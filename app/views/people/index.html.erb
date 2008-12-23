@@ -1,0 +1,23 @@
+<h1>Listing people</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>First name</th>
+    <th>Second name</th>
+    <th>Postnomials</th>
+    <th>Entry year</th>
+  </tr>
+
+<% for person in @people %>
+  <tr>
+    <td><%=link_to (h person.title), person %></td>
+    <td><%=link_to (h person.first_name), person %></td>
+    <td><%=link_to (h person.second_name), person %></td>
+    <td><%=link_to (h person.postnomials), person %></td>
+    <td><%=h person.entry_year %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
