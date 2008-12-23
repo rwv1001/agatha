@@ -1,102 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
   <head>
-    <title tal:content="template/title">The title</title>
-    <link href="agatha.css" rel="stylesheet" type="text/css">
-    <script type="text/JavaScript">
-<!--
-function MM_preloadImages() { //v3.0
-  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
-    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
-}
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Ruby on Rails: Welcome aboard</title>
+    <style type="text/css" media="screen">
+      body {
+        margin: 0;
+        margin-bottom: 25px;
+        padding: 0;
+        background-color: #f0f0f0;
+        font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+        font-size: 13px;
+        color: #333;
+      }
+      
+      h1 {
+        font-size: 28px;
+        color: #000;
+      }
+      
+      a  {color: #03c}
+      a:hover {
+        background-color: #03c;
+        color: white;
+        text-decoration: none;
+      }
+      
+      
+      #page {
+        background-color: #f0f0f0;
+        width: 750px;
+        margin: 0;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      #content {
+        float: left;
+        background-color: white;
+        border: 3px solid #aaa;
+        border-top: none;
+        padding: 25px;
+        width: 500px;
+      }
+      
+      #sidebar {
+        float: right;
+        width: 175px;
+      }
 
-function MM_findObj(n, d) { //v4.01
-  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
-    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
-  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
-  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
-  if(!x && d.getElementById) x=d.getElementById(n); return x;
-}
+      #footer {
+        clear: both;
+      }
+      
 
-function MM_nbGroup(event, grpName) { //v6.0
-  var i,img,nbArr,args=MM_nbGroup.arguments;
-  if (event == "init" && args.length > 2) {
-    if ((img = MM_findObj(args[2])) != null && !img.MM_init) {
-      img.MM_init = true; img.MM_up = args[3]; img.MM_dn = img.src;
-      if ((nbArr = document[grpName]) == null) nbArr = document[grpName] = new Array();
-      nbArr[nbArr.length] = img;
-      for (i=4; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-        if (!img.MM_up) img.MM_up = img.src;
-        img.src = img.MM_dn = args[i+1];
-        nbArr[nbArr.length] = img;
-    } }
-  } else if (event == "over") {
-    document.MM_nbOver = nbArr = new Array();
-    for (i=1; i < args.length-1; i+=3) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = (img.MM_dn && args[i+2]) ? args[i+2] : ((args[i+1])? args[i+1] : img.MM_up);
-      nbArr[nbArr.length] = img;
-    }
-  } else if (event == "out" ) {
-    for (i=0; i < document.MM_nbOver.length; i++) {
-      img = document.MM_nbOver[i]; img.src = (img.MM_dn) ? img.MM_dn : img.MM_up; }
-  } else if (event == "down") {
-    nbArr = document[grpName];
-    if (nbArr)
-      for (i=0; i < nbArr.length; i++) { img=nbArr[i]; img.src = img.MM_up; img.MM_dn = 0; }
-    document[grpName] = nbArr = new Array();
-    for (i=2; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = img.MM_dn = (args[i+1])? args[i+1] : img.MM_up;
-      nbArr[nbArr.length] = img;
-  } }
-}
+      #header, #about, #getting-started {
+        padding-left: 75px;
+        padding-right: 30px;
+      }
 
-//-->
-</script>
-<style type="text/css">
-td img {display: block;}</style>
 
-</head>
-  <body bgcolor="#ffffff" onLoad="MM_preloadImages('buttons/data_f2.gif','buttons/data_f3.gif','buttons/data.gif','buttons/termly_f2.gif','buttons/termly_f3.gif','buttons/labels_f2.gif','buttons/labels_f3.gif');"><table width="700" border="0">
-      <tr>
-        <td width="164"><img src="logo.png" alt="logo" width="150" height="154" align="left" longdesc="http://fido:8080/agatha/logo.html"></td>
-        <td width="526"><h1 align="center">Agatha</h1>
-          <h2 align="center">Blackfriars Hall/Studium<br>
-        Studies Database </h2></td>
-      </tr>
-      <tr>
-        <td colspan="2"><table border="0" cellpadding="0" cellspacing="0" width="700">
-<!-- fwtable fwsrc="buttons.png" fwbase="buttons.png" fwstyle="Dreamweaver" fwdocid = "1116515084" fwnested="0" -->
-  <tr>
-   <td><img src="buttons/spacer.gif" width="116" height="1" border="0" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="117" height="1" border="0" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="117" height="1" border="0" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="350" height="1" border="0" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="1" height="1" border="0" alt="" /></td>
-  </tr>
+      #header {
+        background-image: url("images/rails.png");
+        background-repeat: no-repeat;
+        background-position: top left;
+        height: 64px;
+      }
+      #header h1, #header h2 {margin: 0}
+      #header h2 {
+        color: #888;
+        font-weight: normal;
+        font-size: 16px;
+      }
+      
+      
+      #about h3 {
+        margin: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      
+      #about-content {
+        background-color: #ffd;
+        border: 1px solid #fc0;
+        margin-left: -11px;
+      }
+      #about-content table {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 11px;
+        border-collapse: collapse;
+      }
+      #about-content td {
+        padding: 10px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+      #about-content td.name  {color: #555}
+      #about-content td.value {color: #000}
+      
+      #about-content.failure {
+        background-color: #fcc;
+        border: 1px solid #f00;
+      }
+      #about-content.failure p {
+        margin: 0;
+        padding: 10px;
+      }
+      
+      
+      #getting-started {
+        border-top: 1px solid #ccc;
+        margin-top: 25px;
+        padding-top: 15px;
+      }
+      #getting-started h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      #getting-started h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: normal;
+        color: #333;
+        margin-bottom: 25px;
+      }
+      #getting-started ol {
+        margin-left: 0;
+        padding-left: 0;
+      }
+      #getting-started li {
+        font-size: 18px;
+        color: #888;
+        margin-bottom: 25px;
+      }
+      #getting-started li h2 {
+        margin: 0;
+        font-weight: normal;
+        font-size: 18px;
+        color: #333;
+      }
+      #getting-started li p {
+        color: #555;
+        font-size: 13px;
+      }
+      
+      
+      #search {
+        margin: 0;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 11px;
+      }
+      #search input {
+        font-size: 11px;
+        margin: 2px;
+      }
+      #search-text {width: 170px}
+      
+      
+      #sidebar ul {
+        margin-left: 0;
+        padding-left: 0;
+      }
+      #sidebar ul h3 {
+        margin-top: 25px;
+        font-size: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+      #sidebar li {
+        list-style-type: none;
+      }
+      #sidebar ul.links li {
+        margin-bottom: 5px;
+      }
+      
+    </style>
+    <script type="text/javascript" src="javascripts/prototype.js"></script>
+    <script type="text/javascript" src="javascripts/effects.js"></script>
+    <script type="text/javascript">
+      function about() {
+        if (Element.empty('about-content')) {
+          new Ajax.Updater('about-content', 'rails/info/properties', {
+            method:     'get',
+            onFailure:  function() {Element.classNames('about-content').add('failure')},
+            onComplete: function() {new Effect.BlindDown('about-content', {duration: 0.25})}
+          });
+        } else {
+          new Effect[Element.visible('about-content') ? 
+            'BlindUp' : 'BlindDown']('about-content', {duration: 0.25});
+        }
+      }
+      
+      window.onload = function() {
+        $('search-text').value = '';
+        $('search').onsubmit = function() {
+          $('search-text').value = 'site:rubyonrails.org ' + $F('search-text');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="page">
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <form id="search" action="http://www.google.com/search" method="get">
+              <input type="hidden" name="hl" value="en" />
+              <input type="text" id="search-text" name="q" value="site:rubyonrails.org " />
+              <input type="submit" value="Search" /> the Rails site
+            </form>
+          </li>
+        
+          <li>
+            <h3>Join the community</h3>
+            <ul class="links">
+              <li><a href="http://www.rubyonrails.org/">Ruby on Rails</a></li>
+              <li><a href="http://weblog.rubyonrails.org/">Official weblog</a></li>
+              <li><a href="http://wiki.rubyonrails.org/">Wiki</a></li>
+            </ul>
+          </li>
+          
+          <li>
+            <h3>Browse the documentation</h3>
+            <ul class="links">
+              <li><a href="http://api.rubyonrails.org/">Rails API</a></li>
+              <li><a href="http://stdlib.rubyonrails.org/">Ruby standard library</a></li>
+              <li><a href="http://corelib.rubyonrails.org/">Ruby core</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
-  <tr>
-   <td><a href="index.html" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','data','buttons/data_f2.gif','buttons/data_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','data','buttons/data_f3.gif',1);"><img name="data" src="buttons/data_f3.gif" width="116" height="31" border="0" id="data" alt="Data Entry" onload="MM_nbGroup('init','navbar1', 'data','buttons/data.gif',1)" /></a></td>
-   <td><a href="termly.html" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','termly','buttons/termly_f2.gif','buttons/termly_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','termly','buttons/termly_f3.gif',1);"><img name="termly" src="buttons/termly.gif" width="117" height="31" border="0" id="termly" alt="Termly Letters" /></a></td>
-   <td><a href="mailing.html" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','labels','buttons/labels_f2.gif','buttons/labels_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','labels','buttons/labels_f3.gif',1);"><img name="labels" src="buttons/labels.gif" width="117" height="31" border="0" id="labels" alt="Mailing Labels" /></a></td>
-   <td rowspan="2"><img name="buttons_r1_c4" src="buttons/buttons_r1_c4.gif" width="350" height="32" border="0" id="buttons_r1_c4" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="1" height="31" border="0" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="3"><img name="buttons_r2_c1" src="buttons/buttons_r2_c1.gif" width="350" height="1" border="0" id="buttons_r2_c1" alt="" /></td>
-   <td><img src="buttons/spacer.gif" width="1" height="1" border="0" alt="" /></td>
-  </tr>
-</table>        </td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td><p>&nbsp;</p>
-          <p><a href="people/1" target="_blank">Names and Addresses</a></p>
-          <p><a href="courses" target="_blank">Lecture Planing</a> </p>
-          <p>&nbsp;</p></td>
-      </tr>
-  </table>
-    <hr align="left" width="700">
-    <p align="left" class="tiny">Agatha database version 3.0 &copy; 2006 Peter Hunter OP </p>
+      <div id="content">
+        <div id="header">
+          <h1>Welcome aboard</h1>
+          <h2>You&rsquo;re riding Ruby on Rails!</h2>
+        </div>
+
+        <div id="about">
+          <h3><a href="rails/info/properties" onclick="about(); return false">About your application&rsquo;s environment</a></h3>
+          <div id="about-content" style="display: none"></div>
+        </div>
+        
+        <div id="getting-started">
+          <h1>Getting started</h1>
+          <h2>Here&rsquo;s how to get rolling:</h2>
+          
+          <ol>          
+            <li>
+              <h2>Use <tt>script/generate</tt> to create your models and controllers</h2>
+              <p>To see all available options, run it without parameters.</p>
+            </li>
+            
+            <li>
+              <h2>Set up a default route and remove or rename this file</h2>
+              <p>Routes are set up in config/routes.rb.</p>
+            </li>
+
+            <li>
+              <h2>Create your database</h2>
+              <p>Run <tt>rake db:migrate</tt> to create your database. If you're not using SQLite (the default), edit <tt>config/database.yml</tt> with your username and password.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+      
+      <div id="footer">&nbsp;</div>
+    </div>
+  </body>
 </html>

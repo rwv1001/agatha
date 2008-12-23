@@ -1,8 +1,0 @@
-<h1>Schedule lecture for <%=h @course.name %></h1>
-<% form_for @lecture, :url => {:action => :new_lecture} do |f| %>
-<%= f.hidden_field :course_id %>
-<%= f.label :term, "Term: "%><%= f.select :term, Course::TERMS %><br/>
-<%= f.label :year, "Year: "%><%= select_year Time.now, :prefix => "lecture" %><br/>
-<%= f.label :lecturer, "Lecturer: "%><%= f.select :person_id, @lecturers %><br/>
-<%= submit_tag "Add" %>
-<% end %>
