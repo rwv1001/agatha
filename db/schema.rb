@@ -9,12 +9,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081224113905) do
+ActiveRecord::Schema.define(:version => 20081224141854) do
 
   create_table "attendees", :force => true do |t|
     t.integer  "lecture_id", :null => false
     t.integer  "person_id",  :null => false
     t.boolean  "examined"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "lectures", :force => true do |t|
+    t.integer  "course_id",  :null => false
+    t.integer  "person_id",  :null => false
+    t.integer  "term"
+    t.integer  "year"
+    t.text     "day"
+    t.text     "hour"
+    t.text     "exam"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
