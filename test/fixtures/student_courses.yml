@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  student_id: 1
+  course_id: 1
+  term: 1
+  year: 1
+  grade: MyString
+
+two:
+  student_id: 1
+  course_id: 1
+  term: 1
+  year: 1
+  grade: MyString
