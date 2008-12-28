@@ -1,0 +1,20 @@
+<h1><%=h @lecture.course.name %></h2>
+<h2><%=h @lecture.person.first_name %> <%=h @lecture.person.second_name %>
+<h3><%=h Course::TERM_NAMES[@lecture.term] %> <%=h @lecture.year %>
+
+<h4>Attendees</h4>
+<table>
+<% for a in @lecture.attendees %>
+<tr><td><%=h a.person.first_name %> <%=h a.person.second_name %></td>
+<td><%= button_to "Delete", :action => :delete_attendee, :id => a %>
+</td></tr>
+<% end %>
+</table>
+
+Add an attendee:
+<% form_for :attendee, :url=>{:action => :add_attendee, :id => @lecture} do |f| %>
+<%= f.hidden_field :lecture_id %>
+<%= f.select :person_id, @people %>
+<%= submit_tag "Add" %>
+<% end %>
+<

@@ -1,0 +1,13 @@
+<h1><%=h @person.first_name %> <%=h @person.second_name %></h1>
+<h2><%=h @course.name %></h2>
+
+<% form_for @student_course, :url=>{ :action => :update_scourse, :id => @student_course } do |form| %>
+    <%= form.hidden_field :person_id %>
+    <%= form.hidden_field :course_id %>
+    <%= form.select :term, Course::TERMS %>
+    <%= select_year Time.now, :prefix => "student_course" %>
+    <%= form.label :grade, "Grade:" %>
+    <%= form.text_field :grade %>
+    <%= submit_tag "Update course" %>
+<% end %>
+

@@ -1,20 +1,26 @@
-<h1>Listing courses</h1>
+<h1>Courses</h1>
 
 <table>
-  <tr>
-    <th>Name</th>
-  </tr>
-
 <% for course in @courses %>
-  <tr>
-    <td><%=h course.name %></td>
-    <td><%= link_to 'Show', course %></td>
-    <td><%= link_to 'Edit', edit_course_path(course) %></td>
-    <td><%= link_to 'Destroy', course, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+	<tr>
+		<td width="200px"><%=h course.name %></td>
+	    <td><%= link_to 'Edit', edit_course_path(course) %></td>
+	    <td><%= link_to 'Delete', course, :confirm => 'Are you sure?', :method => :delete %></td>
+        <td><%= link_to 'Schedule', {:action => :schedule_lecture, :id => course} %>
+	</tr>
+    <% for lecture in course.lectures %>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;<%=h lecture.person.first_name %> <%=h lecture.person.second_name %></td>
+            <td><%=h Course::TERM_NAMES[lecture.term] %></td>
+            <td><%=h lecture.year %></td>
+            <td><%= button_to "Delete", :action => :delete_lecture, :id => lecture.id %></td>
+            <td><%= link_to "Attendees", {:action => :attendees, :id => lecture} %>
+        </tr>
+    <% end %>
 <% end %>
 </table>
-
 <br />
-
-<%= link_to 'New course', new_course_path %>
+<% form_for :course do |c| %>
+	<%= c.error_messages %>
+	<p><%= c.label :name %> <%= c.text_field :name %> <%= c.submit "Create" %></p>
+<% end %>

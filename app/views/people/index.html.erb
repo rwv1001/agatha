@@ -6,55 +6,18 @@
     <th>First name</th>
     <th>Second name</th>
     <th>Postnomials</th>
-    <th>Salutation</th>
-    <th>Term address</th>
-    <th>Term city</th>
-    <th>Term postcode</th>
-    <th>Term home phone</th>
-    <th>Term work phone</th>
-    <th>Mobile</th>
-    <th>Email</th>
-    <th>Other address</th>
-    <th>Other city</th>
-    <th>Other postcode</th>
-    <th>Other home phone</th>
-    <th>Fax</th>
-    <th>Notes</th>
     <th>Entry year</th>
-    <th>Next of kin</th>
-    <th>Conventual name</th>
   </tr>
 
 <% for person in @people %>
   <tr>
-    <td><%=h person.title %></td>
-    <td><%=h person.first_name %></td>
-    <td><%=h person.second_name %></td>
-    <td><%=h person.postnomials %></td>
-    <td><%=h person.salutation %></td>
-    <td><%=h person.term_address %></td>
-    <td><%=h person.term_city %></td>
-    <td><%=h person.term_postcode %></td>
-    <td><%=h person.term_home_phone %></td>
-    <td><%=h person.term_work_phone %></td>
-    <td><%=h person.mobile %></td>
-    <td><%=h person.email %></td>
-    <td><%=h person.other_address %></td>
-    <td><%=h person.other_city %></td>
-    <td><%=h person.other_postcode %></td>
-    <td><%=h person.other_home_phone %></td>
-    <td><%=h person.fax %></td>
-    <td><%=h person.notes %></td>
+    <td><%=link_to (h person.title), person %></td>
+    <td><%=link_to (h person.first_name), person %></td>
+    <td><%=link_to (h person.second_name), person %></td>
+    <td><%=link_to (h person.postnomials), person %></td>
     <td><%=h person.entry_year %></td>
-    <td><%=h person.next_of_kin %></td>
-    <td><%=h person.conventual_name %></td>
-    <td><%= link_to 'Show', person %></td>
-    <td><%= link_to 'Edit', edit_person_path(person) %></td>
-    <td><%= link_to 'Destroy', person, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
-
-<%= link_to 'New person', new_person_path %>
