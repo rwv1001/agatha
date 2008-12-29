@@ -1,10 +1,11 @@
-<h1><%=h @lecture.course.name %></h2>
-<h2><%=h @lecture.person.first_name %> <%=h @lecture.person.second_name %>
-<h3><%=h Course::TERM_NAMES[@lecture.term] %> <%=h @lecture.year %>
+<% lecture = Lecture.find(params[:id]) %>
+<h1><%=h lecture.course.name %></h2>
+<h2><%=h lecture.person.first_name %> <%=h lecture.person.second_name %>
+<h3><%=h Course::TERM_NAMES[lecture.term] %> <%=h lecture.year %>
 
 <h4>Attendees</h4>
 <table>
-<% for a in @lecture.attendees %>
+<% for a in lecture.attendees %>
 <tr><td><%=h a.person.first_name %> <%=h a.person.second_name %></td>
 <td><%= button_to "Delete", :action => :delete_attendee, :id => a %>
 </td></tr>
@@ -12,9 +13,10 @@
 </table>
 
 Add an attendee:
-<% form_for :attendee, :url=>{:action => :add_attendee, :id => @lecture} do |f| %>
-<%= f.hidden_field :lecture_id %>
-<%= f.select :person_id, @people %>
+<% form_for :attendee, :url=>{:action => :add_attendee} do |f| %>
+<%= f.hidden_field :lecture_id,  :value => lecture[:id] %>
+<%= f.select :person_id, Person.find(:all).collect {|p| [ p.first_name + " " + p.second_name, p.id ] }, {:include_blank => 'None'}  %>
 <%= submit_tag "Add" %>
 <% end %>
-<
+<%= link_to 'Back', courses_path %>
+

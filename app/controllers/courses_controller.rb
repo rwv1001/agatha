@@ -71,6 +71,60 @@ class CoursesController < ApplicationController
     end
  end
 
+  def new_lecture
+    lecture = Lecture.new(params[:lecture])
+    #lecture = Lecture.create(params[:lecture])
+
+ 	respond_to do |format|
+	  if lecture.save
+             flash[:notice] = 'Schedule was successfully added.'
+	    else
+	     flash[:notice] = 'Failed to add schedule.'
+	  end
+          format.html  { redirect_to(courses_url) }
+          format.xml  { head :ok }
+	end
+  end
+
+def add_attendee
+    attendee = Attendee.new(params[:attendee])
+    lecture_id =  attendee[:lecture_id] 
+
+ 	respond_to do |format|
+	  if attendee.save
+             flash[:notice] = 'Attendee was successfully added.'
+	    else
+	     flash[:notice] = 'Failed to add attendee.'
+	  end
+          format.html { redirect_to :action => "attendees", :id => lecture_id }
+          format.xml  { head :ok }
+	end
+end
+
+  def delete_attendee
+    attendee = Attendee.find(params[:id])
+    lecture_id =  attendee[:lecture_id]   
+    attendee.destroy
+
+
+
+    respond_to do |format|
+      format.html { redirect_to :action => "attendees", :id => lecture_id }
+      format.xml  { head :ok }   
+    end
+  end
+
+  def delete_lecture
+    lecture = Lecture.find(params[:id])
+    lecture.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(courses_url) }
+      format.xml  { head :ok }
+    end
+
+  end
+
   # DELETE /courses/1
   # DELETE /courses/1.xml
   def destroy

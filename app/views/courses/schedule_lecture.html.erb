@@ -1,8 +1,9 @@
-<h1>Schedule lecture for <%=h @course.name %></h1>
-<% form_for @lecture, :url => {:action => :new_lecture} do |f| %>
-<%= f.hidden_field :course_id %>
+<% course = Course.find(params[:id]) %>
+<h1>Schedule lecture for <%=h course.name %></h1>
+<% form_for :lecture, :url => {:action => :new_lecture} do |f| %>
+<%= f.hidden_field :course_id,  :value => course[:id] %> 
 <%= f.label :term, "Term: "%><%= f.select :term, Course::TERMS %><br/>
 <%= f.label :year, "Year: "%><%= select_year Time.now, :prefix => "lecture" %><br/>
-<%= f.label :lecturer, "Lecturer: "%><%= f.select :person_id, @lecturers %><br/>
+<%= f.label :lecturer, "Lecturer: "%><%= f.select :person_id, Person.find(:all).collect {|p| [ p.first_name + " " + p.second_name, p.id ] }, {:include_blank => 'None'} %><br/>
 <%= submit_tag "Add" %>
 <% end %>

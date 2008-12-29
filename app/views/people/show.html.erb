@@ -83,4 +83,8 @@
   <div class="field" id="courses"><%= link_to "Study", {:action => :courses, :id => @person.id}, :target => "_blank" %></div>
   <div class="field" id="search"><% form_tag :action => :search do %>
   <%= text_field_tag :searchstr %><%= submit_tag "Search" %><% end %></div>
-  <div class="field" id="newperson"><%= link_to "Add a new person", {:action => :new} %></div>
+  <div class="field" id="newperson"><%= link_to "Add a new person", {:action => :new} %>
+  <p><%= link_to "Back to main menu", {:controller => "index"  } %> </p>
+</div>
+
+

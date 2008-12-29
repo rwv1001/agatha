@@ -1,5 +1,7 @@
+require "migration_helpers"
 class CreateLectures < ActiveRecord::Migration
-  def self.up
+   extend MigrationHelpers  
+   def self.up
     create_table :lectures do |t|
       t.integer :course_id, :null => false
       t.integer :person_id, :null => false
@@ -11,6 +13,9 @@ class CreateLectures < ActiveRecord::Migration
 
       t.timestamps
     end
+    foreign_key(:lectures, :course_id, :courses)
+    foreign_key(:lectures, :person_id, :people)
+
   end
 
   def self.down
