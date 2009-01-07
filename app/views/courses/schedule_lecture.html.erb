@@ -7,3 +7,4 @@
 <%= f.label :lecturer, "Lecturer: "%><%= f.select :person_id, Person.find(:all).collect {|p| [ p.first_name + " " + p.second_name, p.id ] }, {:include_blank => 'None'} %><br/>
 <%= submit_tag "Add" %>
 <% end %>
+<%= link_to 'Back', courses_path %>

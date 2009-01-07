@@ -14,7 +14,7 @@
     <td><%=h attendee.examined %></td>
     <td><%= link_to 'Show', attendee %></td>
     <td><%= link_to 'Edit', edit_attendee_path(attendee) %></td>
-    <td><%= link_to 'Destroy', attendee, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Destroy', attendee, :confirm => 'Are you sure?', :method => :destroy %></td>
   </tr>
 <% end %>
 </table>

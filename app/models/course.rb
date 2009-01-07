@@ -1,8 +1,8 @@
 class Course < ActiveRecord::Base
   TERMS = [
-      ["Michaelmas", 0],
-      ["Hilary", 1 ],
-      ["Trinity", 2 ]]
+      ["Michaelmas",0],
+      ["Hilary",1],
+      ["Trinity",2]]
       
   TERM_NAMES = [ "Michaelmas", "Hilary", "Trinity" ]
 

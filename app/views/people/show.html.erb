@@ -1,8 +1,5 @@
+
 <div id="navigation">
-  <% back = @person.id - 1
-      forward = @person.id + 1 %>
-  <%= link_to(image_tag('back.gif', :size=>"21x21"), :action=>back) %>
-  <%= link_to(image_tag('forward.gif', :size=>"21x21"), :action=>forward)%>
   &nbsp;&nbsp;<%= link_to("EDIT", edit_person_path(@person))%>
 </div>
 <h2><%=h @person.title %> <%=h @person.first_name %> <%=h @person.second_name %> <%=h @person.postnomials %></h2>

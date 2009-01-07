@@ -21,8 +21,7 @@ class PeopleController < ApplicationController
   # GET /people/1.xml
   def show
     id = params[:id].to_i
-    if id == 0 then id = Person.count end
-    if id > Person.count then id = 1 end
+
     @person = Person.find(id)
 
     respond_to do |format|

@@ -13,9 +13,14 @@
     </tr>
 <% for course in @scourses %>
     <tr>
+	<% term = "" 
+	 if course.term  
+		term = Course::TERM_NAMES[course.term]
+           end
+         %>
       <td><%=h course.course.name %></td>
       <td><%=h course.year %></td>
-      <td><%=h course.term %></td>
+      <td><%=h term %></td> 
       <td><%=h course.grade %></td>
 	  <td><%= if !course.programme.nil?
                 h course.programme.name
@@ -38,7 +43,7 @@
 </div>
 <div class="field" id="Layer1">
   <p class="label">Programmes</p>
-  <table width="600" border="0">
+  <table class="field"  border="0">
     <tr>
       <th scope="col">Programme</th>
       <th scope="col">Competed</th>
