@@ -5,7 +5,7 @@ set :application, "agatha"
 set :repository,  "agathaapp@fido.bfriars.ox.ac.uk:/opt/repos/agatha.git"
 set :domain, "fido.bfriars.ox.ac.uk"
 
-set :mongrel_conf, "#[current_path]/config/mongrel_cluster.yml"
+set :mongrel_conf, "/opt/httpd/html/agatha/current/config/mongrel_cluster.yml"
 set :deploy_to, "/opt/httpd/html/#{application}"
 
 
