@@ -15,7 +15,7 @@
 Add an attendee:
 <% form_for :attendee, :url=>{:action => :add_attendee} do |f| %>
 <%= f.hidden_field :lecture_id,  :value => lecture[:id] %>
-<%= f.select :person_id, Person.find(:all).collect {|p| [ p.first_name + " " + p.second_name, p.id ] }, {:include_blank => 'None'}  %>
+<%= f.select :person_id, Person.find(:all, :order => 'second_name asc, entry_year asc').collect {|p| [ p.second_name + ", " + p.first_name, p.id ] }, {:include_blank => 'None'}  %>
 <%= submit_tag "Add" %>
 <% end %>
 <%= link_to 'Back', courses_path %>

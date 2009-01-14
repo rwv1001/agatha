@@ -116,6 +116,9 @@ end
 
   def delete_lecture
     lecture = Lecture.find(params[:id])
+    if Attendee.exists?(["lecture_id = ?", lecture.id])
+           Attendee.delete_all(["lecture_id = ?", lecture.id])
+    end
     lecture.destroy
 
     respond_to do |format|
@@ -129,6 +132,16 @@ end
   # DELETE /courses/1.xml
   def destroy
     @course = Course.find(params[:id])
+    if StudentCourse.exists?(["course_id = ?", @course.id])
+           StudentCourse.delete_all(["course_id = ?", @course.id])
+    end
+
+    if Pcourse.exists?(["course_id = ?", @course.id])
+           Pcourse.delete_all(["course_id = ?", @course.id])
+    end
+    if Lecture.exists?(["course_id = ?", @course.id])
+           Lecture.delete_all(["course_id = ?", @course.id])
+    end
     @course.destroy
 
     respond_to do |format|
