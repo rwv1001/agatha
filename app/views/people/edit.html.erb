@@ -1,6 +1,13 @@
+<script language="JavaScript">
+function passBack()
+{
+window.opener.location.reload();
+}
+</script>
+
 <h1>Editing person</h1>
 
-<% form_for(@person) do |f| %>
+<% form_for(@person ) do |f| %>
   <%= f.error_messages %>
 
   <p>
@@ -92,5 +99,5 @@
   </p>
 <% end %>
 
-<%= link_to 'Show', @person %> |
-<%= link_to 'Back', people_path %>
+<%= link_to 'Show without updating', @person %> 
+

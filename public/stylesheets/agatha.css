@@ -23,6 +23,21 @@ a img {
 	font-size: 9px;
 }
 
+label.search_field {
+        	
+        font: 100%,  bold
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 900
+        
+	
+}
+
+.search_example {
+	font-size: 8px
+        font-weight: normal
+}
+
+
 .label {
 	background-color: #663300;
 	color: #FFFFFF;

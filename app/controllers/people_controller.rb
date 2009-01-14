@@ -2,7 +2,16 @@ class PeopleController < ApplicationController
   # GET /people
   # GET /people.xml
   def index
-    @people = Person.find(:all)
+
+ 
+if session[:searchstrYear] == "%"
+session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\'"
+else
+session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
+end
+  
+        @people = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
+
 
     respond_to do |format|
       format.html # index.html.erb
@@ -10,11 +19,48 @@ class PeopleController < ApplicationController
     end
   end
 
+  def clear_filter
+
+     session[:searchstr2nd] = "%"
+     session[:searchstr1st] = "%"
+     session[:searchstrYear] = "%"
+     session[:sortOption] = 0
+
+  
+    respond_to do |format|
+      format.html { redirect_to :action => 'index' }
+     # format.xml  { render :xml => @people }
+ end  
+
+  end
+
   # GET /people/search
   def search
-      @people = Person.find(:all,
-                            :conditions => ["second_name ilike '%' || ? || '%'", params[:searchstr]])
-      render :template => 'people/index'
+  if params[:searchstr2nd] == ""
+    session[:searchstr2nd] = "%"
+  else
+    session[:searchstr2nd] = params[:searchstr2nd];
+  end
+
+  if params[:searchstr1st] == ""
+    session[:searchstr1st] = "%"
+  else
+    session[:searchstr1st] = params[:searchstr1st];
+  end
+      
+  if params[:searchstrYear] == ""
+    session[:searchstrYear] = "%"
+  else
+    session[:searchstrYear] = params[:searchstrYear];
+  end
+  #session[:sortOption] = Person::SortHash['Sort by Entry Year']
+  session[:sortOption] = Person::SortHash[params[:sort].to_s]
+ # session[:sortOption] = params[:sort]
+    respond_to do |format|
+      format.html { redirect_to(people_url) }
+     
+    end
+      #render :template => 'people/index'
   end
 
   # GET /people/1
@@ -51,15 +97,42 @@ class PeopleController < ApplicationController
   def create
     @person = Person.new(params[:person])
 
+
+
     respond_to do |format|
+     # begin
       if @person.save
         flash[:notice] = 'Person was successfully created.'
-        format.html { redirect_to(@person) }
+
+
+       # condition_str = "id = " + @person.id.to_s + " AND " + session[:searchstr]
+        
+        #condition_str = "id = " + @person.id.to_s   
+        condition_str = "id IN (30)"
+        begin #there must surely be a better way
+           temp_person = Person.find(@person.id, :conditions => session[:searchstr]) 
+        rescue ActiveRecord::RecordNotFound 
+           temp_person = nil
+        end
+
+#I can't get Person.exist?(condition_str) with both condition and ID specified. It's so unintuitive.
+        if temp_person
+	   format.html { redirect_to(people_url) }
+        else
+           format.html {redirect_to :action => 'clear_filter'}
+        end
+        
         format.xml  { render :xml => @person, :status => :created, :location => @person }
-      else
+      else 
         format.html { render :action => "new" }
         format.xml  { render :xml => @person.errors, :status => :unprocessable_entity }
+      
       end
+     # rescue Exception => exc     
+
+     #   format.html { render :action => "new" }
+     #   format.xml  { render :xml => @person.errors, :status => :unprocessable_entity }
+    #  end
     end
   end
 
@@ -143,9 +216,13 @@ class PeopleController < ApplicationController
   def update
     @person = Person.find(params[:id])
 
+
+
+
     respond_to do |format|
       if @person.update_attributes(params[:person])
-        flash[:notice] = 'Person was successfully updated.'
+        flash[:notice] = 'Person was successfully updated.'     
+            
         format.html { redirect_to(@person) }
         format.xml  { head :ok }
       else
@@ -153,6 +230,7 @@ class PeopleController < ApplicationController
         format.xml  { render :xml => @person.errors, :status => :unprocessable_entity }
       end
     end
+    
   end
 
   # DELETE /people/1

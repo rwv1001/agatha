@@ -1,4 +1,10 @@
+
+
 <h1>Listing people</h1>
+
+
+
+
 
 <table>
   <tr>
@@ -11,18 +17,31 @@
 
 <% for person in @people %>
   <tr>
-    <td><%=link_to (h person.title), person %></td>
-    <td><%=link_to (h person.first_name), person %></td>
-    <td><%=link_to (h person.second_name), person %></td>
-    <td><%=link_to (h person.postnomials), person %></td>
+    <td><%=link_to (h person.title), person, :popup => true  %></td>
+    <td><%=link_to (h person.first_name), person, :popup => true  %></td>
+    <td><%=link_to (h person.second_name), person, :popup => true  %></td>
+    <td><%=link_to (h person.postnomials), person, :popup => true  %></td>
     <td><%=h person.entry_year %></td>    
-   <td><%=link_to "Show", person, :id => person.id %></td> 
-  <td> <%= link_to("EDIT", edit_person_path(person))%></td>
- <td><%= link_to 'Delete', person, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%=link_to "Show", person, :id => person.id, :popup => true %></td> 
+    <td><%= link_to 'Delete', person, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
-  <div <% form_tag :action => :search do %>
-  <%= text_field_tag :searchstr %><%= submit_tag "Search" %><% end %></div>
+
+  <div > <% form_tag :action => :search do %>
+  <p > <%= text_field_tag :searchstr2nd, session[:searchstr2nd] %><label class="search_field">Second Name Filter</label>  e.g. <code>H%r</code> gives second names beginning with H and ending with r</p>
+  <p > <%= text_field_tag :searchstr1st, session[:searchstr1st] %><label class="search_field">First Name Filter</label> e.g. <code>%([a-e]|[t-z])_ </code>  gives first names with penultimate letter in range a to e or in the range t to z</p>
+ <p > <%= text_field_tag :searchstrYear, session[:searchstrYear] %><label class="search_field">Entry year Filter</label> e.g. <code>2007</code> gives entry year 2007</p>
+<%= select_tag "sort[]", options_for_select(Person::SortString, Person::SortString[session[:sortOption]]) %>
+ 
+<p> <%= submit_tag "Search" %></p>
+<% end %></div>
+
+<p><%= link_to "Add a new person", {:action => :new } %></p>
 <p><%= link_to "Back to main menu", {:controller => "index"  } %> </p>
 <br />
+
+
+  
+</div>
+
