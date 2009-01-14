@@ -237,11 +237,29 @@ end
   # DELETE /people/1.xml
   def destroy
     @person = Person.find(params[:id])
-    @person.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(people_url) }
-      format.xml  { head :ok }
+    
+    if Lecture.exists?(:person_id => @person.id)
+        flash[:notice] = 'FAILED: You must remove the person from any lecture schedules before deleting'   
+        respond_to do |format|
+           format.html { redirect_to(people_url) }
+           format.xml  { head :ok }
+        end  
+    else
+        if Attendee.exists?(["person_id = ?", @person.id])
+           Attendee.delete_all(["person_id = ?", @person.id])
+        end
+        if StudentCourse.exists?(["person_id = ?", @person.id])
+           StudentCourse.delete_all( ["person_id = ?", @person.id])
+        end
+        if StudentProgramme.exists?(["person_id = ?", @person.id])
+           StudentProgramme.delete_all(["person_id = ?", @person.id])
+        end
+        @person.destroy
+        flash[:notice] = 'Person was successfully deleted.'
+        respond_to do |format|
+           format.html { redirect_to(people_url) }
+           format.xml  { head :ok }
+        end
     end
   end
 end
