@@ -2,6 +2,9 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+ #before_filter :validaccess, :except => :accessdenied
+ # before_filter :authorize, [:except => "/admin/login", :except => :accessdenied ]
+before_filter :authorize, :except => [:login, :accessdenied]
   helper :all # include all helpers, all the time
 
   session :session_key => '_agatha_session_id'
@@ -14,4 +17,24 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
+protected
+  def authorize
+        current_ip = request.remote_ip 
+        if session[:current_ip] != current_ip #force logout if ip has changed
+           session[:current_ip] = current_ip
+	   session[:valid_ip] = false
+           session[:user_id] = nil
+        end
+        unless User.find_by_id(session[:user_id])
+            flash[:notice] = "Please log in"
+            redirect_to :controller => :admin, :action => :login
+        end
+     
+  end
+  def validaccess
+      
+
+
+      
+  end
 end

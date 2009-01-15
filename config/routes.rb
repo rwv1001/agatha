@@ -1,5 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :users
+
   map.connect('', {:controller => "welcome", :action => "index"})
+ 
+  map.connect('admin',{:controller => "welcome", :action => "index"})
+ 
+  map.connect('accessdenied', {:controller => "welcome", :action => "accessdenied"})
  
   map.connect('index', {:controller => "welcome", :action => "index"})
 

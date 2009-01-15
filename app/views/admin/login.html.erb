@@ -59,7 +59,7 @@ td img {display: block;}</style>
 
 </head>
   <body bgcolor="#ffffff" onLoad="MM_preloadImages('/buttons/data_f2.gif','buttons/data_f3.gif','/buttons/data.gif','/buttons/termly_f2.gif','/buttons/termly_f3.gif','/buttons/labels_f2.gif','/buttons/labels_f3.gif');"><table width="700" border="0">
-<p><%= link_to 'User Admin', :controller => 'users' %>, <%= link_to 'Logout', :controller => :admin, :action => 'logout'%> </p>
+<p style="color: green"><%= flash[:notice] %></p>
       <tr>
         <td width="164"><img src="/logo.png" alt="logo" width="150" height="154" align="left" longdesc="http://fido:8080/agatha/logo.html"></td>
         <td width="526"><h1 align="center">Agatha</h1>
@@ -78,9 +78,9 @@ td img {display: block;}</style>
   </tr>
 
   <tr>
-   <td><a href="index" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','data','/buttons/data_f2.gif','/buttons/data_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','data','/buttons/data_f3.gif',1);"><img name="data" src="/buttons/data_f3.gif" width="116" height="31" border="0" id="data" alt="Data Entry" onload="MM_nbGroup('init','navbar1', 'data','/buttons/data.gif',1)" /></a></td>
-   <td><a href="termly" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','termly','/buttons/termly_f2.gif','/buttons/termly_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','termly','/buttons/termly_f3.gif',1);"><img name="termly" src="/buttons/termly.gif" width="117" height="31" border="0" id="termly" alt="Termly Letters" /></a></td>
-   <td><a href="mailing" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','labels','/buttons/labels_f2.gif','/buttons/labels_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','labels','/buttons/labels_f3.gif',1);"><img name="labels" src="/buttons/labels.gif" width="117" height="31" border="0" id="labels" alt="Mailing Labels" /></a></td>
+   <td><a  onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','data','/buttons/data_f2.gif','/buttons/data_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','data','/buttons/data_f3.gif',1);"><img name="data" src="/buttons/data_f3.gif" width="116" height="31" border="0" id="data" alt="Data Entry" onload="MM_nbGroup('init','navbar1', 'data','/buttons/data.gif',1)" /></a></td>
+   <td><a  onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','termly','/buttons/termly_f2.gif','/buttons/termly_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','termly','/buttons/termly_f3.gif',1);"><img name="termly" src="/buttons/termly.gif" width="117" height="31" border="0" id="termly" alt="Termly Letters" /></a></td>
+   <td><a  onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','labels','/buttons/labels_f2.gif','/buttons/labels_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','labels','/buttons/labels_f3.gif',1);"><img name="labels" src="/buttons/labels.gif" width="117" height="31" border="0" id="labels" alt="Mailing Labels" /></a></td>
    <td rowspan="2"><img name="/buttons_r1_c4" src="/buttons/buttons_r1_c4.gif" width="350" height="32" border="0" id="buttons_r1_c4" alt="" /></td>
    <td><img src="buttons/spacer.gif" width="1" height="31" border="0" alt="" /></td>
   </tr>
@@ -93,13 +93,31 @@ td img {display: block;}</style>
       <tr>
         <td>&nbsp;</td>
         <td><p>&nbsp;</p>
-	  <p> <%= link_to "Names and Addresses", :controller => 'people', :action => :clear_filter  %> </p>
-          
-          <p><a href="courses">Lecture Planing</a> </p>
+	  <% form_tag do %>
+    <fieldset>
+      <legend>Please Log In</legend>
+
+      <div>
+        <label for="name">Name:</label>
+        <%= text_field_tag :name, params[:name] %>
+      </div>
+
+      <div>
+        <label for="password">Password:</label>
+        <%= password_field_tag :password, params[:password] %>
+      </div>
+  
+      <div>
+        <%= submit_tag "Login" %>
+      </div>
+    </fieldset>
+  <% end %>
           <p>&nbsp;</p></td>
       </tr>
   </table>
     <hr align="left" width="700">
     <p align="left" class="tiny">Agatha database version 3.0 &copy; 2006 Peter Hunter OP </p>
 </html>
+
+
 
