@@ -1,20 +1,24 @@
+
+require 'ruby-debug'
 class AdminController < ApplicationController
   before_filter :valid_ip, :except => :accessdenied
   # just display the form and wait for user to
   # enter a name and password
   
   def login
- #    if session[:valid_ip] == false
-  #       if current_ip =~ /127\.0\.0\.2/
+    
+    current_ip = request.remote_ip
+     if session[:valid_ip] == false
+         if current_ip =~ /(127\.0\.0\.1|163.1.170.%)/
             
-  #          session[:valid_ip] = true
+            session[:valid_ip] = true
             
-  #       else
+         else
              
-  #          flash.now[:notice] = "Access denied!"
-  #          redirect_to :controller => :welcome, :action => :accessdenied 
-   #      end
-  #  end  
+            flash.now[:notice] = "Access denied!"
+            redirect_to :controller => :welcome, :action => :accessdenied 
+         end
+    end  
 
     if request.post?
       user = User.authenticate(params[:name], params[:password])

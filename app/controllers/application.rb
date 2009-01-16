@@ -1,6 +1,6 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
-
+require 'ruby-debug'
 class ApplicationController < ActionController::Base
  #before_filter :validaccess, :except => :accessdenied
  # before_filter :authorize, [:except => "/admin/login", :except => :accessdenied ]
@@ -19,6 +19,9 @@ before_filter :authorize, :except => [:login, :accessdenied]
   # filter_parameter_logging :password
 protected
   def authorize
+    
+
+
         current_ip = request.remote_ip 
         if session[:current_ip] != current_ip #force logout if ip has changed
            session[:current_ip] = current_ip
