@@ -1,13 +1,13 @@
 
 require 'ruby-debug'
 class AdminController < ApplicationController
-  before_filter :valid_ip, :except => :accessdenied
+#  before_filter :valid_ip, :except => :accessdenied
   # just display the form and wait for user to
   # enter a name and password
   
   def login
     
-     session[:valid_ip] = true
+    
      if session[:valid_ip] == false
          current_ip = request.remote_ip
          if current_ip =~ /(127\.0\.0\.1|163\.1\.170\..*)/
