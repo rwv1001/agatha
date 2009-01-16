@@ -4,7 +4,7 @@ require 'ruby-debug'
 class ApplicationController < ActionController::Base
  #before_filter :validaccess, :except => :accessdenied
  # before_filter :authorize, [:except => "/admin/login", :except => :accessdenied ]
-# before_filter :authorize, :except => [:login, :accessdenied]
+ before_filter :authorize, :except => [:login, :accessdenied]
   helper :all # include all helpers, all the time
 
   session :session_key => '_agatha_session_id'
