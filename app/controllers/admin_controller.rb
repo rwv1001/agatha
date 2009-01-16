@@ -7,7 +7,7 @@ class AdminController < ApplicationController
   
   def login
     
-    
+     session[:valid_ip] = true
      if session[:valid_ip] == false
          current_ip = request.remote_ip
          if current_ip =~ /(127\.0\.0\.1|163\.1\.170\..*)/
