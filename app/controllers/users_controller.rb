@@ -61,8 +61,50 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
+    user = User.authenticate(@user.name, params[:user][:old_password])
+    new_password = params[:user][:password]
+    flash[:notice] = ""
+    flash_comma = ""
+
+    if params[:user][:password] == params[:user][:password_confirmation]
+      confirmed_password = true
+    else
+      confirmed_password =false
+      flash[:notice] = "ERROR: Confirmation password is not the same"
+      flash_comma = ", "
+    end
+
+    is_not_blank = !params[:user][:password].blank?
+    if !is_not_blank
+      flash[:notice] = flash[:notice] + flash_comma + "ERROR: Password is blank"
+      flash_comma = ", "
+    end
+    if user == nil
+      flash[:notice] = flash[:notice] + flash_comma + "ERROR: Old password is incorrect"
+      flash_comma = ", "
+    end
+    user_name_ok = true
+    if @user.name != params[:user][:name]
+      if User.find_by_name(params[:user][:name])
+        user_name_ok = false
+        flash[:notice] = flash[:notice] + flash_comma + "ERROR: Username already exists in database"
+      end
+    end
+
+    if user && is_not_blank  && confirmed_password && user_name_ok
+
+      update_status = true
+      @user.name =  params[:user][:name]
+      @user.hashed_password = User.encrypted_password(params[:user][:password], @user.salt)
+      if !@user.save
+        update_status = false
+        flash[:notice] = "ERROR: Unable to save user #{@user.name} to database "
+      end
+    else
+      update_status = false
+    end
+      respond_to do |format|
+      if update_status
         flash[:notice] = "User #{@user.name} was successfully updated."
         format.html { redirect_to(:action=>'index') }
         format.xml  { head :ok }
@@ -71,6 +113,8 @@ class UsersController < ApplicationController
         format.xml  { render :xml => @user.errors,
                              :status => :unprocessable_entity }
       end
+
+
     end
   end
 

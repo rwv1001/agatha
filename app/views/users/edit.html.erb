@@ -2,25 +2,36 @@
 
 <% form_for(@user) do |f| %>
   <%= f.error_messages %>
-
+  <%= f.hidden_field :id %>
+ <fieldset>
   <div>
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </div>
+
+  <div>
+    <%= f.label 'Old Password' %>:
+    <%= f.password_field :old_password, :size => 40 %>
+  </div>
+
   <div>
 
-    <%= f.label :user_password, 'Password' %>:
+    <%= f.label 'Password' %>:
     <%= f.password_field :password, :size => 40 %>
   </div>
 
   <div>
-    <%= f.label :user_password_confirmation, 'Confirm' %>:
+    <%= f.label 'Confirm' %>:
     <%= f.password_field :password_confirmation, :size => 40 %>
   </div>
   <p>
     <%= f.submit "Update" %>
   </p>
+   </fieldset>
 <% end %>
 
-<%= link_to 'Show', @user %> |
+
 <%= link_to 'Back', users_path %>
+
+
+

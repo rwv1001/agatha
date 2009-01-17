@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
  
   attr_accessor :password_confirmation
   validates_confirmation_of :password
+  attr_accessor :old_password
 
   validate :password_non_blank
   
