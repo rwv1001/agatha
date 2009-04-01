@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  student: 1
+  lectures_course: 1
+  compulsory: false
+  examined: false
+  mark: MyString
+
+two:
+  student: 1
+  lectures_course: 1
+  compulsory: false
+  examined: false
+  mark: MyString

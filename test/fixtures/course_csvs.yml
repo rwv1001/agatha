@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  course_name: MyString
+  paper_number: MyString
+  studium_course: false
+  evening_course: false
+
+two:
+  course_name: MyString
+  paper_number: MyString
+  studium_course: false
+  evening_course: false

@@ -1,0 +1,61 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  old_name: MyString
+  title: MyString
+  first_name: MyString
+  second_name: MyString
+  postnominals: MyString
+  salutation: MyString
+  term_address: MyString
+  term_city: MyString
+  term_postcode: MyString
+  term_home_phone: MyString
+  term_work_phone: MyString
+  mobile: MyString
+  email: MyString
+  other_address: MyString
+  other_city: MyString
+  other_postcode: MyString
+  other_home_phone: MyString
+  Fax: MyString
+  Notes: MyText
+  supervisor: 1
+  entry_year: 1
+  matriculated: 1
+  senior_status: false
+  programme: 1
+  religious_house: 1
+  next_of_kin: MyString
+  home_institution: 1
+  conventual_name: MyString
+
+two:
+  old_name: MyString
+  title: MyString
+  first_name: MyString
+  second_name: MyString
+  postnominals: MyString
+  salutation: MyString
+  term_address: MyString
+  term_city: MyString
+  term_postcode: MyString
+  term_home_phone: MyString
+  term_work_phone: MyString
+  mobile: MyString
+  email: MyString
+  other_address: MyString
+  other_city: MyString
+  other_postcode: MyString
+  other_home_phone: MyString
+  Fax: MyString
+  Notes: MyText
+  supervisor: 1
+  entry_year: 1
+  matriculated: 1
+  senior_status: false
+  programme: 1
+  religious_house: 1
+  next_of_kin: MyString
+  home_institution: 1
+  conventual_name: MyString

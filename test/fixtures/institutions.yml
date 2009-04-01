@@ -1,0 +1,25 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  old_name: MyString
+  title: MyString
+  first_name: MyString
+  second_name: MyString
+  salutation: MyString
+  term_address: MyString
+  term_city: MyString
+  term_postcode: MyString
+  conventual_name: MyString
+  institution_type: false
+
+two:
+  old_name: MyString
+  title: MyString
+  first_name: MyString
+  second_name: MyString
+  salutation: MyString
+  term_address: MyString
+  term_city: MyString
+  term_postcode: MyString
+  conventual_name: MyString
+  institution_type: false

@@ -1,0 +1,25 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  term: 1
+  course: 1
+  tutor: 1
+  number_of_lectures: 1
+  number_of_classes: 1
+  hours: 1
+  notes: MyText
+  examination: MyString
+  day: 1
+  lecture_time: 2009-04-01 17:43:57
+
+two:
+  term: 1
+  course: 1
+  tutor: 1
+  number_of_lectures: 1
+  number_of_classes: 1
+  hours: 1
+  notes: MyText
+  examination: MyString
+  day: 1
+  lecture_time: 2009-04-01 17:43:57

@@ -1,0 +1,94 @@
+
+
+CREATE TABLE people_csv (did integer PRIMARY KEY, old_name varchar, title varchar, first_name varchar, second_name varchar, postnominals varchar, salutation varchar,  term_address varchar, term_city varchar, term_postcode varchar, term_home_phone varchar, term_work_phone varchar, mobile varchar, email varchar, other_address varchar, other_city varchar, other_postcode varchar, other_home_phone varchar, Fax varchar, Notes text, supervisor integer, entry_year integer, matriculated boolean, senior_status boolean, programme integer, religious_house integer, next_of_kin  varchar, home_institution integer, conventual_name varchar);
+
+COPY people_csv FROM '/home/agathaapp/AgathaJPG/people.csv' DELIMITERS ',' CSV;
+---------------------------------------------------------------------------------------------------------------------------------
+agathaapp@verrill-laptop:~/workspace/agatha$ ruby script/generate model person_csv old_name:string title:string first_name:string second_name:string postnominals:string salutation:string term_address:string term_city:string term_postcode:string term_home_phone:string term_work_phone:string mobile:string email:string other_address:string other_city:string other_postcode:string other_home_phone:string Fax:string Notes:text supervisor:integer entry_year:integer matriculated:integer senior_status:boolean programme:integer religious_house:integer next_of_kin:string home_institution:integer conventual_name:string
+
+agathaapp@verrill-laptop:~/workspace/agatha$ gedit db/migrate/20090330231438_create_person_csvs.rb #delete t.timestamps
+
+agathaapp@verrill-laptop:~/workspace/agatha$ rake db:migrate
+
+agathaapp@verrill-laptop:~/workspace/agatha$ psql agatha_dev verrill
+agatha_dev=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/people.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model institution old_name:string title:string first_name:string second_name:string salutation:string term_address:string term_city:string term_postcode:string conventual_name:string institution_type:boolean
+
+ruby script/generate migration add_institution_to_person institution:integer
+
+ruby script/generate model status_csv status:string student:boolean tutor:boolean sort_key:integer
+gedit db/migrate/20090331162241_create_status_csvs.rb #delete t.timestamps
+rake db:migrate
+agatha_dev=# COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model personstatus_csv person_id:integer status_id:integer
+gedit db/migrate/20090331163023_create_personstatus_csvs #delete t.timestamps
+rake db:migrate
+agatha_dev=# COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model group group_name:string
+ruby script/generate model group_member group_id:integer person_id:integer
+rake db:migrate
+
+ruby script/generate model course_csv course_name:string paper_number:string studium_course:boolean evening_course:boolean
+gedit db/migrate/20090401150948_create_course_csvs #delete t.timestamps
+rake db:migrate
+agatha_dev=# COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles.csv' DELIMITERS ',' CSV;
+
+agatha_dev=# DELETE FROM people;
+agatha_dev=# DELETE FROM group_members;
+agatha_dev=# DELETE FROM courses;
+
+ruby script/generate migration add_params_to_lecture  location:integer number_of_classes:integer number_of_lectures:integer notes:text
+#remove hour, add lecture_time:time
+ruby script/generate model lecture_csv term:integer course:integer tutor:integer number_of_lectures:integer number_of_classes:integer hours:integer notes:text examination:string day:integer lecture_time:timestamp
+gedit db/migrate/20090401150948_create_lecture_csvs #delete t.timestamps
+rake db:migrate
+agatha_dev=# COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model term_csv name:integer startdate:timestamp year:integer
+gedit db/migrate/20090401150948_create_term_csvs #delete t.timestamps
+rake db:migrate
+agatha_dev=# COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model term term_number:integer year:integer
+rake db:migrate
+
+ruby script/generate model attendee_csv student:integer lectures_course:integer compulsory:boolean examined:boolean mark:string
+gedit db/migrate/20090401150948_create_attendee_csvs #delete t.timestamps
+ruby script/generate migration add_params_to_attendees compulsory:boolean mark:integer mark_type:integer
+rake db:migrate
+agatha_dev=# COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV;
+
+
+
+id		AutoNumber
+old_name	Text
+title		Text
+first_name	Text	
+second_name	Text
+postnominals	Text
+salutation	Text
+term_address	Text
+term_city	Text
+term_postcode	Text
+term_home_phone	Text
+term_work_phone	Text
+mobile		Text
+email		Text
+other_address	Text
+other_city	Text
+other_postcode	Text
+other_home_phone	Text
+Fax		Text
+Notes		Memo
+supervisor	Number
+entry_year	Number
+matriculated	Number
+senior_status	Yes/No
+programme	Number
+religious_house	Number
+next_of_kin	Text
+home_institution	Number
+conventual_name	Text

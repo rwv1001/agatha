@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  term_number: 1
+  year: 1
+
+two:
+  term_number: 1
+  year: 1

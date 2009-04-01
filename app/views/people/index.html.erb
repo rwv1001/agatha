@@ -37,6 +37,14 @@
 <p> <%= submit_tag "Search" %></p>
 <% end %></div>
 
+<div > <% form_tag :action => :import_csv do %>
+<p> <%= submit_tag "Import CSV" %></p>
+<% end %></div>
+
+<div > <% form_tag :action => :import_courses do %>
+<p> <%= submit_tag "Import Courses CSV" %></p>
+<% end %></div>
+
 <p><%= link_to "Add a new person", {:action => :new } %></p>
 <p><%= link_to "Back to main menu", {:controller => "index"  } %> </p>
 <br />
