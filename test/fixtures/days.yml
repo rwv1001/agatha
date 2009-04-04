@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  long_name: MyString
+  short_name: MyString
+  Sunday: false
+  Monday: false
+  Tuesday: false
+  Wednesday: false
+  Thursday: false
+  Friday: false
+  Saturday: false
+
+two:
+  long_name: MyString
+  short_name: MyString
+  Sunday: false
+  Monday: false
+  Tuesday: false
+  Wednesday: false
+  Thursday: false
+  Friday: false
+  Saturday: false

@@ -61,7 +61,34 @@ ruby script/generate migration add_params_to_attendees compulsory:boolean mark:i
 rake db:migrate
 agatha_dev=# COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV;
 
+ruby script/generate migration add_comment_to_attendees comment:text
+rake db:migrate
 
+ruby script/generate model day_csv long_name:string short_name:string
+gedit db/migrate/20090401150948_create_day_csvs #delete t.timestamps
+ruby script/generate model day long_name:string short_name:string Sunday:boolean Monday:boolean Tuesday:boolean Wednesday:boolean Thursday:boolean Friday:boolean Saturday:boolean
+rake db:migrate
+agatha_dev=# COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model willing_teacher_csv tutor:integer course:integer notes:text
+gedit db/migrate/20090401150948_create_willing_teacher_csvs #delete t.timestamps
+ruby script/generate model willing_teacher person_id:integer course_id:integer order_of_preference:integer can_lecture:boolean can_tutor:boolean notes:text
+rake db:migrate
+agatha_dev=# COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ',' CSV;
+
+ruby script/generate model tutorial_csv student:integer term:integer course:integer tutor:integer number:integer mark:string hours:integer notes:text
+gedit db/migrate/20090401150948_create_tutorial_csvs #delete t.timestamps
+ruby script/generate model tutorial_schedule person_id:integer course_id:integer term_id:integer total_tutorials:integer status:integer
+ruby script/generate model tutorial person_id:integer tutorial_id:integer number_of_tutorials:integer hours:integer comment:text mark:integer mark_type:integer
+rake db:migrate
+agatha_dev=# COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' DELIMITERS ',' CSV;
+
+ruby script/generate migration add_notes_to_tutorials notes:text
+rake db:migrate
+
+agatha_dev=#  DELETE FROM lectures; DELETE FROM courses; DELETE FROM people;DELETE FROM terms; DELETE FROM group_members;DELETE FROM groups; DELETE FROM institutions;DELETE FROM days;DELETE FROM willing_teachers; DELETE FROM tutorials; DELETE FROM tutorial_schedules;
+
+do checkbox stuff for editing lists.
 
 id		AutoNumber
 old_name	Text

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090401225651) do
+ActiveRecord::Schema.define(:version => 20090402163538) do
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20090401225651) do
     t.boolean  "compulsory"
     t.integer  "mark"
     t.integer  "mark_type"
+    t.text     "comment"
   end
 
   create_table "course_csvs", :force => true do |t|
@@ -39,6 +40,25 @@ ActiveRecord::Schema.define(:version => 20090401225651) do
 
   create_table "courses", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "day_csvs", :force => true do |t|
+    t.string "long_name"
+    t.string "short_name"
+  end
+
+  create_table "days", :force => true do |t|
+    t.string   "long_name"
+    t.string   "short_name"
+    t.boolean  "Sunday"
+    t.boolean  "Monday"
+    t.boolean  "Tuesday"
+    t.boolean  "Wednesday"
+    t.boolean  "Thursday"
+    t.boolean  "Friday"
+    t.boolean  "Saturday"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -264,10 +284,61 @@ ActiveRecord::Schema.define(:version => 20090401225651) do
     t.string  "old_name", :limit => nil
   end
 
+  create_table "tutorial_csvs", :force => true do |t|
+    t.integer "student"
+    t.integer "term"
+    t.integer "course"
+    t.integer "tutor"
+    t.integer "number"
+    t.string  "mark"
+    t.integer "hours"
+    t.text    "notes"
+  end
+
+  create_table "tutorial_schedules", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "course_id"
+    t.integer  "term_id"
+    t.integer  "total_tutorials"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tutorials", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "tutorial_id"
+    t.integer  "number_of_tutorials"
+    t.integer  "hours"
+    t.text     "comment"
+    t.integer  "mark"
+    t.integer  "mark_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "notes"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "hashed_password"
     t.string   "salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "willing_teacher_csvs", :force => true do |t|
+    t.integer "tutor"
+    t.integer "course"
+    t.text    "notes"
+  end
+
+  create_table "willing_teachers", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "course_id"
+    t.integer  "order_of_preference"
+    t.boolean  "can_lecture"
+    t.boolean  "can_tutor"
+    t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  tutor: 1
+  course: 1
+  notes: MyText
+
+two:
+  tutor: 1
+  course: 1
+  notes: MyText

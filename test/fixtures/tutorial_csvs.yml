@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  student: 1
+  term: 1
+  course: 1
+  tutor: 1
+  number: 1
+  mark: MyString
+  hours: 1
+  notes: MyText
+
+two:
+  student: 1
+  term: 1
+  course: 1
+  tutor: 1
+  number: 1
+  mark: MyString
+  hours: 1
+  notes: MyText

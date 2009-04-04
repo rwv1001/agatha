@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  person_id: 1
+  course_id: 1
+  order_of_preference: 1
+  can_lecture: false
+  can_tutor: false
+  notes: MyText
+
+two:
+  person_id: 1
+  course_id: 1
+  order_of_preference: 1
+  can_lecture: false
+  can_tutor: false
+  notes: MyText

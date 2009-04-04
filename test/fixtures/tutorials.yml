@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  person_id: 1
+  tutorial_id: 1
+  number_of_tutorials: 1
+  hours: 1
+  comment: MyText
+  mark: 1
+  mark_type: 1
+
+two:
+  person_id: 1
+  tutorial_id: 1
+  number_of_tutorials: 1
+  hours: 1
+  comment: MyText
+  mark: 1
+  mark_type: 1

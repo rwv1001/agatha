@@ -1,7 +1,10 @@
 class PeopleController < ApplicationController
+  
   # GET /people
   # GET /people.xml
   def index
+
+    if(!session[:people])
 
  
     if session[:searchstrYear] == "%"
@@ -10,8 +13,10 @@ class PeopleController < ApplicationController
       session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
     end
   
-    @people = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
+    session[:people]  = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
+    end
 
+    @people = session[:people]
 
     respond_to do |format|
       format.html # index.html.erb
@@ -25,7 +30,7 @@ class PeopleController < ApplicationController
     session[:searchstr1st] = "%"
     session[:searchstrYear] = "%"
     session[:sortOption] = 0
-
+    session[:people] = nil
   
     respond_to do |format|
       format.html { redirect_to :action => 'index' }
@@ -56,11 +61,162 @@ class PeopleController < ApplicationController
     #session[:sortOption] = Person::SortHash['Sort by Entry Year']
     session[:sortOption] = Person::SortHash[params[:sort].to_s]
     # session[:sortOption] = params[:sort]
+    session[:people] = nil
     respond_to do |format|
       format.html { redirect_to(people_url) }
      
     end
     #render :template => 'people/index'
+  end
+
+  def list_update
+
+    case params[:commit]
+    when "Add selected to list"
+      add_to_list
+    when "Remove selected from list"
+      remove_from_list
+    when "Delete list"
+     
+      delete_list
+    else
+      create_new_list
+    end
+    
+    respond_to do |format|
+      format.html { redirect_to :action => 'index' }
+    end
+  end
+
+  def add_to_list
+    group_name = params[:group_list];
+    selected_group = Group.find(:first, :conditions => ["group_name = ?", group_name]);
+    if (selected_group != nil)
+      new_members = 0;
+      current_members = 0;
+      group_id = selected_group.id;
+      if params[:person_in_list]
+        for person_id in params[:person_in_list]
+          if(!GroupMember.exists?(["group_id = #{group_id} AND person_id = #{person_id}"]))
+              group_member = GroupMember.new;
+              group_member.group_id = group_id;
+              group_member.person_id = person_id;
+              group_member.save;
+              new_members = new_members+1;
+            else
+              current_members = current_members + 1;
+            end
+          end
+        end
+        flash[:notice] = "Could not find group #{group_name} in the database}"
+      else
+        flash[:notice] = "Could not find group #{group_name} in the database}"
+      end
+    
+      if new_members == 1
+         member_str = "1 member has been added to the group #{group_name}. "
+      else
+         member_str = "#{new_members} members have been added to the group #{group_name}. "
+      end
+      if current_members >0
+        if  current_members ==1
+          current_str = "1 member was currently in the group #{group_name}"
+        else
+          current_str = "#{current_members} members were currently in the group #{group_name}"
+        end
+      else
+        current_str = ""
+      end
+      flash[:notice] = member_str + current_str;
+
+    end
+  def delete_list
+    group_name = params[:group_list];
+    selected_group = Group.find(:first, :conditions => ["group_name = ?", group_name]);
+    if (selected_group != nil)
+      new_members = 0;
+      current_members = 0;
+      group_members = GroupMember.find(:all, :conditions => ["group_id = ?",selected_group.id]);
+      
+        for group_member in group_members
+          group_member.destroy;          
+          end
+        selected_group.destroy;
+     
+        flash[:notice] = "Group #{group_name} has been removed from the database"
+    else
+      flash[:notice] = "Something went wrong! Couldn't find group #{group_name}"
+      end
+    
+  end
+  def remove_from_list
+   group_name = params[:group_list];
+    selected_group = Group.find(:first, :conditions => ["group_name = ?", group_name]);
+    group_id = selected_group.id;
+    if (selected_group != nil)
+      not_present = 0;
+      removed_members = 0;
+
+      if params[:person_in_list]
+         for person_id in params[:person_in_list]
+          group_member = GroupMember.find(:first, :conditions => ["group_id = #{group_id} AND person_id = #{person_id}"]);
+          if group_member
+             group_member.destroy;
+            removed_members = removed_members+1;
+          else
+            not_present = not_present+1;            
+          end
+        end
+      end
+      if removed_members == 1
+        removed_str = "1 member has been removed from the group #{group_name}. "
+      else
+        removed_str = "#{removed_members} members have been removed from the group #{group_name}. "
+      end
+      if  not_present>0
+        if  not_present == 1
+          not_present_str = "1 selected person wasn't already in the group #{group_name}."
+        else
+          not_present_str = "#{not_present} selected people weren't already in the group #{group_name}."
+        end
+      else
+        not_present_str = ""
+      end
+        flash[:notice] = removed_str +not_present_str;
+    else    
+       flash[:notice] = "Something went wrong! Couldn't find group #{group_name}"
+    end
+  end
+  def create_new_list
+    
+    if  Group.exists?(["group_name = ?", params[:new_group_name]])
+      flash[:notice] = "Group #{params[:new_group_name]} already exists"
+    else
+      group = Group.new;
+      group.group_name = params[:new_group_name];
+      group.save;
+      group_id = group.id;
+      @people = session[:people];
+      total_people = @people.length;
+      new_members =0;
+      if params[:person_in_list]
+        for person_id in params[:person_in_list]
+
+          group_member = GroupMember.new;
+          group_member.group_id = group_id;
+          group_member.person_id = person_id;
+          group_member.save;
+          new_members = new_members+1;        
+        end
+      end
+      member_str = " members have been added to the new group "
+      if new_members == 1
+        member_str = "member has been added to the new group "
+      end
+      flash[:notice] = "#{new_members.to_s} #{member_str} #{params[:new_group_name]}"
+    end
+
+
   end
 
   # GET /people/1
@@ -278,6 +434,12 @@ class PeopleController < ApplicationController
     old_group_ids = [];
     new_group_ids = [];
 
+    old_lecture_ids = [];
+    new_lecture_ids = [];
+
+    old_day_ids = [];
+    new_day_ids = [];
+
     status_csvs = StatusCsv.find(:all);
 
     for csv_status in status_csvs
@@ -422,54 +584,202 @@ class PeopleController < ApplicationController
       old_term_ids << csv_term.id;
       new_term_ids << new_term.id;
     end
+    csv_days = DayCsv.find(:all);
+
+
+    for csv_day in csv_days
+      day = Day.new;
+      day.long_name = csv_day.long_name;
+      day.short_name = csv_day.short_name;
+      if csv_day.long_name =~ /Sunday/
+        day.Sunday = true;
+      else
+        day.Sunday = false;
+      end
+      if csv_day.long_name =~ /Monday/
+        day.Monday = true;
+      else
+        day.Monday = false;
+      end
+      if csv_day.long_name =~ /Tuesday/
+        day.Tuesday = true;
+      else
+        day.Tuesday = false;
+      end
+      if csv_day.long_name =~ /Wednesday/
+        day.Wednesday = true;
+      else
+        day.Wednesday = false;
+      end
+      if csv_day.long_name =~ /Thursday/
+        day.Thursday = true;
+      else
+        day.Thursday = false;
+      end
+      if csv_day.long_name =~ /Friday/
+        day.Friday = true;
+      else
+        day.Friday = false;
+      end
+      if csv_day.long_name =~ /Saturday/
+        day.Saturday = true;
+      else
+        day.Saturday = false;
+      end
+
+      day.save;
+
+      old_day_ids << csv_day.id;
+      new_day_ids << day.id;
+    end
 
     csv_lectures = LectureCsv.find(:all);
     for csv_lecture in csv_lectures
-
-      course_index = old_course_ids.index(csv_lecture.course );
+      course_index = old_course_ids.index(csv_lecture.course);
       term_index = old_term_ids.index(csv_lecture.term);
       tutor_index = old_person_ids.index(csv_lecture.tutor);
-      if( course_index != nil && term_index != nil && tutor_index != nil)
+      day_index = old_day_ids.index(csv_lecture.day);
+      if( course_index != nil && term_index != nil && tutor_index != nil && day_index !=nil)
         new_lecture = Lecture.new;
         new_lecture.term = new_term_ids[term_index];
         new_lecture.course_id = new_course_ids[course_index];
         new_lecture.person_id = new_person_ids[tutor_index];
         new_lecture.exam = csv_lecture.examination;
-        new_lecture.day = csv_lecture.day;
+        new_lecture.day = new_day_ids[day_index];
         new_lecture.lecture_time = csv_lecture.lecture_time;
         new_lecture.number_of_classes = csv_lecture.number_of_classes;
         new_lecture.number_of_lectures = csv_lecture.number_of_lectures;
         new_lecture.hours = csv_lecture.hours;
         new_lecture.notes = csv_lecture.notes;
         new_lecture.save;
-        
+        old_lecture_ids << csv_lecture.id;
+        new_lecture_ids << new_lecture.id;
       end
     end
 
+    csv_attendees = AttendeeCsv.find(:all);
+    for csv_attendee in csv_attendees
+      lecture_index = old_lecture_ids.index(csv_attendee.lectures_course);
+      person_index = old_person_ids.index(csv_attendee.student);
+      if(lecture_index != nil && person_index != nil)
+        new_attendee = Attendee.new;
+        new_attendee.lecture_id = new_lecture_ids[lecture_index];
+        new_attendee.person_id = new_person_ids[person_index];
+        new_attendee.compulsory = csv_attendee.compulsory;
+        new_attendee.comment = csv_attendee.mark;
+        new_attendee.examined = csv_attendee.examined;
+        new_attendee.save;
+      end
+    end
+
+    csv_willing_teachers = WillingTeacherCsv.find(:all);
+    for csv_willing_teacher in csv_willing_teachers
+      person_index = old_person_ids.index(csv_willing_teacher.tutor);
+      course_index = old_course_ids.index(csv_willing_teacher.course);
+      if(person_index !=nil && course_index !=nil)
+        willing_teacher = WillingTeacher.new;
+        willing_teacher.person_id = new_person_ids[person_index];
+        willing_teacher.course_id = new_course_ids[course_index];
+        willing_teacher.can_lecture = true;
+        willing_teacher.can_tutor = true;
+        willing_teacher.notes = csv_willing_teacher.notes;
+        willing_teacher.save;
+      end      
+    end
+
+    csv_tutorials = TutorialCsv.find(:all);
+    for csv_tutorial in csv_tutorials
+      student_index = old_person_ids.index(csv_tutorial.student);
+      course_index = old_course_ids.index(csv_tutorial.course);
+      term_index = old_term_ids.index(csv_tutorial.term);
+      tutor_index = old_person_ids.index(csv_tutorial.tutor);
+      if(student_index !=nil && course_index != nil && term_index != nil && tutor_index !=nil)
+        tutorial = Tutorial.new;
+        tutorial_schedule = TutorialSchedule.find(:first, :conditions => ["person_id = ? AND course_id = ? AND term_id = ?",
+            new_person_ids[tutor_index], new_course_ids[course_index], new_term_ids[term_index]]);
+        if(tutorial_schedule == nil)
+          tutorial_schedule = TutorialSchedule.new;
+          tutorial_schedule.person_id = new_person_ids[tutor_index];
+          tutorial_schedule.course_id =  new_course_ids[course_index];
+          tutorial_schedule.term_id = new_term_ids[term_index];
+          tutorial_schedule.total_tutorials = 0;
+          tutorial_schedule.save;
+        end
+        tutorial.person_id = new_person_ids[student_index];
+        tutorial.tutorial_id = tutorial_schedule.id;
+        tutorial.number_of_tutorials = csv_tutorial.number;
+        tutorial.hours = csv_tutorial.hours;
+        tutorial.notes = csv_tutorial.notes
+        tutorial.comment = csv_tutorial.mark;
+        tutorial_schedule.total_tutorials = tutorial_schedule.total_tutorials + tutorial.number_of_tutorials;
+        tutorial_schedule.save;
+        tutorial.save;
+      end
+    end
 
     respond_to do |format|
       format.html { redirect_to(people_url) }
     end
   end
   def import_courses
-    csv_lecture = LectureCsv.find(1);
-    new_lecture =  Lecture.new;
-    new_lecture.lecture_time = csv_lecture.lecture_time;
-    new_lecture.save;
-    csv_terms = TermCsv.find(:all);
-    for csv_term in csv_terms
-      new_term = Term.new;
-      new_term.term_number = csv_term.name;
-      new_term.year = csv_term.year;
-      new_term.save;
-      
+    old_day_ids = [];
+    new_day_ids = [];
+    csv_days = DayCsv.find(:all);
+    
+    for csv_day in csv_days
+      day = Day.new;
+      day.long_name = csv_day.long_name;
+      day.short_name = csv_day.short_name;
+      if csv_day.long_name =~ /Sunday/
+        day.Sunday = true;
+      else
+        day.Sunday = false;
+      end
+      if csv_day.long_name =~ /Monday/
+        day.Monday = true;
+      else
+        day.Monday = false;
+      end
+      if csv_day.long_name =~ /Tuesday/
+        day.Tuesday = true;
+      else
+        day.Tuesday = false;
+      end
+      if csv_day.long_name =~ /Wednesday/
+        day.Wednesday = true;
+      else
+        day.Wednesday = false;
+      end
+      if csv_day.long_name =~ /Thursday/
+        day.Thursday = true;
+      else
+        day.Thursday = false;
+      end
+      if csv_day.long_name =~ /Friday/
+        day.Friday = true;
+      else
+        day.Friday = false;
+      end
+      if csv_day.long_name =~ /Saturday/
+        day.Saturday = true;
+      else
+        day.Saturday = false;
+      end
+
+      day.save;
+
+      old_day_ids << csv_day.id;
+      new_day_ids << day.id;
     end
-    csv_courses = CourseCsv.find(:all);
-    for csv_course in csv_courses
-      new_course = Course.new;
-      new_course.name =  csv_course.course_name;
-      new_course.save;
-    end
+    day = Day.find(:last);
+    x = day.Tuesday;
+
+   
+
+
+     
+    new_day = Day.find(:first, :conditions => ["Tuesday = ? AND Wednesday = ?", day.Tuesday, day.Wednesday]);
+
     respond_to do |format|
       format.html { redirect_to(people_url) }
     end
