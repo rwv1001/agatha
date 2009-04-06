@@ -49,10 +49,16 @@ var my_buttons = $$('#group_buttons input.list_button');
         my_buttons.each(function(button){button.disabled = false});
       }
 }
+function trim_white_space(string_val)
+{
+     var stripped_val = string_val.replace(/^\s*|\s*$/g,'');
+     return stripped_val;
+}
 function newGroupButtonEnabler()
 {
   var my_button = $('new_group_button');
   var my_text = $('new_group_name');
+  my_text = trim_white_space(my_text);
   if(my_text.textLength == 0 )
     {
       my_button.disabled = true;

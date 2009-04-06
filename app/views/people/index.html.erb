@@ -1,7 +1,31 @@
 
 
 <h1>Listing people</h1>
+ 
+ <div>
+  <table  id="search_results" >
+    <tr>
+        <% for field in session[:search_controller].fields %>
+    <th> <%= field.qualifier %></th>
+    <%  end  %>
+    </tr>
+    <tr>
+  <% for field in session[:search_controller].fields %>
+    <th> <%= field.header %></th>
+    <%  end  %>
+    </tr>
+    <% my_table = GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person) %>
+    <% for row in  session[:search_controller].table %>
+      <tr>
+        <%  for field in session[:search_controller].fields %>
+          <td> <%= eval(field.eval) %> </td>
 
+        <% end %>
+
+      </tr>
+    <% end %>
+  </table>
+</div>
 
 
 
@@ -10,10 +34,12 @@
 <table  id="name_selection" >
   <tr>
     <th>Title</th>
-    <th>First name</th>
-    <th>Second name</th>
-    <th>Postnomials</th>
+    <th>1st name</th>
+    <th>2nd name</th>
+    <th>Postnom.</th>
     <th>Entry year</th>
+    <th></th>
+     <th></th>
     <th>Select</th>
   </tr>
 
@@ -31,7 +57,16 @@
      <!--  <td><%= check_box_tag "person_in_list[]", person.id, false %></td> -->
   </tr>
 <% end %>
-
+<tr>
+  <th>Title</th>
+    <th>1st name</th>
+    <th>2nd name</th>
+    <th>Postnom.</th>
+    <th>Entry year</th>
+    <th></th>
+     <th></th>
+    <th>Select</th>
+  </tr>
 
 </table>
 </div>

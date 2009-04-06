@@ -3,7 +3,35 @@ class PeopleController < ApplicationController
   # GET /people
   # GET /people.xml
   def index
+    d = 1;
+    session[:search_controller] = SearchController.new("GroupMember");
+  #  if(session[:search_controller] == nil)
+  #    session[:search_controller] = SearchController.new;
+   # end
 
+    column_hash = GroupMember.columns_hash();
+    associations = GroupMember.reflect_on_all_associations(:belongs_to);
+   another_association =   GroupMember.reflect_on_association(:person);
+    x = associations;
+    group_column = column_hash['group_id'];
+    group_member2 = GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+ z2 = eval("group_member2.person.second_name");
+ 
+
+   group_member = GroupMember.find(:first);
+    #person2 = group_member.person;
+    #t = person2["second_name"];
+   # z = group_member[:person];
+   # zz = z['second_name'];
+   # x = group_member['people.second_name'];
+   # y = group_member["person"]["second_name"];
+   # z = x;
+    inheritance =   GroupMember.inheritance_column();
+   attribute_names = group_member.attribute_names();
+    attribute_hash =  group_member.attributes();
+    connection = group_member.connection();
+    class_val = group_column.klass;
+    columns = GroupMember.columns();
     if(!session[:people])
 
  
@@ -25,6 +53,7 @@ class PeopleController < ApplicationController
   end
 
   def clear_filter
+
 
     session[:searchstr2nd] = "%"
     session[:searchstr1st] = "%"
@@ -188,12 +217,13 @@ class PeopleController < ApplicationController
     end
   end
   def create_new_list
+    new_group_name = params[:new_group_name].strip;
     
-    if  Group.exists?(["group_name = ?", params[:new_group_name]])
-      flash[:notice] = "Group #{params[:new_group_name]} already exists"
+    if  Group.exists?(["group_name = ?", new_group_name])
+      flash[:notice] = "Group #{new_group_name} already exists"
     else
       group = Group.new;
-      group.group_name = params[:new_group_name];
+      group.group_name = new_group_name;
       group.save;
       group_id = group.id;
       @people = session[:people];
@@ -213,7 +243,7 @@ class PeopleController < ApplicationController
       if new_members == 1
         member_str = "member has been added to the new group "
       end
-      flash[:notice] = "#{new_members.to_s} #{member_str} #{params[:new_group_name]}"
+      flash[:notice] = "#{new_members.to_s} #{member_str} #{new_group_name}"
     end
 
 
