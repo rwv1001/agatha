@@ -4,7 +4,30 @@ class PeopleController < ApplicationController
   # GET /people.xml
   def index
     d = 1;
-    session[:search_controller] = SearchController.new("GroupMember");
+     #     session[:search_table] = "People"
+  #  session[:search_table] = "Attendee" #join of lecture_id and person_id
+  #   seesion[:search_table] = "GroupMembers" # join of group_id and perons_id
+  #   seesion[:search_table] = "Lecture" #join of course_id and person_id
+  #   session[:search_table] = "TutorialSchedule" #join of course_id and person_id
+  #   session[:search_table] = "Tutorial" #join of tutorial_id and person_id
+  #   session[:search_table] = "WillingTeacher" #join course_id and person_id
+  x = SearchController.new("TutorialSchedule");
+      
+session[:search_controller_exists] = nil
+    if(session[:search_controller_exists] == nil)
+    #  session[:possible_search_controllers_symbols] = [:person, :attendee, :group_member, :lecture, :tutorial_schedule, :tutorial, :willing_teacher ];
+      session[:possible_search_controllers_strings] = ["Person","Attendee","GroupMember","Lecture","TutorialSchedule","Tutorial","WillingTeacher"];
+      session[:possible_search_controllers] = []
+      number_of_controllers =  session[:possible_search_controllers_strings].length
+      for controller_index in (0 .. number_of_controllers -1)
+        
+         session[:possible_search_controllers]<< SearchController.new(session[:possible_search_controllers_strings][controller_index]);
+      end
+      session[:search_controller] = session[:possible_search_controllers][0]
+      session[:search_controller_index] = 0;
+      session[:search_controller_exists] = true;
+    end
+    @table = eval(session[:search_controller].get_eval_string);
   #  if(session[:search_controller] == nil)
   #    session[:search_controller] = SearchController.new;
    # end
@@ -18,20 +41,9 @@ class PeopleController < ApplicationController
  z2 = eval("group_member2.person.second_name");
  
 
-   group_member = GroupMember.find(:first);
-    #person2 = group_member.person;
-    #t = person2["second_name"];
-   # z = group_member[:person];
-   # zz = z['second_name'];
-   # x = group_member['people.second_name'];
-   # y = group_member["person"]["second_name"];
-   # z = x;
-    inheritance =   GroupMember.inheritance_column();
-   attribute_names = group_member.attribute_names();
-    attribute_hash =  group_member.attributes();
-    connection = group_member.connection();
-    class_val = group_column.klass;
-    columns = GroupMember.columns();
+
+
+    
     if(!session[:people])
 
  
@@ -41,7 +53,7 @@ class PeopleController < ApplicationController
       session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
     end
   
-    session[:people]  = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
+   # session[:people]  = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
     end
 
     @people = session[:people]
@@ -67,6 +79,24 @@ class PeopleController < ApplicationController
     end
 
   end
+
+  def table_search
+
+    for filter in session[:search_controller].current_filters
+      if params[filter.tag] == ""
+         filter.current_filter_string = "%"
+      else
+        filter.current_filter_string = params[filter.tag]
+      end
+    end
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @people }
+    end
+
+
+ end
+    
 
   # GET /people/search
   def search
@@ -124,8 +154,8 @@ class PeopleController < ApplicationController
       new_members = 0;
       current_members = 0;
       group_id = selected_group.id;
-      if params[:person_in_list]
-        for person_id in params[:person_in_list]
+      if params[:row_in_list]
+        for person_id in params[:row_in_list]
           if(!GroupMember.exists?(["group_id = #{group_id} AND person_id = #{person_id}"]))
               group_member = GroupMember.new;
               group_member.group_id = group_id;
@@ -186,8 +216,8 @@ class PeopleController < ApplicationController
       not_present = 0;
       removed_members = 0;
 
-      if params[:person_in_list]
-         for person_id in params[:person_in_list]
+      if params[:row_in_list]
+         for person_id in params[:row_in_list]
           group_member = GroupMember.find(:first, :conditions => ["group_id = #{group_id} AND person_id = #{person_id}"]);
           if group_member
              group_member.destroy;
@@ -229,8 +259,8 @@ class PeopleController < ApplicationController
       @people = session[:people];
       total_people = @people.length;
       new_members =0;
-      if params[:person_in_list]
-        for person_id in params[:person_in_list]
+      if params[:row_in_list]
+        for person_id in params[:row_in_list]
 
           group_member = GroupMember.new;
           group_member.group_id = group_id;

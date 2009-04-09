@@ -49,6 +49,20 @@ var my_buttons = $$('#group_buttons input.list_button');
         my_buttons.each(function(button){button.disabled = false});
       }
 }
+function listButtonEnabler()
+{
+   // var my_buttons = $$('#name_selection input.check');
+var my_buttons = $$('#list_buttons input.list_button');
+    //alert(my_buttons.length.toString()+" Hello!!");
+    if($('group_list').selectedIndex == 0)
+      {
+       my_buttons.each(function(button){button.disabled = true});
+      }
+      else
+      {
+        my_buttons.each(function(button){button.disabled = false});
+      }
+}
 function trim_white_space(string_val)
 {
      var stripped_val = string_val.replace(/^\s*|\s*$/g,'');
@@ -58,7 +72,8 @@ function newGroupButtonEnabler()
 {
   var my_button = $('new_group_button');
   var my_text = $('new_group_name');
-  my_text = trim_white_space(my_text);
+
+  my_text.value = trim_white_space(my_text.value);
   if(my_text.textLength == 0 )
     {
       my_button.disabled = true;
@@ -67,6 +82,28 @@ function newGroupButtonEnabler()
     {
       my_button.disabled = false;
     }
+
+}
+function newListButtonEnabler()
+{
+  var my_button = $('new_list_button');
+  var my_text = $('new_list_name');
+
+  my_text.value = trim_white_space(my_text.value);
+  if(my_text.textLength == 0 )
+    {
+      my_button.disabled = true;
+    }
+    else
+    {
+      my_button.disabled = false;
+    }
+}
+function tableChanger()
+{
+  //this function disables the field selector if it is not consistent with current table
+  // and also updates the filter selector for the current table
+
 
 }
 
@@ -79,6 +116,11 @@ function loadJavaScript()
   Event.observe($('group_list'),'click',groupButtonEnabler );
   Event.observe($('new_group_name'),'keyup', newGroupButtonEnabler );
   
+  Event.observe($('existing_lists'),'click',listButtonEnabler );
+  Event.observe($('new_list_name'),'keyup', newListButtonEnabler );
+
+  Event.observe($('existing_tables'),'change', tableChanger);
+
 }
 
 </script>
