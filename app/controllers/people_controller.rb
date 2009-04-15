@@ -1,9 +1,11 @@
+
+
 class PeopleController < ApplicationController
-  
+  protect_from_forgery :only => [:create, :update, :destroy] 
   # GET /people
   # GET /people.xml
   def index
-    d = 1;
+   d = 1;
      #     session[:search_table] = "People"
   #  session[:search_table] = "Attendee" #join of lecture_id and person_id
   #   seesion[:search_table] = "GroupMembers" # join of group_id and perons_id
@@ -11,52 +13,60 @@ class PeopleController < ApplicationController
   #   session[:search_table] = "TutorialSchedule" #join of course_id and person_id
   #   session[:search_table] = "Tutorial" #join of tutorial_id and person_id
   #   session[:search_table] = "WillingTeacher" #join course_id and person_id
-  x = SearchController.new("TutorialSchedule");
+#  x = SearchController.new("TutorialSchedule");
       
-session[:search_controller_exists] = nil
-    if(session[:search_controller_exists] == nil)
-    #  session[:possible_search_controllers_symbols] = [:person, :attendee, :group_member, :lecture, :tutorial_schedule, :tutorial, :willing_teacher ];
-      session[:possible_search_controllers_strings] = ["Person","Attendee","GroupMember","Lecture","TutorialSchedule","Tutorial","WillingTeacher"];
-      session[:possible_search_controllers] = []
-      number_of_controllers =  session[:possible_search_controllers_strings].length
-      for controller_index in (0 .. number_of_controllers -1)
-        
-         session[:possible_search_controllers]<< SearchController.new(session[:possible_search_controllers_strings][controller_index]);
+# session[:search_controllers]= nil
+    unless session[:search_controllers]
+    #  session[:search_controllers_symbols] = [:person, :attendee, :group_member, :lecture, :tutorial_schedule, :tutorial, :willing_teacher ];
+      @table_options = [["Person", 0],["Attendee", 1],["GroupMember",2],["Lecture",3],["TutorialSchedule",4],["Tutorial",5],["WillingTeacher",6]];
+      @search_controllers = []
+      @number_of_controllers =  @table_options.length
+      for controller_index in (0 .. @number_of_controllers -1)        
+         @search_controllers<< SearchController.new(@table_options[controller_index][0]);
       end
-      session[:search_controller] = session[:possible_search_controllers][0]
-      session[:search_controller_index] = 0;
-      session[:search_controller_exists] = true;
+      @search_controller = @search_controllers[0]
+      
+     # @search_controller = session[:search_controller];
+      @table_index = 0;
+      session[:table_options] = @table_options
+      session[:table_index] = @table_index
+      session[:search_controllers] =  @search_controllers
     end
-    @table = eval(session[:search_controller].get_eval_string);
-  #  if(session[:search_controller] == nil)
-  #    session[:search_controller] = SearchController.new;
+     @table_index = session[:table_index]
+    @search_controller = session[:search_controllers][@table_index];
+    eval_str = @search_controller.get_eval_string;
+    @table = eval(eval_str);
+    flash[:notice]= eval_str;
+
+  #  if(@search_controller == nil)
+  #    @search_controller = SearchController.new;
    # end
 
-    column_hash = GroupMember.columns_hash();
-    associations = GroupMember.reflect_on_all_associations(:belongs_to);
-   another_association =   GroupMember.reflect_on_association(:person);
-    x = associations;
-    group_column = column_hash['group_id'];
-    group_member2 = GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
- z2 = eval("group_member2.person.second_name");
+#    column_hash = GroupMember.columns_hash();
+ #   associations = GroupMember.reflect_on_all_associations(:belongs_to);
+ #  another_association =   GroupMember.reflect_on_association(:person);
+#    x = associations;
+ #   group_column = column_hash['group_id'];
+ #   group_member2 = GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+# z2 = eval("group_member2.person.second_name");
  
 
 
 
     
-    if(!session[:people])
+#    if(!session[:people])
 
  
-    if session[:searchstrYear] == "%"
-      session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\'"
-    else
-      session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
-    end
+#    if session[:searchstrYear] == "%"
+ #     session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\'"
+ #   else
+#      session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'" + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
+#    end
   
    # session[:people]  = Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
-    end
+ #   end
 
-    @people = session[:people]
+ #   @people = session[:people]
 
     respond_to do |format|
       format.html # index.html.erb
@@ -67,11 +77,11 @@ session[:search_controller_exists] = nil
   def clear_filter
 
 
-    session[:searchstr2nd] = "%"
-    session[:searchstr1st] = "%"
-    session[:searchstrYear] = "%"
-    session[:sortOption] = 0
-    session[:people] = nil
+  #  session[:searchstr2nd] = "%"
+   # session[:searchstr1st] = "%"
+  #  session[:searchstrYear] = "%"
+ #   session[:sortOption] = 0
+  #  session[:people] = nil
   
     respond_to do |format|
       format.html { redirect_to :action => 'index' }
@@ -80,18 +90,49 @@ session[:search_controller_exists] = nil
 
   end
 
-  def table_search
 
-    for filter in session[:search_controller].current_filters
-      if params[filter.tag] == ""
-         filter.current_filter_string = "%"
+
+  
+  def table_search
+    @search_controllers = session[:search_controllers];
+    
+    table_index =  params[:table_selector].to_i;
+    @table_index = table_index;
+    @search_controller =@search_controllers[table_index];
+    current_filter_indices = [];
+    possible_filter_indices = [];
+    current_field_indices = [];
+    possible_field_indices = [];
+    for filter in @search_controller.available_fields
+      if(params.has_key?(filter.tag))
+        current_filter_indices << filter.id
+        if params[filter.tag] == ""
+          filter.current_filter_string = "%"
+        else
+          filter.current_filter_string = params[filter.tag]
+        end
       else
-        filter.current_filter_string = params[filter.tag]
+        possible_filter_indices << filter.id
+      end
+      if(params.has_key?("f_#{filter.tag}"))
+        current_field_indices << filter.id
+      else
+        possible_field_indices << filter.id
       end
     end
+    @search_controller.updateFilters(current_filter_indices)
+    @search_controller.updateFields(current_field_indices)
+    if(params.has_key?("order_text"))
+      order_index = params["order_text"]; 
+      @search_controller.UpdateOrder(order_index.to_i)
+    end
+    session[:search_controllers] =  @search_controllers;
+    session[:table_index] =  @table_index;
+    
+    
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @people }
+      format.html { redirect_to(people_url) }
+
     end
 
 
@@ -579,10 +620,10 @@ session[:search_controller_exists] = nil
           new_ids << 0;
         end
         if new_ids[0]!=0
-          person.institution = new_ids[0];
+          person.institution_id = new_ids[0];
         end
         if new_ids[1]!=0
-          person.institution = new_ids[1];
+          person.institution_id = new_ids[1];
         end        
       end
       if status_id_array.index(19)||status_id_array.index(20)

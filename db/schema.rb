@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090402163538) do
+ActiveRecord::Schema.define(:version => 20090415111913) do
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -152,8 +152,8 @@ ActiveRecord::Schema.define(:version => 20090402163538) do
     t.string   "conventual_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "institution"
-    t.integer  "religious_house"
+    t.integer  "institution_id"
+    t.integer  "religious_house_id"
   end
 
   create_table "people_csv", :id => false, :force => true do |t|

@@ -1,136 +1,541 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>Agatha: People: <%= controller.action_name %></title>
-  <%= javascript_include_tag "prototype" %>
-  
-  <%= stylesheet_link_tag  'agatha', 'scaffold' %>
-<script type="text/javascript">
-<!--
-function MM_reloadPage(init) {  //reloads the window if Nav4 resized
-  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
-    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
-  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
-}
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Agatha: People: <%= controller.action_name %></title>
+    <%= javascript_include_tag "prototype" %>
+    <%= javascript_include_tag "people" %>
 
-MM_reloadPage(true);
+    <%= stylesheet_link_tag  'agatha', 'scaffold' %>
+    <script type="text/javascript">
+      <!--
 
-function MM_findObj(n, d) { //v4.01
-  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
-    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
-  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
-  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
-  if(!x && d.getElementById) x=d.getElementById(n); return x;
-}
+      
 
-function MM_showHideLayers() { //v6.0
-  var i,p,v,obj,args=MM_showHideLayers.arguments;
-  for (i=0; i<(args.length-2); i+=3) if ((obj=MM_findObj(args[i]))!=null) { v=args[i+2];
-    if (obj.style) { obj=obj.style; v=(v=='show')?'visible':(v=='hide')?'hidden':v; }
-    obj.visibility=v; }
-}
-//-->
-Event.observe(window, 'load', loadJavaScript);
-function groupButtonEnabler()
-{
-   // var my_buttons = $$('#name_selection input.check');
-var my_buttons = $$('#group_buttons input.list_button');
-    //alert(my_buttons.length.toString()+" Hello!!");
-    if($('group_list').selectedIndex == 0)
-      {
-       my_buttons.each(function(button){button.disabled = true});
-      }
-      else
-      {
-        my_buttons.each(function(button){button.disabled = false});
-      }
-}
-function listButtonEnabler()
-{
-   // var my_buttons = $$('#name_selection input.check');
-var my_buttons = $$('#list_buttons input.list_button');
-    //alert(my_buttons.length.toString()+" Hello!!");
-    if($('group_list').selectedIndex == 0)
-      {
-       my_buttons.each(function(button){button.disabled = true});
-      }
-      else
-      {
-        my_buttons.each(function(button){button.disabled = false});
-      }
-}
-function trim_white_space(string_val)
-{
-     var stripped_val = string_val.replace(/^\s*|\s*$/g,'');
-     return stripped_val;
-}
-function newGroupButtonEnabler()
-{
-  var my_button = $('new_group_button');
-  var my_text = $('new_group_name');
+         
 
-  my_text.value = trim_white_space(my_text.value);
-  if(my_text.textLength == 0 )
+
+      function groupButtonEnabler()
+      {
+        // var my_buttons = $$('#name_selection input.check');
+        var my_buttons = $$('#group_buttons input.list_button');
+        //alert(my_buttons.length.toString()+" Hello!!");
+        if($('group_list').selectedIndex == 0)
+        {
+          my_buttons.each(function(button){button.disabled = true});
+        }
+        else
+        {
+          my_buttons.each(function(button){button.disabled = false});
+        }
+      }
+      function listButtonEnabler()
+      {
+        // var my_buttons = $$('#name_selection input.check');
+        var my_buttons = $$('#list_buttons input.list_button');
+        //alert(my_buttons.length.toString()+" Hello!!");
+        if($('group_list').selectedIndex == 0)
+        {
+          my_buttons.each(function(button){button.disabled = true});
+        }
+        else
+        {
+          my_buttons.each(function(button){button.disabled = false});
+        }
+      }
+      function trim_white_space(string_val)
+      {
+        var stripped_val = string_val.replace(/^\s*|\s*$/g,'');
+        return stripped_val;
+      }
+      function newGroupButtonEnabler()
+      {
+        var my_button = $('new_group_button');
+        var my_text = $('new_group_name');
+
+        my_text.value = trim_white_space(my_text.value);
+        if(my_text.textLength == 0 )
+        {
+          my_button.disabled = true;
+        }
+        else
+        {
+          my_button.disabled = false;
+        }
+
+      }
+      function newListButtonEnabler()
+      {
+        var my_button = $('new_list_button');
+        var my_text = $('new_list_name');
+
+        my_text.value = trim_white_space(my_text.value);
+        if(my_text.textLength == 0 )
+        {
+          my_button.disabled = true;
+        }
+        else
+        {
+          my_button.disabled = false;
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+      function removeAllOptions(selectbox)
+      {
+
+        var i;
+        for(i=selectbox.options.length-1; i>=0 ;i--)
+        {
+          selectbox.remove(i);
+        }
+      }
+
+      function deleteCurrent(name)
+      {
+        table_value = parseInt($('table_selector').getValue());
+        current_filters = current_filterss[table_value];
+        possible_filters = possible_filterss[table_value];
+
+
+        for(i = 0; i< current_filters.length; i++)
+        {
+          if(current_filters[i][1]==name)
+          {
+            possible_filter = new Array();
+            possible_filter =  current_filters[i];
+            possible_filters.push(possible_filter);
+            options = $('possible_filters').options;
+            options.add( new Option(possible_filter[0], possible_filter[1]));
+            current_filters.splice(i,1);
+            break;
+          }
+        }
+
+
+      }
+      function displayHeaders(table_value)
+      {
+
+        header_div = $('search_headers')
+        rows = header_div.rows;
+        row0 = rows[0]
+        row1 = rows[1]
+        current_fields = current_fieldss[table_value]
+        num_fields = current_fields.length
+        generic_header0 =  row0.firstDescendant()
+        generic_header1 =  row1.firstDescendant()
+        while(row0.cells.length >num_fields)
+        {
+          row0.cells.length = num_fields;
+        }
+        while(row1.cells.length > num_fields)
+        {
+          row1.cells.length = num_fields;
+        }
+        new_header0 =  generic_header0
+        new_header1 =  generic_header1
+        for(i = 0; i<num_fields ;i++)
+        {
+          if(new_header0 == null )
+          {
+            new_header0 =  generic_header0.cloneNode(false)
+            row0.appendChild(new_header0);
+          }
+          if(new_header1 == null )
+          {
+            new_header1 =  generic_header1.cloneNode(false)
+            row1.appendChild(new_header1);
+          }
+          new_header0.setAttribute("class",current_fields[i][1])
+          new_header1.setAttribute("class",current_fields[i][1])
+          new_header0.textContent = current_fields[i][3]
+          // new_header1.textContent = current_fields[i][2]
+
+          on_click_string = "\"deleteColumn('" + current_fields[i][1] + "');return false;\""
+          new_header1.innerHTML = current_fields[i][2] +"<span class=\"remove_column\"><a href =\"#\" onclick = " + on_click_string + ">X</a> </span>"
+          new_header0 = new_header0.next();
+          new_header1 = new_header1.next();
+        }
+      }
+      function generateFieldBoxes(table_value) //this is just so we can pass columns to controller
+      {
+
+        current_fields =  getCurrentFields();
+        div_fields = $('current_fields');
+
+        while(div_fields.hasChildNodes())
+        {
+          div_fields.removeChild(div_fields.lastChild);
+        }
+
+        for(i = 0; i< current_fields.length ; i++ )
+        {
+          generateFieldBox(i);
+        }
+      }
+      function getCurrentFields()
+      {
+        table_value = parseInt($('table_selector').getValue());
+        current_fields = current_fieldss[table_value];
+        return  current_fields;
+      }
+      function getCurrentFields()
+      {
+        table_value = parseInt($('table_selector').getValue());
+        current_fields = current_fieldss[table_value];
+        return  current_fields;
+      }
+
+      function generateFieldBox(current_index)
+      {
+        current_fields =  getCurrentFields();
+        new_div = $('default_div_field').cloneNode(true);
+        new_div.show();
+        div_id = "div_field_f_" +current_fields[current_index][1];
+        new_div.setAttribute("id", div_id );
+        children_elements = new_div.childElements();
+
+        field_text = children_elements[0];
+        field_text.name = "f_" + current_fields[current_index][1];
+        field_label = children_elements[1];
+        field_label.textContent = current_fields[current_index][0];
+
+        div_fields.appendChild( new_div);
+
+      }
+
+      function displayFilter(current_index)
+      {
+        current_filters =  getCurrentFilters();
+        new_div = $('default_div').cloneNode(true);
+        new_div.show();
+        div_id = "div_filter_" +current_index;
+        new_div.setAttribute("id", div_id );
+        children_elements = new_div.childElements();
+        remove_button = children_elements[2];
+        remove_button.setAttribute("value", "Remove Filter" );
+        // remove_button.setAttribute("name");
+
+
+        filter_label = children_elements[1];
+        filter_label.textContent = current_filters[current_index][0];
+        filter_text = children_elements[0];
+        filter_text.value = current_filters[current_index][2];
+        filter_text.name = current_filters[current_index][1];
+        on_click_string1 = "$('" + div_id + "').remove();"
+        on_click_string2 = "deleteCurrent('" +  filter_text.name +"');";
+        on_click_string = on_click_string1  + on_click_string2;
+        remove_button.setAttribute("onClick",on_click_string);
+
+        div_filter.appendChild( new_div);
+
+
+
+      }
+      function deleteColumn(field_name)
+      {
+
+        table_value = parseInt($('table_selector').getValue());
+        current_fields = current_fieldss[table_value];
+        possible_fields = possible_fieldss[table_value];
+        if(current_fields.length <=3 )
+        {
+          alert("Cannot delete last three display columns");
+          return;
+        }
+        column_elements = $$("td." + field_name)
+        column_elements.each(function(element){element.remove()})
+        column_header_elements = $$("th." + field_name)
+        column_header_elements.each(function(element){element.remove()})
+        f_field_name = "f_"+field_name
+        for(i = 0; i< current_fields.length; i++)
+        {
+          if(current_fields[i][1]==field_name)
+          {
+            
+            possible_field =  current_fields[i];
+            possible_fields.push(possible_field);
+            options = $('field_selector').options;
+            options.add( new Option(possible_field[0], possible_field[1]));
+            current_fields.splice(i,1);
+            div_id = "div_field_" +f_field_name;
+            $(div_id).remove();
+            break;
+          }
+        }
+      }
+
+
+
+      function tableSelected()
+      {
+
+        $('default_div').hide();
+        $('default_div_field').hide();
+
+        table_value = parseInt($('table_selector').getValue());
+
+        removeAllOptions( $('possible_filters'));
+        options = $('possible_filters').options;
+
+        possible_filters = possible_filterss[table_value];
+
+        for(i = 0; i<possible_filters.length; i++ )
+        {
+          options.add( new Option(possible_filters[i][0], possible_filters[i][1]));
+        }
+        removeAllOptions( $('field_selector'));
+        field_options = $('field_selector').options;
+        possible_fields = possible_fieldss[table_value];
+
+        for(i = 0; i<possible_fields.length; i++ )
+        {
+          field_options.add( new Option(possible_fields[i][0], possible_fields[i][1]));
+        }
+        generateFieldBoxes( table_value)
+
+
+
+        if(table_value != <%= @table_index %>)
+        {
+          $('search_results').hide();
+          //$('field_selector').disable();
+          $('search_headers_div').show();
+          displayHeaders(table_value);
+          $('group_selection').hide();
+        }
+        else
+        {
+          $('search_headers_div').hide();
+          $('search_results').show();
+          if(table_value == 0)
+            {
+          $('group_selection').show();
+            }
+            else
+            {
+              $('group_selection').hide();
+            }
+          //$('field_selector').enable();
+        }
+        loadSearchBoxes();
+      }
+
+
+      function getCurrentFilters()
+      {
+        table_value = parseInt($('table_selector').getValue());
+        current_filters = current_filterss[table_value];
+        return  current_filters;
+      }
+      function loadSearchBoxes()
+      {
+        current_filters =  getCurrentFilters();
+        div_filter = $('current_filters');
+
+        while(div_filter.hasChildNodes())
+        {
+          div_filter.removeChild(div_filter.lastChild);
+        }
+
+        for(i = 0; i< current_filters.length ; i++ )
+        {
+          displayFilter(i);
+
+
+
+        }
+
+
+      }
+
+      function searchOrder(index_value)
+      {
+        order_element = $('default_order_text');
+        order_element.setAttribute("id", "order_text");
+        order_element.setAttribute("name", "order_text");
+        order_element.setAttribute("value", index_value);
+        my_form = $('search_form');
+        my_form.submit();        
+      }
+
+
+     
+
+  function AddSearchFilter()
+  {
+    selected_val =  $('possible_filters').selectedIndex;
+    table_value = parseInt($('table_selector').getValue());
+    possible_filters = possible_filterss[table_value];
+
+
+    possible_filter = new Array();
+
+    possible_filter = possible_filters[selected_val];
+    x = 1;
+    if( possible_filter.length<3)
     {
-      my_button.disabled = true;
+      possible_filter.push(""); // search_string
+    }
+
+    current_filters = current_filterss[table_value];
+    current_filters.push(possible_filter);
+
+    possible_filters.splice(selected_val,1);
+
+    children_options =  $('possible_filters').childElements();
+    children_options[selected_val].remove();
+    displayFilter(current_filters.length - 1);
+
+    filter_tag = possible_filter[1];
+    possible_fields = possible_fieldss[table_value];
+
+    for(i = 0; i< possible_fields.length; i++)
+      {
+        if(possible_fields[i][1]==filter_tag)
+          {
+            AddDisplayIndex(i );
+            return;
+          }
+      }
+  }
+  function AddDisplayIndex(selected_val )
+  {
+    table_value = parseInt($('table_selector').getValue());
+    possible_fields = possible_fieldss[table_value];
+
+
+    
+
+    possible_field = possible_fields[selected_val].slice();
+    x = 1;
+
+
+    current_fields = current_fieldss[table_value];
+    current_fields.push(possible_field);
+
+    possible_fields.splice(selected_val,1);
+
+    children_options =  $('field_selector').childElements();
+    children_options[selected_val].remove();
+    generateFieldBox(current_fields.length - 1);
+  }
+
+  function AddDisplayField()
+  {
+    selected_val =  $('field_selector').selectedIndex;
+    AddDisplayIndex(selected_val)
+    if(table_value != <%= @table_index %>)
+    {
+      displayHeaders(table_value);
     }
     else
     {
-      my_button.disabled = false;
+      my_form = $('search_form');
+      my_form.submit();
+
     }
-
-}
-function newListButtonEnabler()
-{
-  var my_button = $('new_list_button');
-  var my_text = $('new_list_name');
-
-  my_text.value = trim_white_space(my_text.value);
-  if(my_text.textLength == 0 )
-    {
-      my_button.disabled = true;
-    }
-    else
-    {
-      my_button.disabled = false;
-    }
-}
-function tableChanger()
-{
-  //this function disables the field selector if it is not consistent with current table
-  // and also updates the filter selector for the current table
+  }
+-->
 
 
-}
+    </script>
+    <%= yield(:head) %>
+  </head>
+  <body>
 
-function loadJavaScript()
-{   
-  $('group_list').selectedIndex = 0;
-  groupButtonEnabler();
-  newGroupButtonEnabler();
 
-  Event.observe($('group_list'),'click',groupButtonEnabler );
-  Event.observe($('new_group_name'),'keyup', newGroupButtonEnabler );
-  
-  Event.observe($('existing_lists'),'click',listButtonEnabler );
-  Event.observe($('new_list_name'),'keyup', newListButtonEnabler );
+    <p style="color: green"><%= flash[:notice] %></p>
 
-  Event.observe($('existing_tables'),'change', tableChanger);
+    <%= yield  %>
 
-}
+  </body>
+   <script type="text/javascript">
+      <!--
+      document.observe('dom:loaded',loadJavaScript);
+      function loadJavaScript()
+      {
+  possible_fieldss  = new Array();
 
-</script>
-</head>
-<body>
- 
+<%  @search_controllers = session[:search_controllers] %>
 
-<p style="color: green"><%= flash[:notice] %></p>
+<%  for search_controller in  @search_controllers %>
 
-<%= yield  %>
+        possible_fields = new Array();
+        i = 0;
+  <% for poss_index in search_controller.possible_field_indices -%>
 
-</body>
+          possible_fields.push(new Array('<%= search_controller.available_fields[poss_index ].full_name %>','<%= "#{search_controller.available_fields[ poss_index ].tag}" %>','<%= search_controller.available_fields[ poss_index ].header %>','<%= search_controller.available_fields[ poss_index ].qualifier %>' ));
+          i++;
+  <% end -%>
+
+        possible_fieldss.push(possible_fields);
+
+
+<% end -%>
+
+      current_fieldss= new Array();
+
+<%  for search_controller in  @search_controllers %>
+        current_fields = new Array();
+  <% for curr_index in search_controller.current_field_indices %>
+
+          current_fields.push(new Array('<%= search_controller.available_fields[curr_index].full_name %>',  '<%= "#{search_controller.available_fields[curr_index ].tag}" %>','<%= search_controller.available_fields[ curr_index ].header %>','<%= search_controller.available_fields[ curr_index ].qualifier %>'));
+
+  <% end %>
+        current_fieldss.push(current_fields);
+<% end -%>
+
+
+      possible_filterss  = new Array();
+
+<%  @search_controllers = session[:search_controllers] %>
+
+<%  for search_controller in  @search_controllers %>
+
+        possible_filters = new Array();
+        i = 0;
+  <% for poss_index in search_controller.possible_filter_indices -%>
+          possible_filters.push(new Array('<%= search_controller.available_fields[poss_index ].full_name %>','<%= search_controller.available_fields[ poss_index ].tag %>' ));
+          i++;
+  <% end -%>
+
+        possible_filterss.push(possible_filters);
+
+
+<% end -%>
+
+      current_filterss= new Array();
+
+<%  for search_controller in  @search_controllers %>
+        current_filters = new Array();
+  <% for curr_index in search_controller.current_filter_indices %>
+          current_filters.push(new Array('<%= search_controller.available_fields[curr_index].full_name %>',  '<%= search_controller.available_fields[curr_index ].tag %>', '<%= search_controller.available_fields[curr_index ].current_filter_string %>' ));
+
+  <% end %>
+        current_filterss.push(current_filters);
+<% end -%>
+  $('table_selector').observe('change',tableSelected);
+        $('add_filter').observe('click', AddSearchFilter);
+        $('add_field').observe('click', AddDisplayField);
+        tableSelected();
+  }
+
+      -->
+    </script>
 </html>

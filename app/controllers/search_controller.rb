@@ -1,14 +1,27 @@
+class TestClass
+   attr_accessor :x
+   attr_accessor :y
+   def initialize(x_, y_)
+   @x = x_
+   @y = y_
+   end
+
+end
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
 class SearchField
   attr_accessor :header
+  attr_accessor :id
+  attr_accessor :full_name
   attr_accessor :qualifier
   attr_accessor :search_token
   attr_accessor :eval
   attr_accessor :data_type
   attr_accessor :current_filter_string
   attr_accessor :class_override
-  def initialize(field_string, qualifer_string,  eval_string, search_token, include_index_val, data_type_symbol, tag_symbol)
+  attr_accessor :tag
+  attr_accessor :include_index
+  def initialize(field_string, qualifer_string,  eval_string, search_token, include_index_val, data_type_symbol, tag_symbol, id_val)
     @header =field_string
     @qualifier =  qualifer_string
     @full_name = "#{qualifer_string}/#{field_string}"
@@ -19,7 +32,8 @@ class SearchField
     @data_type = data_type_symbol
     @current_filter_string = "%"
     @class_override = "" #this is so that the select column stands out. - I'm not sure this is necessary.
-    TestSQLString()
+    @id = id_val
+   # TestSQLString()
   end
   def TestSQLString()
     @data_type = :integer
@@ -48,7 +62,7 @@ class SearchField
     str = GetSQLString();
 
     @data_type = :timestamp
-    @current_filter_string = ",4-12-20 , ,1973-11 ABC 85 , 3-02-240 . 09-8-20.. 16-7-3 2-3 4-5, 1997-8.. 98-01-7 40-7-7 ,9-8-1 82-90-60 3 : 52 ...9"
+    @current_filter_string = ",4-12-20 , ,1973-11 ABC 85 , 3 -02- 240 . 09-8-20.. 16-7 - 3 2-3 4-5, 1997-8.. 98-01-7 40-7-7 ,9-8-1 82-90-60 3 : 52 ...9"
     str = GetSQLString();
     @data_type = :timestamp
     @current_filter_string = "4-12-20 , 2005, 3-2"
@@ -76,7 +90,7 @@ class SearchField
     when :time
       ret_val = ParseTimeStr()
 
-    when :timestamps
+    when :timestamp
       ret_val = ParseTimeStampStr()
     when :boolean
       ret_val = ParseBooleanStr()
@@ -94,7 +108,7 @@ class SearchField
 
     trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
     trimmed_str = trimmed_str.gsub(/-\s+/,'-')
-    trimmed_str =trimmed_str.gsub(/(:?^\s+)|(:?\s+$)/,'')
+    trimmed_str =trimmed_str.gsub(/(?:^\s+)|(?:\s+$)/,'')
    
     trimmed_str = trimmed_str.gsub(/\d\s+(\d|-)/){|s| s=s.gsub(/\s+/,',')  }
     trimmed_str = trimmed_str.gsub(/\s+/,'')
@@ -104,7 +118,7 @@ class SearchField
     trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
     trimmed_str = trimmed_str.gsub(/\,+/,',')
     trimmed_str = trimmed_str.gsub(/-+/,'-')
-    trimmed_str =trimmed_str.gsub(/(:?^,+)|(:?,+$)|(:?^\.+)|(:?\.+$)/,'')
+    trimmed_str =trimmed_str.gsub(/(?:^,+)|(?:,+$)|(?:^\.+)|(?:\.+$)/,'')
     trimmed_str =trimmed_str.gsub(/\d\.-*\d/){|s| s = s.gsub(/\./, ',')}
      scanner = StringScanner.new(trimmed_str );
    matched_or_str = [];
@@ -146,13 +160,13 @@ class SearchField
       end
 
       for matched_range in matched_ranges[0,num_matched_ranges -1]
-        int_a = matched_range.match(/^-*\d*/);
-        int_b = matched_range.match(/-*\d*$/);
+        int_a = matched_range.match(/^-*\d+/);
+        int_b = matched_range.match(/-*\d+$/);
         ret_val = ret_val + "( #{@search_token} BETWEEN #{int_a} AND #{int_b}) OR "
       end
       final_range = matched_ranges[num_matched_ranges -1];
-      int_a = final_range.match(/^-*\d*/);
-      int_b = final_range.match(/-*\d*$/);
+      int_a = final_range.match(/^-*\d+/);
+      int_b = final_range.match(/-*\d+$/);
       ret_val = ret_val + "( #{@search_token} BETWEEN #{int_a} AND #{int_b})"
     end
     return ret_val;
@@ -175,7 +189,7 @@ class SearchField
   def ParseTimeStr()
     orig_str =@current_filter_string
     trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
-    trimmed_str =trimmed_str.gsub(/(:?^\s*)|(:?\s*$)/,'')
+    trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
     trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
     trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
      trimmed_str = trimmed_str.gsub(/\s+/,'')
@@ -183,31 +197,37 @@ class SearchField
     trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
     trimmed_str = trimmed_str.gsub(/\,+/,',')
     trimmed_str = trimmed_str.gsub(/:+/,':')
-    trimmed_str =trimmed_str.gsub(/(:?^,*)|(:?,*$)|(:?^:*)|(:?:*$)/,'')
+    trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^:*)|(?::*$)/,'')
     matched_ranges = []
-   # matched_ranges = trimmed_str.scan(/(:?(:?[0-1][0-9])|(2[0-3]))|(:?(:?(:?[0-1][0-9])|(:?2[0-3])):[0-5][0-9]).{2}(:?(:?[0-1][0-9])|(2[0-3]))|(:?(:?(:?[0-1][0-9])|(:?2[0-3])):[0-5][0-9])/);
+   # matched_ranges = trimmed_str.scan(/(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9]).{2}(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9])/);
 
-   # matched_range = trimmed_str.scan(/(:?(:?[0-9]+)|(:?[0-9]+:[0-9]+))\.{2}(:?(:?[0-9]+)|(:?[0-9]+:[0-9]+))/);
-    matched_range = trimmed_str.match(/(:?(:?\d+:\d+)|(:?\d+))\.{2}(:?(:?\d+:\d+)|(:?\d+))/);
-     while matched_range do
-       x = matched_range[0]
-       matched_ranges << matched_range[0]
-       reg_exp = Regexp.new(matched_range[0]);
+   # matched_range = trimmed_str.scan(/(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))\.{2}(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))/);
+    matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+)))/);
+    for matched_range in matched_ranges
+       reg_exp = Regexp.new(matched_range);
        trimmed_str = trimmed_str.gsub(reg_exp, '')
-       matched_range = trimmed_str.match(/(:?(:?\d+:\d+)|(:?\d+))\.{2}(:?(:?\d+:\d+)|(:?\d+))/);
-     end
-
-  #  matched_or_str = trimmed_str.match(/(:?\d+:\d+)|(:?\d+)/);
-     matched_or_strs_scan = trimmed_str.scan(/(:?\d+:\d+)|(:?\d+)/);
-    matched_or_strs = []
-    for matched_scan in matched_or_strs_scan
-      if matched_scan[0]
-         matched_or_strs << matched_scan[0]
-      else
-        matched_or_strs << matched_scan[1]
-      end
-
     end
+    # while matched_range do
+    #   x = matched_range
+    #   matched_ranges << matched_range
+    #   reg_exp = Regexp.new(matched_range);
+    #   trimmed_str = trimmed_str.gsub(reg_exp, '')
+      # matched_range = trimmed_str.match(/(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+))/);
+    # end
+
+    matched_or_strs  = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
+
+  #  matched_or_str = trimmed_str.match(/(?:\d+:\d+)|(?:\d+)/);
+     #matched_or_strs_scan = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
+    #matched_or_strs = []
+    #for matched_scan in matched_or_strs_scan
+    #  if matched_scan[0]
+    #     matched_or_strs << matched_scan[0]
+    #  else
+    #    matched_or_strs << matched_scan[1]
+    #  end
+
+   # end
 
     
    
@@ -230,51 +250,70 @@ class SearchField
         ret_val = ret_val + " OR "
       end
       for matched_range in matched_ranges[0,num_matched_ranges -1]
-        time_a = matched_range.match(/^(:?(:?\d+:\d+)|(:?\d+))/);
-        if  time_a[0]
+        time_a = matched_range.match(/^(?:(?:\d+:\d+)|(?:\d+))/);
+       if  time_a[0]
           time_a = time_a[0]
-        else
-          time_a = time_a[1]
-        end
-        time_b = matched_range.match(/(:?(:?\d+:\d+)|(:?\d+))$/);
-        if  time_b[0]
+       else
+         time_a = ""
+       end
+       #   time_a = time_a[1]
+      # # end
+        time_b = matched_range.match(/(?:(?:\d+:\d+)|(?:\d+))$/);
+      if  time_b[0]
           time_b = time_b[0]
-        else
-          time_b = time_b[1]
+      else
+        time_b = ""
         end
+     #     time_b = time_b[1]
+     #   end
         time_a = AddMinutes(time_a)
 
         time_b = AddMinutes(time_b)
         ret_val = ret_val + "( #{@search_token} BETWEEN #{time_a} AND #{time_b}) OR "
       end
       final_range = matched_ranges[num_matched_ranges -1];
-      time_a = final_range.match(/^((:?\d+:\d+)|(:?\d+))/);
+      time_a = final_range.match(/(?:^(?:(?:\d+:\d+)|(?:\d+)))/);
         if  time_a[0]
-          time_a = time_a[0]
-        else
-          time_a = time_a[1]
+         time_a = time_a[0]
+       else
+         time_a = ""
         end
-      time_b =final_range.match(/((:?\d+:\d+)|(:?\d+))$/);
-      time_a = AddMinutes(time_a)
+        #  time_a = time_a[1]
+       # end
+      time_b =final_range.match(/(?:(?:(?:\d+:\d+)|(?:\d+))$)/);
         if  time_b[0]
-          time_b = time_b[0]
+        time_b = time_b[0]
         else
-          time_b = time_b[1]
+      time_b =""
         end
+     time_a = AddMinutes(time_a)
+      
       time_b = AddMinutes(time_b)
       ret_val = ret_val + "( #{@search_token} BETWEEN #{time_a} AND #{time_b})"
     end
     return ret_val;
   end
   def AddMinutes(time_str)
-    hours = time_str.match(/^\d+/)
-    hours = hours[0]
+    hours = time_str.match(/(?:^(?:\d+))/)
+
+    if hours
+      hours = hours[0]
+    else
+      hours = "0"
+    end
+   # hours = hours[0]
     if time_str =~ /:/
-      mins = time_str.match(/\d+$/)
+      mins = time_str.match(/(?:\d+$)/)
+      #mins = mins[0]
+      if mins
       mins = mins[0]
+        else
+      mins = "00"
+    end
     else
       mins = "00"
     end
+    
     if hours.to_i > 23
       hours = "00"
     end
@@ -288,18 +327,32 @@ class SearchField
   end
 
   def ParseTimeStampStr()
+    the_current_str  = @current_filter_string
     trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
-    trimmed_str =trimmed_str.gsub(/(:?^\s*)|(:?\s*$)/,'')
-    trimmed_str = trimmed_str.gsub(/\d\s*\d/){|s| s=s.gsub(/\s*/,',')  }
-    trimmed_str = trimmed_str.gsub(/\s*-\s*/,'-')
-    trimmed_str = trimmed_str.gsub(/(:?\s*\.)|(:?\.\s*)/,'.')
+    trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
+    trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
+    trimmed_str = trimmed_str.gsub(/\s/,'')
+   # trimmed_str = trimmed_str.gsub(/\s*-\s*/,'-')
+
+    #trimmed_str = trimmed_str.gsub(/(?:\s*\.)|(?:\.\s*)/,'.')
     trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
-    trimmed_str = trimmed_str.gsub(/\,*/,',')
-    trimmed_str = trimmed_str.gsub(/-*/,'-')
-    trimmed_str =trimmed_str.gsub(/(:?^,*)|(:?,*$)|(:?^\.*)|(:?\.*$)/,'')
-    matched_or_str = trimmed_str.scan(/\.^(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9]))),/);
-    matched_or_str << trimmed_str.match(/,(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))/);
-    matched_ranges << trimmed_str.scan(/(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9]))).{2}(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))/);
+    trimmed_str = trimmed_str.gsub(/\,+/,',')
+    trimmed_str = trimmed_str.gsub(/-+/,'-')
+    trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^\.*)|(?:\.*$)/,'')
+   # matched_ranges1 = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
+   matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+)))/ )
+   # matched_range = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
+   # matched_ranges = []
+    for matched_range in matched_ranges
+      
+          
+      reg_exp = Regexp.new(matched_range);
+      trimmed_str = trimmed_str.gsub(reg_exp, '')
+    end
+
+    matched_or_str = trimmed_str.scan(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
+  #  matched_or_str << trimmed_str.match(/,(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
+ #   matched_ranges << trimmed_str.scan(/(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9]))).{2}(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
     ret_val  = ""
     num_matched_ors = matched_or_str.length
     if matched_or_str.length >0
@@ -318,37 +371,68 @@ class SearchField
         ret_val = ret_val + " OR "
       end
       for matched_range in matched_ranges[0,num_matched_ranges -1]
-        date_a = matched_range.match(/^(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))/);
-        date_b = matched_range.match(/(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))$/);
+        date_a = matched_range.match(/^(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
+        if date_a
+          date_a = date_a[0]
+        else
+          date_a = ""
+        end
+        date_b = matched_range.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))$/);
+        if date_b
+          date_b = date_b[0]
+        else
+          date_b = ""
+        end
         date_a = CompleteDate(date_a)
         date_b= CompleteDate(date_b)
         
         ret_val = ret_val + "( #{@search_token} BETWEEN #{date_a} AND #{date_b}) OR "
       end
       final_range = matched_ranges[num_matched_ranges -1];
-      date_a = final_range.match(/^(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))/);
-      date_b = final_range.match(/(:?(:?\d{2})|(:?\d{4}))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2])))|(:?(:?(:?\d{2})|(:?\d{4}))-(:?(:?0{0,1}[1-9])|(:?1[1-2]))-(:?(:?0{0,1}[1-9])|(:?[1-3][0-9])))$/);
+      date_a = final_range.match(/^(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
+              if date_a
+          date_a = date_a[0]
+        else
+          date_a = ""
+        end
+      date_b = final_range.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))$/);
+           if date_b
+          date_b = date_b[0]
+        else
+          date_b = ""
+        end
       date_a = CompleteDate(date_a)
       date_b= CompleteDate(date_b)
 
       ret_val = ret_val + "( #{@search_token} BETWEEN #{date_a} AND #{date_b})"
     end
+   
     return ret_val;
   end
   def CompleteDate(date_str)
 
-    scan_array = date_str.match(/d*/)
-    scan_length = scan_array.length
+    scan_array = date_str.scan(/(?:\d+)/)
+    if scan_array
+      scan_length = scan_array.length
+    else
+      scan_length = 0
+    end
+    year = nil
 
-    year = scan_array[0]
+    if scan_length>0
+       year = scan_array[0]
+    end
+    if year == nil      
+      year = "2009"
+    end
 
  
 
-    if year.text_length == 2
+    if year.length <4
       year_val = year.to_i
       year_val = year_val - ((year_val -1) /50).floor * 100
       year_val = year_val +2000
-      year = year_val.to_str
+      year = year_val.to_s
     end
 
     if scan_length >1
@@ -356,16 +440,26 @@ class SearchField
     else
       month = "01"
     end
+    if month.to_i > 12
+      month = "12"
+    end
+    if month.length == 1
+      month = "0"+month;
+    end
     if scan_length >2
       day = scan_array[2]
-      month_days_val = days_in_month(month.to_i, year_val)
+      month_days_val = Time.days_in_month(month.to_i, year_val)
       day_val = day.to_i
       if day_val > month_days_val
         dav_val =  month_days_val
-        day = dav_val.to_str
-      else
-        day = "01"
+        day = dav_val.to_s
       end
+    else
+      day = "01"
+    end
+
+    if day.length ==1
+      day = "0"+day;
     end
 
     ret_val = "#{year}-#{month}-#{day}"
@@ -377,19 +471,25 @@ class SearchField
 end
 
 class SearchController
-  attr_reader :current_filter_indices # these refer to indices in @available_fields on which searches are curretnly done
+  attr_reader :table_name
+  attr_accessor :current_filter_indices # these refer to indices in @available_fields on which searches are curretnly done
   attr_reader :current_field_indices # these are the columns of the table that are currently displayed
   attr_reader :possible_field_indices # these are the available fields that are not currently displayed int the table
   attr_reader :available_fields #these are all the availabe fields extracted from the table and its :belongs_to associations
-  attr_reader :possible_field_strings #
+  attr_reader :possible_field_names #
   attr_reader :possible_filter_names
-  attr_reader :possible_filter_indices
+  attr_accessor :possible_filter_indices
   attr_reader :current_filter_names
   attr_reader :current_filters
   attr_reader :current_fields
 
   def initialize(table_name) #eg GroupMember
+    t1 = TestClass.new(1,2)
+    t2 = t1
+    t2.x = 3
+    t2.y =4;
 
+    @order_updated = false;
     @table_name = table_name
     @current_filter_indices = []
     @current_filter_names = []
@@ -415,6 +515,7 @@ class SearchController
     current_table = @table_name;
     @search_include_strings = [""];
     @data_type_strings = [];
+    @new_index_val = 0;
     
 
     qualifier = eval("HeaderStr(#{current_table}.name)")
@@ -425,31 +526,31 @@ class SearchController
     default_number_of_fields = 5
 
     if number_available_fields <=default_number_of_fields
-      @current_field_indices =  (0 .. (number_available_fields -1));
+      @current_field_indices =  (0 .. (number_available_fields -1)).to_a;
 
       @possible_field_indices = []
     else
-      @current_field_indices = (1..default_number_of_fields-1)
-      @possible_field_indices = (default_number_of_fields..number_available_fields-1)
+      @current_field_indices = (0..(default_number_of_fields-1)).to_a
+      @possible_field_indices = (default_number_of_fields..(number_available_fields-1)).to_a
     end
-    @possible_field_strings  = [];
+    @possible_field_names  = [];
     for index in  @possible_field_indices
-      @possible_field_strings << @available_fields[@possible_field_indices[index]]
+      @possible_field_names << @available_fields[index].full_name
     end
-    @possible_field_strings << "Select..."
 
-    @search_order = @current_field_indices;
+
+    @search_order = Array.new(@current_field_indices);
     @search_direction = []
     for index in @search_order
       @search_direction << :asc ;
     end
 
-    @possible_filter_indices = (0..number_available_fields-1)
+    @possible_filter_indices = (0..(number_available_fields-1)).to_a
     @possible_filter_names = []
     for field in @available_fields
       @possible_filter_names << field.full_name
     end
-    @possible_filter_names  << "Select..."
+   
 
     @current_fields = []
     @current_filters = []
@@ -461,7 +562,7 @@ class SearchController
     end
 
 
-    group_member2 = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+    #group_member2 = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
 
   end
   #     session[:search_table] = "People"
@@ -478,36 +579,168 @@ class SearchController
   #to prevent call stack overflows, @max_level puts a limit on the number of recursive calls.
 
   def get_eval_string
-    Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
-    session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'"
-    + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
-    GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+   # Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
+   # session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'"
+  #  + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
+   # GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
 
     condition_str = "";
-    num_filters = current_filters;
-    for filter in current_filters[0,  num_filters -1]
+
+    num_filters = @current_filter_indices.length;
+   if num_filters >0
+    for index in @current_filter_indices[0,  (num_filters -1)]
+      filter = @available_fields[index];
       filter_str = filter.GetSQLString;
-      if filter_str.text_length >0
+      if filter_str.length >0
         condition_str = condition_str + "#{filter.GetSQLString} AND "
       end
       
     end
-    filter_str = current_filters[num_filters -1].GetSQLString
-    if filter_str.text_length >0
-      condition_str = condition_str + "#{current_filters[num_filters -1].GetSQLString}"
+
+    final_index = @current_filter_indices[num_filters -1];
+    filter = @available_fields[final_index];
+
+    filter_str  =  filter.GetSQLString
+    if filter_str.length >0
+      condition_str = condition_str + "#{filter.GetSQLString}"
     else
       condition_str = condition_str.gsub(/AND\s*$/){|s| ''};
     end
+   end
+     order_str = "\'"
+    for  i in  (0..(@search_order.length - 1))
 
-    ret_str = "#{@table_name}.find(:all,:conditions => #{condition_str}, :order => #{order_str}, #{include_str})"
+        filter = @available_fields[@search_order[i]]
+        order_str = "#{order_str} #{filter.search_token} #{@search_direction[i].to_s },"
+    end
+    order_length = order_str.length;
+    order_str[order_length - 1] = "\'"
+    
+    current_includes = []
+    for index in @current_filter_indices
+      filter = @available_fields[index];
+      current_index = filter.include_index
+      if  current_index != 0 && current_includes.index(current_index)        
+          current_includes << current_index        
+      end
+    end
+    if current_includes.length >0
+      if current_includes.length == 1
+        index = current_includes[0]
+        include_str = @search_include_strings[index]
+      else
+        include_str = "["
+        for include_index in current_includes
+          include_str = "#{include_str} #{@search_include_strings[include_index]},"
+        end
+        include_str_length = include_str.length
+        include_str[include_str_length-1] = "]"
+      end
+
+    else
+      include_str = ""
+    end
+
+    ret_str = "#{@table_name}.find(:all"
+    if condition_str.length >0
+      ret_str = ret_str + ",:conditions => \"#{condition_str}\""
+    end
+    if order_str.length >0
+      ret_str = ret_str + ", :order => #{order_str}"
+    end
+    if include_str.length >0
+      ret_str = ret_str + ",  :include => #{include_str}"
+    end
+    ret_str = ret_str + ")"
+
+  #  ret_str = "#{@table_name}.find(:all,:conditions => \"#{condition_str}\", :order => #{order_str},  :include => #{include_str})"
+
+  #  else
+
+
+
+        #  ret_str = "#{@table_name}.find(:all)"
+
+      
+ #   end
+
     return ret_str;
+
+
   end
 
 
+  def updateFilters(current_filter_indices_)
+    num_available_fields = @available_fields.length;
+    @possible_filter_indices = [];
+    for i in (0..(num_available_fields-1))
+      curr_i = @current_filter_indices.index(i)
+      if(curr_i ==nil)
+        if(current_filter_indices_.index(i) != nil)
+          @current_filter_indices << i;
+         
+        else
+          @possible_filter_indices << i;
+        end
+      else
+        if(current_filter_indices_.index(i) == nil)
+          @current_filter_indices.delete_at(curr_i);
+          
+          @possible_filter_indices << i;
+        end
+      end
+      
+    end
 
 
+  end
 
-  def UpdateOrder(index)
+ def updateFields(current_field_indices_)
+    num_available_fields = @available_fields.length;
+    @possible_field_indices = [];
+    for i in (0..(num_available_fields-1))
+      curr_i = @current_field_indices.index(i)
+      if(curr_i ==nil)
+        if(current_field_indices_.index(i) != nil)
+          @current_field_indices << i;
+          @search_order << i;
+          @search_direction << :asc;
+        else
+          @possible_field_indices << i;
+        end
+      else
+        if(current_field_indices_.index(i) == nil)
+          @current_field_indices.delete_at(curr_i);
+          ord_i = @search_order.index(i)
+          if(ord_i !=nil)
+            @search_order.delete_at(ord_i);
+            @search_direction.delete_at(ord_i);
+          end
+          @possible_field_indices << i;
+        end
+      end
+    end
+  end
+
+
+  def UpdateOrder(order_index)
+    if(order_index == @search_order[0])
+      if @search_direction[0] == :asc
+        @search_direction[0] = :desc
+      else
+        @search_direction[0] = :asc
+      end
+    else
+      old_pos = @search_order.index(order_index)
+      if(old_pos !=nil)
+        search_dir = @search_direction[old_pos];
+        @search_order.delete_at(old_pos);
+        @search_direction.delete_at(old_pos);
+        @search_order.insert(0,order_index);
+        @search_direction.insert(0,search_dir);
+        @order_updated = true;
+      end
+    end
 
   end
 
@@ -543,6 +776,7 @@ class SearchController
     reflections = eval(string_to_evaluate);
     for reflection in reflections
       reflection_table_name = reflection.class_name
+      #reflection_table_name = reflection.name
       local_qualifier = HeaderStr(reflection_table_name)
       reflection_qualifier = "#{qualifier}/#{local_qualifier}"
 
@@ -582,12 +816,10 @@ class SearchController
       header_str = HeaderStr(attribute_name);
       #  x =  HeaderStr("   one_two_three  ")
       #  y =  HeaderStr("  MyNameIsRobertVerrill_ItIsSoId_id iD  and it is true   ")
-      tag_symbol =  QualifierStr("#{qualifier}_#{header_str}").to_sym
+      tag_symbol =  QualifierStr("#{qualifier}_#{header_str}")
      
-      @available_fields << SearchField.new(header_str, qualifier, eval_str, token_str, include_index, attribute_type, tag_symbol)
-      if  @available_fields.length == 5
-        yy = 3
-      end
+      @available_fields << SearchField.new(header_str, qualifier, eval_str, token_str, include_index, attribute_type, tag_symbol, @new_index_val)
+      @new_index_val = @new_index_val+1
     end
    
   end

@@ -6,7 +6,10 @@ SortOrder =['second_name asc, entry_year asc', 'first_name asc, entry_year asc',
 
   has_many :student_courses
   has_many :student_programmes
-  has_many :lectures
-  has_many :group_members
+  has_many :lectures,  :dependent => :destroy
+  has_many :attendees, :dependent => :destroy
+
+  has_many :group_members, :dependent => :destroy
   has_many :groups, :through => :group_members
+ 
 end
