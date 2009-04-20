@@ -86,8 +86,15 @@ agatha_dev=# COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' D
 ruby script/generate migration add_notes_to_tutorials notes:text
 rake db:migrate
 
-agatha_dev=#  DELETE FROM lectures; DELETE FROM courses; DELETE FROM people;DELETE FROM terms; DELETE FROM group_members;DELETE FROM groups; DELETE FROM institutions;DELETE FROM days;DELETE FROM willing_teachers; DELETE FROM tutorials; DELETE FROM tutorial_schedules;
+agatha_dev=#  DELETE FROM attendees; DELETE FROM lectures; DELETE FROM courses; DELETE FROM people;DELETE FROM terms; DELETE FROM group_members;DELETE FROM groups; DELETE FROM institutions;DELETE FROM days;DELETE FROM willing_teachers; DELETE FROM tutorials; DELETE FROM tutorial_schedules;
 
+
+ruby script/generate migration rename_person_institution_to_institution_id
+
+ruby script/generate model location name:string max_people:integer
+gedit db/migrate/20090401150948_create_day_csvs #delete t.timestamps
+
+ruby script/generate migration rename_lecture_term_to_term_id
 do checkbox stuff for editing lists.
 
 id		AutoNumber

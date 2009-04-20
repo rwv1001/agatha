@@ -406,13 +406,17 @@
     possible_fields = possible_fieldss[table_value];
 
     for(i = 0; i< possible_fields.length; i++)
+    {
+      if(possible_fields[i][1]==filter_tag)
       {
-        if(possible_fields[i][1]==filter_tag)
-          {
-            AddDisplayIndex(i );
-            return;
-          }
+        AddDisplayIndex(i );
+        if(table_value != <%= @table_index %>)
+        {
+          displayHeaders(table_value);
+        }
+        return;
       }
+    }
   }
   function AddDisplayIndex(selected_val )
   {
@@ -434,6 +438,7 @@
     children_options =  $('field_selector').childElements();
     children_options[selected_val].remove();
     generateFieldBox(current_fields.length - 1);
+
   }
 
   function AddDisplayField()

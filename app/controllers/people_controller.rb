@@ -34,8 +34,50 @@ class PeopleController < ApplicationController
     end
      @table_index = session[:table_index]
     @search_controller = session[:search_controllers][@table_index];
-    eval_str = @search_controller.get_eval_string;
-    @table = eval(eval_str);
+  eval_str = @search_controller.get_eval_string2;
+  
+ # sql_str = @search_controller.get_sql_string;
+  
+  #sql_str = sql_str + " ";
+# debugger
+#people_3 = Person.find(:all,:conditions => "institutions.conventual_name SIMILAR TO 'U%'", :order => ' conventual_name asc',  :include => :institution)
+#people_3 = Person.find( :all, :conditions => "institutions.conventual_name SIMILAR TO 'U%'", :order => "people.conventual_name asc", :include => :institution);
+
+  
+
+  #  people_3 = Person.find(:all,:conditions => "institutions.conventual_name SIMILAR TO 'U%'",  :include => :institution);
+#people_3 = Person.find(:all,:conditions => "conventual_name SIMILAR TO 'U%' AND conventual_name SIMILAR TO ''" ,  :include => :institution);
+
+#    inst2 = people_3[0].institution;
+# name_1 = inst2.conventual_name;
+# name_1 = 0;
+#    group_member2 = GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+#   person1 = group_member2.person;
+#   name1 = person1.first_name;
+#   my_name = name1
+#   group_members2 = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+#   group_elt_1 = group_members2[0];
+#  person2 = group_elt_1.person
+#    name2 = person2.first_name
+#    my_name_2 = name2;
+#    people_1 = Person.find(:all, :include => :institution);
+#    inst = people_1[0].institution;
+#    name_1 = inst.conventual_name;
+   # test = Person.find(:all, :order => ' id asc, title asc, first_name asc, second_name asc, postnomials asc, institutions.conventual_name asc',  :include => :institution)
+#   people_2 = Person.find(:all, :order => ' id asc, title asc, first_name asc, second_name asc, postnomials asc',  :include => :institution)
+#   inst2 = people_2[0].institution;
+#   name_1 = inst2.conventual_name;
+    #people_3 = Person.find(:all, :order => ' id asc, title asc, first_name asc, second_name asc, postnomials asc, institution.conventual_name asc',  :include => :institution)
+#  people_3 = Person.find(:all, :order => 'institutions.conventual_name asc',  :include => :institution)
+# people_3 = Person.find(:all, :order => 'title asc, first_name asc, second_name asc, postnomials asc, institution.conventual_name asc',  :include => :institution)
+#    inst2 = people_3[0].institution;
+#     name_1 = inst2.conventual_name;
+#      people_3 = Person.find(:all, :order => '  people.title asc, people.first_name asc, people.second_name asc, people.postnomials asc, people.conventual_name asc,  institution.conventual_name asc',  :include => :institution)
+
+     
+     @table = eval(eval_str);
+     
+
     flash[:notice]= eval_str;
 
   #  if(@search_controller == nil)
@@ -587,6 +629,18 @@ class PeopleController < ApplicationController
       inst_id = people_csv.home_institution;
       relig_id = people_csv.religious_house;
 
+
+      not_set_institution =  Institution.new;
+       not_set_institution.old_name = "";
+       not_set_institution.title = "";
+       not_set_institution.first_name = "";
+       not_set_institution.second_name = "";
+       not_set_institution.salutation = "";
+       not_set_institution.term_address = "";
+        not_set_institution.term_city = "";
+        not_set_institution.term_postcode = "";
+       not_set_institution.conventual_name = "";
+       not_set_institution.save;
       inst_ids = [inst_id, relig_id];
       new_ids = [];
       for i in (0..1)
@@ -621,9 +675,13 @@ class PeopleController < ApplicationController
         end
         if new_ids[0]!=0
           person.institution_id = new_ids[0];
+        else
+          person.institution_id = not_set_institution.id;
         end
         if new_ids[1]!=0
-          person.institution_id = new_ids[1];
+          person.religious_house_id = new_ids[1];
+        else
+          person.religious_house_id = not_set_institution.id;
         end        
       end
       if status_id_array.index(19)||status_id_array.index(20)
@@ -733,6 +791,10 @@ class PeopleController < ApplicationController
       old_day_ids << csv_day.id;
       new_day_ids << day.id;
     end
+    no_location = Location.new;
+    no_location.name = ""
+    no_location.save;
+
 
     csv_lectures = LectureCsv.find(:all);
     for csv_lecture in csv_lectures
@@ -742,11 +804,12 @@ class PeopleController < ApplicationController
       day_index = old_day_ids.index(csv_lecture.day);
       if( course_index != nil && term_index != nil && tutor_index != nil && day_index !=nil)
         new_lecture = Lecture.new;
-        new_lecture.term = new_term_ids[term_index];
+        new_lecture.term_id = new_term_ids[term_index];
         new_lecture.course_id = new_course_ids[course_index];
         new_lecture.person_id = new_person_ids[tutor_index];
         new_lecture.exam = csv_lecture.examination;
-        new_lecture.day = new_day_ids[day_index];
+        new_lecture.day_id = new_day_ids[day_index];
+        new_lecture.location_id = no_location.id;
         new_lecture.lecture_time = csv_lecture.lecture_time;
         new_lecture.number_of_classes = csv_lecture.number_of_classes;
         new_lecture.number_of_lectures = csv_lecture.number_of_lectures;

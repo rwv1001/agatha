@@ -11,5 +11,7 @@ SortOrder =['second_name asc, entry_year asc', 'first_name asc, entry_year asc',
 
   has_many :group_members, :dependent => :destroy
   has_many :groups, :through => :group_members
- 
+  belongs_to :institution, :class_name => "Institution", :foreign_key => "institution_id"
+  belongs_to :religious_house, :class_name => "Institution", :foreign_key => "religious_house_id"
+  
 end
