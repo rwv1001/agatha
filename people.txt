@@ -97,6 +97,14 @@ gedit db/migrate/20090401150948_create_day_csvs #delete t.timestamps
 ruby script/generate migration rename_lecture_term_to_term_id
 do checkbox stuff for editing lists.
 
+agathaapp@rover> su root
+root@rover> su postgres
+postgres@rover>psql agatha3 postgres
+agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/person6.csv' DELIMITERS ','; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ','; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses2.csv' DELIMITERS ',';  COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles2.csv' DELIMITERS ','; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses2.csv' DELIMITERS ',';  COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms2.csv' DELIMITERS ',';  COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures2.csv' DELIMITERS ','; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ','; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ','; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials3.csv' DELIMITERS ',' ;
+
+
+
+
 id		AutoNumber
 old_name	Text
 title		Text

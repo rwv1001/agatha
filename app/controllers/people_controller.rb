@@ -810,6 +810,11 @@ class PeopleController < ApplicationController
         new_lecture.exam = csv_lecture.examination;
         new_lecture.day_id = new_day_ids[day_index];
         new_lecture.location_id = no_location.id;
+        if csv_lecture.lecture_time =~/12:13/
+          x = 1;
+        else
+         new_lecture.lecture_time = csv_lecture.lecture_time;
+        end
         new_lecture.lecture_time = csv_lecture.lecture_time;
         new_lecture.number_of_classes = csv_lecture.number_of_classes;
         new_lecture.number_of_lectures = csv_lecture.number_of_lectures;
