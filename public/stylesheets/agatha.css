@@ -25,7 +25,7 @@ a img {
 
 label.search_field {
         	
-        font: 100%,  bold
+        font: 100%,  bold;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: 900
         
@@ -33,7 +33,7 @@ label.search_field {
 }
 
 .search_example {
-	font-size: 8px
+	font-size: 8px;
         font-weight: normal
 }
 
@@ -86,7 +86,7 @@ label.search_field {
 	left: 525px;
 	top: 62px;
 }
-#navigation {
+#navigation { 
 	position:absolute;
 	width:200px;
 	height:30px;
@@ -116,4 +116,50 @@ label.search_field {
 	top:562px;
 }
 
+
+#product-list .list-line-even {
+  background:   #e0f8f8;
+}
+
+#product-list .list-line-odd {
+  background:   #f8b0f8;
+}
+
+ .column-header {
+    background: #999999
+
+}
+ .row-even {
+    background: #CCCCCC
+
+}
+ .row-odd {
+    background: #EEEEEE
+
+}
+
+.select-cell {
+     background: #FFFFFF
+
+}
+.remove_column {
+    background: #AAAAAA;
+    border: 1px solid;
+    border-color: #000000;
+    
+}
+span.remove_column a {
+    color: #CCCCCC;
+
+}
+
+#search_results a {
+    color: #000000;
+
+}
+#search_results a:hover {
+    color: #FFFFFE;
+    background:  #000000;
+
+}
 
