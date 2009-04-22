@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090419135042) do
+ActiveRecord::Schema.define(:version => 20090422204832) do
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -312,7 +312,7 @@ ActiveRecord::Schema.define(:version => 20090419135042) do
 
   create_table "tutorials", :force => true do |t|
     t.integer  "person_id"
-    t.integer  "tutorial_id"
+    t.integer  "tutorial_schedule_id"
     t.integer  "number_of_tutorials"
     t.integer  "hours"
     t.text     "comment"

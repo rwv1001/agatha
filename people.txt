@@ -86,7 +86,7 @@ agatha_dev=# COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' D
 ruby script/generate migration add_notes_to_tutorials notes:text
 rake db:migrate
 
-agatha_dev=#  DELETE FROM attendees; DELETE FROM lectures; DELETE FROM courses; DELETE FROM people;DELETE FROM terms; DELETE FROM group_members;DELETE FROM groups; DELETE FROM institutions;DELETE FROM days;DELETE FROM willing_teachers; DELETE FROM tutorials; DELETE FROM tutorial_schedules;
+agatha_dev=#  DELETE FROM attendees; DELETE FROM lectures; DELETE FROM courses; DELETE FROM people;DELETE FROM terms; DELETE FROM group_members;DELETE FROM groups; DELETE FROM institutions;DELETE FROM days;DELETE FROM willing_teachers; DELETE FROM tutorials; DELETE FROM tutorial_schedules;DELETE FROM locations;
 
 
 ruby script/generate migration rename_person_institution_to_institution_id
@@ -102,6 +102,8 @@ root@rover> su postgres
 postgres@rover>psql agatha3 postgres
 agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/person6.csv' DELIMITERS ','; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ','; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses2.csv' DELIMITERS ',';  COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles2.csv' DELIMITERS ','; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses2.csv' DELIMITERS ',';  COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms2.csv' DELIMITERS ',';  COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures2.csv' DELIMITERS ','; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ','; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ','; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials3.csv' DELIMITERS ',' ;
 
+ruby script/generate migration rename_tutorial_tutorial_id_to_tutorial_schedule_id
+rake db:migrate
 
 
 

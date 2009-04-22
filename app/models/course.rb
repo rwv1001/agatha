@@ -6,7 +6,7 @@ class Course < ActiveRecord::Base
       
   TERM_NAMES = [ "Michaelmas", "Hilary", "Trinity" ]
 
-  has_many :student_courses
-  has_many :pcourses
-  has_many :lectures
+
+  has_many :tutorial_schedules, :class_name => "TutorialSchedule", :dependent => :destroy
+  has_many :lectures, :class_name => "Lecture", :dependent => :destroy
 end

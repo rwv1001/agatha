@@ -1,8 +1,8 @@
 
 
 class Group < ActiveRecord::Base
-has_many :group_members, :dependent => :destroy
-has_many :people, :through => :group_members
+has_many :group_members, :class_name => "GroupMember", :dependent => :destroy
+has_many :people, :class_name =>"Person", :through => :group_members
   def group_list_strings  
    
     create_group_list 

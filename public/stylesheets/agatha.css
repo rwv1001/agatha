@@ -20,7 +20,7 @@ a img {
 }
 
 .tiny {
-	font-size: 9px;
+	font-size: 12px;
 }
 
 label.search_field {
@@ -34,7 +34,7 @@ label.search_field {
 
 .search_example {
 	font-size: 8px;
-        font-weight: normal
+        font-weight: normalsear
 }
 
 
@@ -137,8 +137,16 @@ label.search_field {
     background: #EEEEEE
 
 }
+.edit_column {
+    background: #FFFFFF
 
-.select-cell {
+}
+.edit_text {
+    font-size: 12px;
+
+    }
+
+.select-cell, .update-cell, .copy-cell,  .delete-cell {
      background: #FFFFFF
 
 }
@@ -162,4 +170,5 @@ span.remove_column a {
     background:  #000000;
 
 }
+
 

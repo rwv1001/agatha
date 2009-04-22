@@ -911,6 +911,11 @@ class SearchController
     @processed_nodes = [];
     @processed_child_nodes = [];
     @alias_id = 0;
+    if(@current_filter_indices.index(0) == nil && @current_field_indices.index(0) == nil)
+      field = @available_fields[0]; #id must be retrieved
+      field_node = field.field_node;
+      process_node(field_node)
+    end
     for index in @current_filter_indices
       field = @available_fields[index];
       field_node = field.field_node;
@@ -921,6 +926,7 @@ class SearchController
       field_node = field.field_node;
       process_node(field_node)
     end
+
 
   end
   def process_node(field_node)
@@ -1319,7 +1325,8 @@ class SearchController
   def ExtractFields(qualifier, qualifier_str, qualifiers_str, current_table, include_index, parent_tree)
     #attribute_eval_str = "#{current_table}.column_names"
     attribute_eval_str = "#{current_table}.columns"
-    for attribute in eval(attribute_eval_str)
+    attributes = eval(attribute_eval_str)
+    for attribute in attributes
       attribute_name= attribute.name()
       attribute_type  = attribute.type
       #attribute_index = @data_type_strings.index(attribute_type)
