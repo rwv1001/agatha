@@ -8,7 +8,8 @@
     <title>Agatha: People: <%= controller.action_name %></title>
     <%= javascript_include_tag "prototype" %>
     <%= javascript_include_tag "people" %>
-
+    <%= javascript_include_tag "test" %>
+    <%= javascript_include_tag :defaults %>
     <%= stylesheet_link_tag  'agatha', 'scaffold' %>
     <script type="text/javascript">
       <!--
@@ -125,6 +126,7 @@
             break;
           }
         }
+        $('possible_filters_div').setAttribute("class", "shown_div");
 
 
       }
@@ -205,7 +207,7 @@
       {
         current_fields =  getCurrentFields();
         new_div = $('default_div_field').cloneNode(true);
-        new_div.show();
+        //new_div.setAttribute("class", "shown_div");
         div_id = "div_field_f_" +current_fields[current_index][1];
         new_div.setAttribute("id", div_id );
         children_elements = new_div.childElements();
@@ -223,7 +225,8 @@
       {
         current_filters =  getCurrentFilters();
         new_div = $('default_div').cloneNode(true);
-        new_div.show();
+        new_div.setAttribute("class", "shown_div");
+       // new_div.setStyle({visibility: 'visible'});
         div_id = "div_filter_" +current_index;
         new_div.setAttribute("id", div_id );
         children_elements = new_div.childElements();
@@ -278,20 +281,25 @@
             break;
           }
         }
+       $('field_selector_div').setAttribute("class", "shown_div");
       }
+
 
 
 
       function tableSelected()
       {
 
-        $('default_div').hide();
-        $('default_div_field').hide();
-
+    //    $('default_div').hide();
+      //  $('default_div_field').hide();
+           $('field_selector_div').setAttribute("class","hidden_div")
         table_value = parseInt($('table_selector').getValue());
+        possible_filters_elt =  $('possible_filters')
 
-        removeAllOptions( $('possible_filters'));
-        options = $('possible_filters').options;
+        removeAllOptions( possible_filters_elt);
+       
+        options = possible_filters_elt.options;
+
 
         possible_filters = possible_filterss[table_value];
 
@@ -299,14 +307,29 @@
         {
           options.add( new Option(possible_filters[i][0], possible_filters[i][1]));
         }
-        removeAllOptions( $('field_selector'));
-        field_options = $('field_selector').options;
+        if(possible_filters.length == 0)
+          {
+             $('possible_filters_div').setAttribute("class", "hidden_div");
+          }
+        else
+          {
+             $('possible_filters_div').setAttribute("class", "shown_div");
+
+          }
+          field_selector_elt = $('field_selector');
+
+        removeAllOptions( field_selector_elt );
+        field_options = field_selector_elt.options;
         possible_fields = possible_fieldss[table_value];
 
         for(i = 0; i<possible_fields.length; i++ )
         {
           field_options.add( new Option(possible_fields[i][0], possible_fields[i][1]));
         }
+        if(possible_fields.length>0)
+          {
+            $('field_selector_div').setAttribute("class","shown_div")
+          }
         generateFieldBoxes( table_value)
 
 
@@ -389,7 +412,11 @@ function searchOrder(index_value)
   
 
 }
-
+function TestHandler2()
+{
+ form_id = "test_form"
+ $(form_id).submit();
+}
 
      
 
@@ -409,6 +436,7 @@ function searchOrder(index_value)
       possible_filter.push(""); // search_string
     }
 
+
     current_filters = current_filterss[table_value];
     current_filters.push(possible_filter);
 
@@ -418,13 +446,20 @@ function searchOrder(index_value)
     children_options[selected_val].remove();
     displayFilter(current_filters.length - 1);
 
+    if(possible_filters.length == 0)
+    {
+         $('possible_filters_div').setAttribute("class","hidden_div")
+    }
+
     filter_tag = possible_filter[1];
     possible_fields = possible_fieldss[table_value];
+
 
     for(i = 0; i< possible_fields.length; i++)
     {
       if(possible_fields[i][1]==filter_tag)
       {
+
         AddDisplayIndex(i );
         if(table_value != <%= @table_index %>)
         {
@@ -433,6 +468,9 @@ function searchOrder(index_value)
         return;
       }
     }
+
+
+
   }
   function AddDisplayIndex(selected_val )
   {
@@ -450,7 +488,10 @@ function searchOrder(index_value)
     current_fields.push(possible_field);
 
     possible_fields.splice(selected_val,1);
-
+    if(possible_fields.length == 0)
+     {
+       $('field_selector_div').setAttribute("class","hidden_div")
+     }
     children_options =  $('field_selector').childElements();
     children_options[selected_val].remove();
     generateFieldBox(current_fields.length - 1);
@@ -645,6 +686,7 @@ function MM_nbGroup(event, grpName) { //v6.0
   $('table_selector').observe('change',tableSelected);
         $('add_filter').observe('click', AddSearchFilter);
         $('add_field').observe('click', AddDisplayField);
+       
         tableSelected();
   }
 

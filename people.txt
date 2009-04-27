@@ -105,7 +105,22 @@ agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/person6.csv' DELIMITE
 ruby script/generate migration rename_tutorial_tutorial_id_to_tutorial_schedule_id
 rake db:migrate
 
+ruby script/generate migration rename_day_upper_to_lower
+ruby script/generate migration rename_term_number_to_term_name_id
+ruby script/generate model term_name name:string
+rake db:migrate
 
+agatha_dev=#  DROP TABLE attendee_csvs; DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_csvs; DROP TABLE courses; DROP TABLE   day_csvs; DROP TABLE days; DROP TABLE group_members; DROP TABLE groups; DROP TABLE institutions; DROP TABLE lecture_csvs; DROP TABLE lectures; DROP TABLE locations; DROP TABLE pcourses; DROP TABLE people; DROP TABLE people_csv; DROP TABLE person_csvs; DROP TABLE personstatus_csvs; DROP TABLE programmes; DROP TABLE schema_migrations;DROP TABLE sessions; DROP TABLE status_csvs; DROP TABLE student_courses; DROP TABLE student_programmes; DROP TABLE term_csvs; DROP TABLE term_names; DROP TABLE terms; DROP TABLE test_csv; DROP TABLE tutorial_csvs; DROP TABLE tutorial_schedules; DROP TABLE tutorials; DROP TABLE users; DROP TABLE willing_teacher_csvs; DROP TABLE willing_teachers;
+
+agatha_dev=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/people.csv' DELIMITERS ',' CSV; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ',' CSV; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses.csv' DELIMITERS ',' CSV; COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles.csv' DELIMITERS ',' CSV; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses.csv' DELIMITERS ',' CSV; COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms.csv' DELIMITERS ',' CSV; COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ',' CSV; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ',' CSV; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' DELIMITERS ',' CSV;
+
+sudo apt-get install irb
+ruby script/console
+>> User.create(:name => 'agathaapp', :password => '0iRDCsalcs', :password_confirmation => '0iRDCsalcs')
+
+>> TermName.create(:name => 'Hilary');
+>> TermName.create(:name => 'Trinity');
+>> TermName.create(:name => 'Michaelmas');
 
 id		AutoNumber
 old_name	Text

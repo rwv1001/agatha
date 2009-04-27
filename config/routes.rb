@@ -1,19 +1,21 @@
 ActionController::Routing::Routes.draw do |map|
   
 
-  map.connect('', {:controller => "welcome", :action => "index"})
+  map.connect('', {:controller => "people", :action => "index"})
  
-  map.connect('admin',{:controller => "welcome", :action => "index"})
+  map.connect('admin',{:controller => "people", :action => "index"})
  
   map.connect('accessdenied', {:controller => "welcome", :action => "accessdenied"})
  
-  map.connect('index', {:controller => "welcome", :action => "index"})
+  map.connect('index', {:controller => "people", :action => "index"})
 
   map.connect('termly', {:controller => "welcome", :action => "termly"})
 
   map.connect('mailing', {:controller => "welcome", :action => "mailing"})
 
   map.connect('clear_filter', {:controller => "people", :action => "clear_filter"})
+
+  map.connect('help', {:controller => "welcome", :action => "help"})
 
   map.resources :attendees
 

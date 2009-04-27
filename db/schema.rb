@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090422204832) do
+ActiveRecord::Schema.define(:version => 20090427101245) do
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -52,13 +52,13 @@ ActiveRecord::Schema.define(:version => 20090422204832) do
   create_table "days", :force => true do |t|
     t.string   "long_name"
     t.string   "short_name"
-    t.boolean  "Sunday"
-    t.boolean  "Monday"
-    t.boolean  "Tuesday"
-    t.boolean  "Wednesday"
-    t.boolean  "Thursday"
-    t.boolean  "Friday"
-    t.boolean  "Saturday"
+    t.boolean  "sunday"
+    t.boolean  "monday"
+    t.boolean  "tuesday"
+    t.boolean  "wednesday"
+    t.boolean  "thursday"
+    t.boolean  "friday"
+    t.boolean  "saturday"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -161,38 +161,6 @@ ActiveRecord::Schema.define(:version => 20090422204832) do
     t.integer  "religious_house_id"
   end
 
-  create_table "people_csv", :id => false, :force => true do |t|
-    t.integer "did",                             :null => false
-    t.string  "old_name",         :limit => nil
-    t.string  "title",            :limit => nil
-    t.string  "first_name",       :limit => nil
-    t.string  "second_name",      :limit => nil
-    t.string  "postnominals",     :limit => nil
-    t.string  "salutation",       :limit => nil
-    t.string  "term_address",     :limit => nil
-    t.string  "term_city",        :limit => nil
-    t.string  "term_postcode",    :limit => nil
-    t.string  "term_home_phone",  :limit => nil
-    t.string  "term_work_phone",  :limit => nil
-    t.string  "mobile",           :limit => nil
-    t.string  "email",            :limit => nil
-    t.string  "other_address",    :limit => nil
-    t.string  "other_city",       :limit => nil
-    t.string  "other_postcode",   :limit => nil
-    t.string  "other_home_phone", :limit => nil
-    t.string  "fax",              :limit => nil
-    t.text    "notes"
-    t.integer "supervisor"
-    t.integer "entry_year"
-    t.boolean "matriculated"
-    t.boolean "senior_status"
-    t.integer "programme"
-    t.integer "religious_house"
-    t.string  "next_of_kin",      :limit => nil
-    t.integer "home_institution"
-    t.string  "conventual_name",  :limit => nil
-  end
-
   create_table "person_csvs", :force => true do |t|
     t.string  "old_name"
     t.string  "title"
@@ -277,16 +245,17 @@ ActiveRecord::Schema.define(:version => 20090422204832) do
     t.integer  "year"
   end
 
-  create_table "terms", :force => true do |t|
-    t.integer  "term_number"
-    t.integer  "year"
+  create_table "term_names", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "test_csv", :id => false, :force => true do |t|
-    t.integer "did",                     :null => false
-    t.string  "old_name", :limit => nil
+  create_table "terms", :force => true do |t|
+    t.integer  "term_name_id"
+    t.integer  "year"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tutorial_csvs", :force => true do |t|

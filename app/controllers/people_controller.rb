@@ -1,9 +1,9 @@
 
-
+require 'people_helper'
 class PeopleController < ApplicationController
   protect_from_forgery :only => [:create, :update, :destroy]
   def initialize
-  @table_options = [["Person", 0],["Attendee", 1],["GroupMember",2],["Lecture",3],["TutorialSchedule",4],["Tutorial",5],["WillingTeacher",6]];
+  @table_options = [["Person", 0],["Attendee", 1],["GroupMember",2],["Lecture",3],["TutorialSchedule",4],["Tutorial",5],["WillingTeacher",6],["Course",7],["Group",8],["Location",9],["Institution",10],["Term",11],["Day",12]];
   end
     # GET /people
   # GET /people.xml
@@ -21,11 +21,13 @@ class PeopleController < ApplicationController
 # session[:search_controllers]= nil
     unless session[:search_controllers]
     #  session[:search_controllers_symbols] = [:person, :attendee, :group_member, :lecture, :tutorial_schedule, :tutorial, :willing_teacher ];
-      
+      @attribute_lists = []
       @search_controllers = []
       @number_of_controllers =  @table_options.length
       for controller_index in (0 .. @number_of_controllers -1)        
          @search_controllers<< SearchController.new(@table_options[controller_index][0]);
+         help_me = @table_options[controller_index][0]
+         @attribute_lists << AttributeList.new(help_me);
       end
       @search_controller = @search_controllers[0]
       
@@ -34,6 +36,7 @@ class PeopleController < ApplicationController
       session[:table_options] = @table_options
       session[:table_index] = @table_index
       session[:search_controllers] =  @search_controllers
+      session[:attribute_lists] = @attribute_lists;
     end
      @table_index = session[:table_index]
     @search_controller = session[:search_controllers][@table_index];
@@ -143,16 +146,20 @@ class PeopleController < ApplicationController
     @table_index = table_index;
     @table_str = @table_options[@table_index][0];
     @search_controller =@search_controllers[table_index];
-    case params[:commit]
-    when "Search"
-      table_search
-    else
+    
+    if params[:commit] =~ /Create/
       session[:search_controllers] =  @search_controllers;
       session[:table_index] =  @table_index;
-      new
+      new      
+    else
+      table_search
     end
   end
-
+  def help
+   respond_to do |format|
+      format.html 
+    end
+  end
 
   
   def table_search
@@ -164,11 +171,7 @@ class PeopleController < ApplicationController
     for filter in @search_controller.available_fields
       if(params.has_key?(filter.tag))
         current_filter_indices << filter.id
-        if params[filter.tag] == ""
-          filter.current_filter_string = "%"
-        else
-          filter.current_filter_string = params[filter.tag]
-        end
+        filter.current_filter_string = params[filter.tag]
       else
         possible_filter_indices << filter.id
       end
@@ -298,7 +301,7 @@ class PeopleController < ApplicationController
 
       if params[:row_in_list]
          for id in params[:row_in_list]
-           object_str = "#{@table_str}.find(id)"
+           object_str = "#{@table_str}.find(\"#{id}\")"
            object_to_destroy = eval(object_str);
 
           if object_to_destroy
@@ -419,6 +422,71 @@ class PeopleController < ApplicationController
 
   end
 
+  def integrity_check(attribute_list, updated_object)
+    @integrity_ok = true;
+
+
+     for reflection in attribute_list.reflections
+
+         begin
+          # default_id_str = "current_object.#{reflection.foreign_key}"
+          # default_id = eval(default_id_str);
+           default_id = updated_object[reflection.foreign_key.to_sym];
+           if(default_id == nil)
+             flash[:notice] = "Attribute #{reflection.foreign_key} has not been set";
+             @integrity_ok = false;
+             return
+           end
+           
+
+           default_val_str = "#{reflection.name}.find(\"#{default_id}\")"
+           default_val = eval(default_val_str)
+           if default_val == nil
+             flash[:notice] = "Attribute #{reflection.foreign_key} = #{default_id} is not a valid id";
+              @integrity_ok = false;
+              return
+           end
+
+         rescue Exception => exc
+           if default_id == nil
+              flash[:notice] = "Attribute #{reflection.foreign_key} has not been set";
+           else
+              flash[:notice] = "Attribute #{reflection.foreign_key} = #{default_id} is not a valid id";
+           end
+
+           @integrity_ok = false;
+         end
+
+
+
+     end
+  end
+
+  def generate_options(attribute_list, current_object)
+     @options_fail = false;
+    
+     for reflection in attribute_list.reflections
+         
+         begin
+           default_id_str = "current_object.#{reflection.foreign_key}"
+           
+           default_id = eval(default_id_str);
+           if(default_id == nil)
+             default_val = eval("#{reflection.name}.find(:first)")
+             eval("current_object.#{reflection.foreign_key} = #{default_val.id}");
+             default_id =  default_val.id
+           end
+         
+         
+
+         rescue Exception => exc
+           @options_fail = true;
+         end
+
+
+
+     end
+  end
   # GET /people/1
   # GET /people/1.xml
   def show
@@ -439,19 +507,22 @@ class PeopleController < ApplicationController
 
     @table_index = table_index;
     @table_str = @table_options[@table_index][0];
+    @table_qualifier = QualifierStr(@table_str);
     session[:table_index]
     @table_str = @table_options[@table_index][0];
     object_str = "#{@table_str}.new"
 
 
     new_current_object  = eval(object_str );
-    if new_current_object
+    attributes_list = session[:attribute_lists][@table_index];
+     generate_options(attributes_list, new_current_object) if new_current_object!=nil
+    if new_current_object && !@options_fail
       @current_object  = new_current_object
       respond_to do |format|
         format.html {render :action => "edit"  }
       end
     else
-      fail_str = "Failed  to find #{@table_str}  with id #{id}."
+      fail_str = "Failed  to create new #{@table_str} entry in database."
       flash[:notice] = fail_str;
       respond_to do |format|
         format.html   { redirect_to(people_url) }
@@ -464,12 +535,16 @@ class PeopleController < ApplicationController
     #@person = Person.find(params[:id])
     id = params[:id];
     @table_index = session[:table_index]
+    
     @table_str = @table_options[@table_index][0];
+    @table_qualifier = QualifierStr(@table_str)
     object_str = "#{@table_str}.find(id)"
 
 
     new_current_object  = eval(object_str );
-    if new_current_object
+    attributes_list = session[:attribute_lists][@table_index];
+    generate_options(attributes_list, new_current_object) if new_current_object!=nil
+    if new_current_object && !@options_fail
       @current_object  = new_current_object
       respond_to do |format|
         format.html {render :action => "edit"  }
@@ -489,6 +564,7 @@ class PeopleController < ApplicationController
     old_id = params[:id];
     @table_index = session[:table_index]
     @table_str = @table_options[@table_index][0];
+    @table_qualifier = QualifierStr(@table_str);
     old_object_str = "#{@table_str}.find(params[:id])"
     new_object_str = "#{@table_str}.new"
 
@@ -531,10 +607,11 @@ class PeopleController < ApplicationController
     id = params[:id];
     @table_index = session[:table_index]
     @table_str = @table_options[@table_index][0];
-    object_str = "#{@table_str}.find(id)"
+    object_str = "#{@table_str}.find(\"#{id}\")"
     current_object = eval(object_str);
     if(current_object)
       current_object.destroy
+      Flash[:notice] = "Entry with ID = #{id} deleted"
     end
     respond_to do |format|
       format.html { redirect_to(people_url) }
@@ -660,26 +737,49 @@ class PeopleController < ApplicationController
     flash[:notice] = 'Programme removed from student'
     redirect_to :action => :courses, :id => id
   end
-
+  def QualifierStr(in_str)
+    ret_str = in_str.strip;
+    ret_str = ret_str.gsub(/[a-z][A-Z]\S{1}/){|s| s.insert(1," ")}
+    ret_str = ret_str.gsub(/[a-z][A-Z]\S{1}/){|s| s.insert(1," ")}
+    ret_str = ret_str.gsub(/\s/){|s| '_'};
+    ret_str = ret_str.gsub(/\//){|s| '__'};
+    ret_str = ret_str.downcase;
+    return ret_str;
+  end
+    def QualifiersStr(in_str)
+    ret_str = in_str.strip;
+    ret_str = ret_str.gsub(/[a-z][A-Z]\S{1}/){|s| s.insert(1," ")}
+    ret_str = ret_str.gsub(/[a-z][A-Z]\S{1}/){|s| s.insert(1," ")}
+    ret_str = ret_str.gsub(/\S+$/){|s| s = s.pluralize}
+    ret_str = ret_str.gsub(/\s/){|s| '_'};
+    ret_str = ret_str.gsub(/\//){|s| '__'};
+    ret_str = ret_str.downcase;
+    return ret_str;
+  end
   # PUT /people/1
   # PUT /people/1.xml
   def update
     found = false;
     updated = false;
     saved = false
-  #  id = params[:id];
+    #  id = params[:id];
     @table_index = session[:table_index]
     @table_str = @table_options[@table_index][0];
     object_str = "#{@table_str}.find(id)"
     new_object_str = "#{@table_str}.new"
-
-  #  updated_object = params[:person];
-    updated_object = params[@table_str.downcase.to_sym];
-    id = updated_object[:id];
-    if (id.length == 0)
+    @table_qualifier = QualifierStr(@table_str);
+    #  updated_object = params[:person];
+    updated_object = params[@table_qualifier];
+    
+    if (updated_object.has_key?(:id) == false)
       current_object = eval(new_object_str);
     else
-      current_object = eval(object_str);
+      if  updated_object[:id].length == 0
+        current_object = eval(new_object_str);
+      else
+        id = updated_object[:id];
+        current_object = eval(object_str);
+      end
     end
 
     
@@ -687,22 +787,37 @@ class PeopleController < ApplicationController
       found = true;
     end
 
+
+    
     if( current_object)
+      
+
+
+      attributes_list = session[:attribute_lists][@table_index];
+      integrity_check(attributes_list, updated_object);
+      if(@integrity_ok == false)
+        respond_to do |format|
+          format.html { redirect_to(people_url) }
+        end
+        return
+      end
+           
+     
       current_object.update_attributes(updated_object )
-      updated = true;
+       updated = true;
       if updated && current_object.save
         saved = true;
       end
     end
 
     if saved
-        flash_str = "#{@table_str} with id #{current_object.id} was successfully updated."
-        flash[:notice] = flash_str
-        RAILS_DEFAULT_LOGGER.error(flash_str);
-      else
-        flash_str = "Failed to update #{@table_str} with id #{current_object.id}. Found value = #{found}, updated value = #{updated}, saved value = #{saved}"
-        flash[:notice] = flash_str;
-        RAILS_DEFAULT_LOGGER.error(flash_str);
+      flash_str = "#{@table_str} with id #{current_object.id} was successfully updated."
+      flash[:notice] = flash_str
+      RAILS_DEFAULT_LOGGER.error(flash_str);
+    else
+      flash_str = "Failed to update #{@table_str} with id #{current_object.id}. Found value = #{found}, updated value = #{updated}, saved value = #{saved}"
+      flash[:notice] = flash_str;
+      RAILS_DEFAULT_LOGGER.error(flash_str);
     end
 
     respond_to do |format|
@@ -711,7 +826,8 @@ class PeopleController < ApplicationController
     end
 
 
-    end
+  end
+
     
  
 
@@ -765,7 +881,12 @@ class PeopleController < ApplicationController
 
     old_day_ids = [];
     new_day_ids = [];
+    
 
+    
+    TermName.create(:name => 'Hilary');
+    TermName.create(:name => 'Trinity');
+    TermName.create(:name => 'Michaelmas');
     status_csvs = StatusCsv.find(:all);
 
     for csv_status in status_csvs
@@ -922,14 +1043,17 @@ class PeopleController < ApplicationController
       new_course_ids << new_course.id;
     end
 
+
     csv_terms = TermCsv.find(:all);
     for csv_term in csv_terms
       new_term = Term.new;
-      new_term.term_number = csv_term.name;
+      new_term.term_name_id = csv_term.name;
       new_term.year = csv_term.year;
-      new_term.save;
-      old_term_ids << csv_term.id;
-      new_term_ids << new_term.id;
+      if new_term.term_name_id>=0 && new_term.term_name_id<=3
+        new_term.save;
+        old_term_ids << csv_term.id;
+        new_term_ids << new_term.id;
+      end
     end
     csv_days = DayCsv.find(:all);
 
@@ -939,39 +1063,39 @@ class PeopleController < ApplicationController
       day.long_name = csv_day.long_name;
       day.short_name = csv_day.short_name;
       if csv_day.long_name =~ /Sunday/
-        day.Sunday = true;
+        day.sunday = true;
       else
-        day.Sunday = false;
+        day.sunday = false;
       end
       if csv_day.long_name =~ /Monday/
-        day.Monday = true;
+        day.monday = true;
       else
-        day.Monday = false;
+        day.monday = false;
       end
       if csv_day.long_name =~ /Tuesday/
-        day.Tuesday = true;
+        day.tuesday = true;
       else
-        day.Tuesday = false;
+        day.tuesday = false;
       end
       if csv_day.long_name =~ /Wednesday/
-        day.Wednesday = true;
+        day.wednesday = true;
       else
-        day.Wednesday = false;
+        day.wednesday = false;
       end
       if csv_day.long_name =~ /Thursday/
-        day.Thursday = true;
+        day.thursday = true;
       else
-        day.Thursday = false;
+        day.thursday = false;
       end
       if csv_day.long_name =~ /Friday/
-        day.Friday = true;
+        day.friday = true;
       else
-        day.Friday = false;
+        day.friday = false;
       end
       if csv_day.long_name =~ /Saturday/
-        day.Saturday = true;
+        day.saturday = true;
       else
-        day.Saturday = false;
+        day.saturday = false;
       end
 
       day.save;
@@ -1145,6 +1269,16 @@ class PeopleController < ApplicationController
     end
 
 
+  end
+  def test
+     @my_struct =MyTestStruct.new(rand(100), rand(100))
+      respond_to do |format|
+         format.js {
+           render :action => :index do |page|
+               page.replace_html("test_div" , :partial => "test" , :object => @my_struct)
+           end
+         }
+      end
   end
 
 end

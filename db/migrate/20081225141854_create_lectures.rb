@@ -13,8 +13,7 @@ class CreateLectures < ActiveRecord::Migration
 
       t.timestamps
     end
-    foreign_key(:lectures, :course_id, :courses)
-    foreign_key(:lectures, :person_id, :people)
+
 
   end
 

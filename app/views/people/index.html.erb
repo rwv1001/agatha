@@ -1,16 +1,18 @@
-    <div id ="default_div">
+
+  <div class ="hidden_div" id ="default_div">
 
     <input id="default_text" name="default_text" type="text" value="Default Text" disable =" true" />
     <label id ="default_label" name ="default_label"> Default Label </label>
     <input type="button" id ="default_button" name="default_button"  value="Default Button" onclick ="$('default_label').remove();$('default_text').remove()" >
 
      </div>
+    
 
-    <div id ="default_div_field" hide ="false" >
+    <div class ="hidden_div" id ="default_div_field" hide ="false" >
     <input id="default_text" name="default_text" type="text" value="Display Field" disable =" true" />
     <label id ="default_label" name ="default_label"> Display Field </label>
      </div>
-         <div id ="default_div_order">
+         <div class ="hidden_div" id ="default_div_order">
     <input id="default_text" name="default_text" type="text" value="Display Field" disable =" true" />
     <label id ="default_label" name ="default_label"> Display Field </label>
      </div>
@@ -24,7 +26,7 @@
 
  <form action="/people/table_submit" id="search_form" method="post">
 <!--- form_tag :action => :table_search -->
-    <div id ="default_div_order">
+    <div style ="visibility: hidden; position:absolute;" id ="default_div_order">
     <input id="default_order_text" name="default_order_text" type="text" value="Display Field"/>
     </div>
 
@@ -34,13 +36,13 @@
 
   <%= select_tag "table_selector", options_for_select(@table_options,  @table_index) %> 
 
-  <div>
+  <div id ="possible_filters_div" class ="hidden_div" >
  
     <select id="possible_filters"><option>example</option> </select>
 
     <input type="button" id ="add_filter" name="add_filter"  value="Add search filter" >
   </div>
-
+   
 
   <div id ="current_filters">  
 
@@ -48,6 +50,12 @@
   <div id ="current_fields">
 
   </div>
+  <div >
+<a href="help" onclick="window.open('help', '1240670937',
+  'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=652,height=518,left=280,top=100');
+  return false;">Help </a>
+  </div>
+
   <div>
     <%= submit_tag "Search", :class => 'table_search', :id => 'table_search' %>
     <%= submit_tag "Create new database entry", :class => 'new_entry', :id => 'new_entry'  %>
@@ -56,8 +64,8 @@
 
 
 <%  form_tag :action => :delete_entries do %>
-  <div>
-     <select id="field_selector"><option>example</option> </select>
+  <div id ="field_selector_div" class ="hidden_div">
+     <select id="field_selector"><option></option> </select>
       <input type="button" id ="add_field" name="add_field"  value="Add display field" >
      
   </div>
@@ -70,7 +78,7 @@
       <tr class="column-header">      
           <th >
           
-          <span class="remove_column"><a href ="#" >X</a> </span>
+         
           </th>
       </tr>
       
@@ -201,13 +209,15 @@
   </div>
 
 
-<div > <% form_tag :action => :import_csv do %>
+<div  > <% form_tag :action => :import_csv do %>
     <p> <%= submit_tag "Import CSV" %></p>
 <% end %></div>
 
-<div > <% form_tag :action => :import_courses do %>
+<div class ="hidden_div"  > <% form_tag :action => :import_courses do %>
     <p> <%= submit_tag "Import Courses CSV" %></p>
 <% end %></div>
+
+
 
 
 <p><%= link_to "Back to main menu", {:controller => "index"  } %> </p>

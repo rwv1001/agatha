@@ -1,3 +1,4 @@
+
 class TestClass
    attr_accessor :x
    attr_accessor :y
@@ -33,6 +34,7 @@ end
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
 class SearchField
+  include PeopleHelper
   attr_accessor :header
   attr_accessor :id
   attr_accessor :full_name
@@ -207,11 +209,15 @@ class SearchField
   end
 
   def ParseBooleanStr()
-    if @current_filter_string ==1
-      ret_val = "#{@search_token} IS TRUE"
+    case @current_filter_string
+    when 1
+       ret_val = "#{@search_token} IS TRUE"
+    when 0
+       ret_val = "#{@search_token} IS FALSE"
     else
-      ret_val = "#{@search_token} IS FALSE"
+      ret_val = ""
     end
+
     return ret_val
   end
 
@@ -565,15 +571,23 @@ class SearchField
   end
 
   def ParseTextStr2()
-    ret_val = "a#{@field_node.parent.id}.#{@attribute_name} SIMILAR TO \'#{@current_filter_string}\'"
+    if @current_filter_string.length == 0
+      ret_val = ""
+    else
+      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} SIMILAR TO \'#{@current_filter_string}\'"
+    end
+    
     return ret_val
   end
 
   def ParseBooleanStr2()
-    if @current_filter_string ==1
-      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} IS TRUE"
+    case @current_filter_string
+    when 1, "T", "t", "true", "TRUE", "True"
+       ret_val = "#{@search_token} IS TRUE"
+    when 0, "F", "f", "false", "FALSE", "False"
+       ret_val = "#{@search_token} IS FALSE"
     else
-      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} IS FALSE"
+      ret_val = ""
     end
     return ret_val
   end
@@ -1008,7 +1022,7 @@ class SearchController
         end       
       end
       if nested_joins.length >0
-        @join_str << "JOIN ( #{field_node.name.pluralize.downcase} a#{field_node.id} ";
+        @join_str << "JOIN ( #{field_node.name} a#{field_node.id} ";
         for child_node2 in nested_joins
           get_join_string(child_node2)
         end
@@ -1016,7 +1030,7 @@ class SearchController
         
       else
         if field_node.current_children.length > 0
-          @join_str << "JOIN #{field_node.name.pluralize.downcase} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
+          @join_str << "JOIN #{field_node.name} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
         end
       end     
     end    
@@ -1044,6 +1058,7 @@ class SearchController
       @where_str = @where_str.gsub(/AND\s*$/){|s| ''};
     end
    end
+   @where_str = "" if @where_str == " WHERE "
   end
 
   def get_order_string
@@ -1313,7 +1328,8 @@ class SearchController
         reflection_include_str = "#{include_str} => #{local_include_str}"
       end
       foreign_key = reflection.options[:foreign_key];
-      sub_tree = FieldNode.new(parent_tree, reflection_table_name, foreign_key);
+      tables_name = QualifiersStr(reflection_table_name)
+      sub_tree = FieldNode.new(parent_tree,tables_name , foreign_key);
       parent_tree.all_children << sub_tree;
 
       ProcessTable(reflection_qualifier, reflection_qualifier_str, reflection_qualifiers_str, reflection_table_name, reflection_include_str, sub_tree)
@@ -1355,8 +1371,8 @@ class SearchController
     end
    
   end
-  def HeaderStr(in_str)
-    
+    def HeaderStr(in_str)
+
     ret_str = in_str.strip;
     ret_str = ret_str.gsub(/_/){|s| ' '};
     ret_str = ret_str.gsub(/[a-z][A-Z]\S{1}/){|s| s.insert(1," ")}

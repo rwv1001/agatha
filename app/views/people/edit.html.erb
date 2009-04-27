@@ -7,7 +7,7 @@ window.opener.location.reload();
 
 <h1>Editing <%= @table_str %>  </h1>
 
-<% form_for(@current_object, :person,  :url => { :action => "update" }) do |f| %>
+<% form_for(@current_object, @table_qualifier.to_sym,  :url => { :action => "update" }) do |f| %>
   <%= f.error_messages %>
   <% attributes_str = " #{@table_str}.columns" %>
   <% attributes = eval(attributes_str) %>
