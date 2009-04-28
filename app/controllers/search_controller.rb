@@ -1022,7 +1022,7 @@ class SearchController
         end       
       end
       if nested_joins.length >0
-        @join_str << "JOIN ( #{field_node.name} a#{field_node.id} ";
+        @join_str << "INNER JOIN ( #{field_node.name} a#{field_node.id} ";
         for child_node2 in nested_joins
           get_join_string(child_node2)
         end
@@ -1030,7 +1030,7 @@ class SearchController
         
       else
         if field_node.current_children.length > 0
-          @join_str << "JOIN #{field_node.name} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
+          @join_str << "INNER JOIN #{field_node.name} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
         end
       end     
     end    

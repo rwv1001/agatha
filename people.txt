@@ -122,6 +122,8 @@ ruby script/console
 >> TermName.create(:name => 'Trinity');
 >> TermName.create(:name => 'Michaelmas');
 
+agatha3=#  DELETE FROM sessions;
+
 id		AutoNumber
 old_name	Text
 title		Text
