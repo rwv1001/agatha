@@ -1064,6 +1064,8 @@ class SearchController
   def get_order_string
     @order_str = " ORDER BY "
 
+    number_of_orders = @search_order.length
+    number_of_orders = 2 if number_of_orders >2
     for i in  (0..(@search_order.length - 1))
       field = @available_fields[@search_order[i]]
       node_id = field.field_node.parent.id;
