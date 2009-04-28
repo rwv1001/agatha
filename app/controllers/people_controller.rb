@@ -883,15 +883,7 @@ class PeopleController < ApplicationController
     new_day_ids = [];
     
 
-    term_name1 = TermName.new;
-    term_name1.name = "Hilary"
-    term_name1.save;
-    term_name2 = TermName.new;
-    term_name2.name = "Trinity"
-    term_name2.save;
-    term_name3 = TermName.new;
-    term_name3.name = "Michaelmas"
-    term_name3.save;
+
 
 
 
@@ -1208,7 +1200,15 @@ class PeopleController < ApplicationController
         tutorial.save;
       end
     end
-
+    term_name1 = TermName.new;
+    term_name1.name = "Hilary"
+    term_name1.save;
+    term_name2 = TermName.new;
+    term_name2.name = "Trinity"
+    term_name2.save;
+    term_name3 = TermName.new;
+    term_name3.name = "Michaelmas"
+    term_name3.save;
     respond_to do |format|
       format.html { redirect_to(people_url) }
     end
