@@ -883,10 +883,18 @@ class PeopleController < ApplicationController
     new_day_ids = [];
     
 
-    
-    TermName.create(:name => 'Hilary');
-    TermName.create(:name => 'Trinity');
-    TermName.create(:name => 'Michaelmas');
+    term_name1 = TermName.new;
+    term_name1.name = "Hilary"
+    term_name1.save;
+    term_name2 = TermName.new;
+    term_name2.name = "Trinity"
+    term_name2.save;
+    term_name3 = TermName.new;
+    term_name3.name = "Michaelmas"
+    term_name3.save;
+
+
+
     status_csvs = StatusCsv.find(:all);
 
     for csv_status in status_csvs
