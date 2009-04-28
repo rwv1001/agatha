@@ -1066,7 +1066,7 @@ class SearchController
 
     number_of_orders = @search_order.length
     number_of_orders = 2 if number_of_orders >2
-    for i in  (0..(@search_order.length - 1))
+    for i in  (0..( number_of_orders - 1))
       field = @available_fields[@search_order[i]]
       node_id = field.field_node.parent.id;
       field_name = field.attribute_name
