@@ -1,0 +1,31 @@
+<% row_type = search_header_buttons.row_type %>
+<% table_type = search_header_buttons.table_type %>
+
+<th class = "help-cell">
+   <% if row_type == :filter_string %>
+
+     
+      <a href="help" onclick="window.open('help', 'help',
+ 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width='+ screen.width/2+ ',height=' + screen.height +',left='+(screen.width/2 +1)+',top=0');
+  return false;">Help </a>
+   <% end %>      
+</th>
+<th class="toadd-cell">
+  <% if row_type == :filter_string %>
+ <span style="white-space: nowrap">  Add/Update |</span>
+  <% end %>
+  </th>
+  <th class="exam-cell">
+    <% if row_type == :filter_string %>
+   <span style="white-space: nowrap"> Examine |</span>
+    <%end %></th>
+    <th class="compulsory-cell">
+      <% if row_type == :filter_string %>
+      Compulsory
+      <% end %>
+      </th>
+<% if table_type == :search_results %>
+     <th class = "update-cell"><th class ="create-cell"></th><th class ="create-email-cell"></th><th class ="suggest-cell"></th><th class = "delete-cell"></th><th class = "send-cell"></th><th class="add-cell"></th><th class="assign-cell"></th><th class="willing-cell"></th>
+<% else %>
+   
+<% end %>

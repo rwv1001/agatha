@@ -1,0 +1,500 @@
+<html>
+  <head>
+    <title tal:content="template/title">Agatha Main Page</title>
+     <%= javascript_include_tag "prototype" %>
+     
+      <%= javascript_include_tag "template" %>
+      <%= javascript_include_tag "search_ctl" %>
+      <%= javascript_include_tag "display_format" %>
+      <%= javascript_include_tag "edit" %>
+      <%= javascript_include_tag "group_filters" %>
+      <%= javascript_include_tag "group" %>
+
+     <%= stylesheet_link_tag  'agatha' %>
+
+
+
+    <script type="text/JavaScript">
+
+<!--
+
+
+
+
+
+var menu_width = 150;
+var white_space_width = 16;
+var logo_width = 150;
+var logo_height = 154;
+var title_div_height =173;
+var black_bar_height = 7;
+var white_bar_height = 7;
+
+
+//-->
+</script>
+<style type="text/css">
+td img {display: block;}
+
+
+      #menu_div { background: #666666; }
+      #content_div, #content_div_1, #content_div_2,  .content_class {background: #DDDDDD;}
+
+      .pad_class { padding: 3px 13px 3px 13px}
+      .separator_class {background: #ffffff; width: 100%; height:10px}
+
+      
+
+</style>
+
+</head>
+  <body  bgcolor="#ffffff"  onUnload ="on_unload()" >
+
+
+
+
+
+    
+   <script language="javascript">
+ template_header();
+ </script>
+ 
+ <div id ="main_div">
+   <script language="javascript">
+ menu_begin();
+   </script>
+ <div >
+<ul id="menu">
+
+
+    <li> <a class="people" href="#" onclick="display_page('Person','-1');return false">People </a>
+    <ul id="people2">
+  	<li> <a  href="#" onclick="display_page('Person','-1');return false">People </a></li>
+    <li> <a  href="#" onclick="display_page('Institution','-1');return false">Institutions</a></li>
+        <%  if session[:administrator] %>
+    <li> <a href="#" onclick="display_page('User','-1');return false">Users </a> </li>
+    <% end %>
+    </ul>
+    </li>
+
+  	<li> <a class="courses"  href="#" onclick="display_page('Course','-1');return false">Courses </a></li>
+
+  	
+    
+    <li> <a class="attendees"  href="#" onclick="display_page('Attendee','-1');return false">Lectures </a>
+      <ul id="lectures2">
+        <li> <a href="#" onclick="display_page('Attendee','-1');return false">Attendees </a> </li>
+		<li> <a href="#" onclick="display_page('Lecture','-1');return false">Lecture Schedules </a> </li>
+		<li> <a href="#" onclick="display_page('WillingLecturer','-1');return false">Willing Lecturers </a> </li>
+      </ul>
+    </li>
+      <li> <a class="tutorials"  href="#" onclick="display_page('Tutorial','-1');return false">Tutorials </a>
+       <ul id="tutorials2">
+          <li> <a href="#" onclick="display_page('Tutorial','-1');return false">Tutorials </a></li>
+          <li> <a href="#" onclick="display_page('TutorialSchedule','-1');return false">Tutorial Schedules </a> </li>
+          <li> <a href="#" onclick="display_page('WillingTutor','-1');return false">Willing Tutors </a> </li>
+          <li> <a href="#" onclick="display_page('MaximumTutorial','-1');return false">Maximum Tutorials</a> </li>
+       </ul>
+      </li>
+      <%  if session[:administrator] %>
+     <li> <a class="agatha_emails" href="#" onclick="display_page('AgathaEmail','-1');return false">Emails </a>
+     <ul id="emails2">
+  	<li> <a  href="#" onclick="display_page('AgathaEmail','-1');return false">Emails </a> </li>
+    <li> <a  href="#" onclick="display_page('EmailTemplate','-1');return false">Email Templates </a> </li>
+     </ul>
+     </li>
+     <%  end %>
+  
+    
+    <li> <a class="groups"  href="#" onclick="display_page('Group','-1');return false">Groups </a> </li>
+
+
+
+    
+
+    <li> <a class="options"  href="#"  onclick="display_page('GroupFiltering','-1');return false">Options </a>
+    <ul id="options2">
+    <li> <a href="#"  onclick="display_page('GroupFiltering','-1');return false">Group Filtering </a> </li>
+    <li> <a   href="#"  onclick="display_page('FieldDisplayFormat','-1');return false">Field Formatting </a> </li>
+    </ul>
+    </li>
+</ul>
+ </div>
+ <div style="clear:both; height: 20px"> &nbsp</div>
+
+<div style="clear:both; background-color: #AAA; padding-left: 10px"> <p> You are logged in as user <%=User.find(:first, :conditions=> {:id => session[:user_id]}).name %>. 
+ <%= link_to '(Logout)', :controller => :admin, :action => 'logout'%>
+</p></div>
+  <div id="first_menu_div"> </div>
+
+
+   <script language="javascript">
+   menu_end();
+
+  </script>
+    <div style="position: absolute; left: -1000px">
+    <table>
+      <tr><th>
+
+    <div id="dummy_x" style ="min-width: 10em; overflow: hidden; background: #fff; border: 1px solid #000;">
+         <div style ="float:left; margin-top: 0.3ex">
+       <input type=text style="border:none" size= 15 value ="%">
+         </div>
+          <div id="dummy_a" style="background: #AAAAAA;  border-left: 1px solid; border-color: #000000;  float: right "  > <a href ="#"  >X</a> </div>
+       </div>
+       </th></tr>
+    </table>
+    <table><tr><th> dummy format controller</th>
+<th>
+      <div style="float:left" >
+  <div id ="dummy_select" style ="float:left; background:#fff;  border: 1px solid #000;">
+  <select style="border:none; background-color: transparent; overflow:hidden" >
+       <option value = "">Select Field</option>
+    </select>
+    </div>
+   <div id ="dummy_format" style ="float:left;  overflow: hidden;  background: #fff; border: 1px solid #000; border-left: none;"  >
+         <div class="display_format_string_div" style ="float:left; margin-top: 0.0ex"  >
+       <input type=text style="border:none" value="%" size= 10 >
+         </div>
+      <div id ="dummy_fx"  class="remove_format_field" ><a href ="#"  >X</a> </div>
+    </div>
+
+
+    <div style ="float:left;"> &nbsp; </div>
+    <div id ="dummy_fp" class="add_format_field" ><a href ="#">+</a> </div>
+  <div style ="float:left"> &nbsp; </div>
+  </div>
+      <div id ="dummy_format_narrow" style ="float:left;  overflow: hidden;  background: #fff; border: 1px solid #000; "  >
+         <div class="display_format_string_div" style ="float:left; margin-top: 0.0ex"  >
+       <input type=text style="border:none" value="%" size= 5 >
+         </div>
+      <div id ="dummy_fx"  class="remove_format_field" ><a href ="#"  >X</a> </div>
+    </div>
+</th></tr></table>
+    </div>
+
+
+  <script language="javascript">
+  content_begin()
+  </script>
+
+  <script language="javascript">
+    on_load();
+    </script>
+  
+
+
+
+
+
+<div id="first_div">
+<input type="button" value="test button" onclick="div_test();return false" />
+</div>
+
+    <form action=<%=  "\"/welcome/div_test\"" %> id=<%="\"div_test\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/div_test"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+    </form>
+
+    <form action=<%=  "\"/welcome/delete\"" %> id=<%="\"form_delete\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/delete"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <input name="id" id="delete_id" type="text" style="display:none" />
+       <input name="table_name" id ="delete_table_name" type="text" style="display:none"  />
+    </form>
+    <form action=<%=  "\"/welcome/delete\"" %> id=<%="\"form_delete\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/delete"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <input name="id" id="delete_id" type="text" style="display:none" />
+       <input name="table_name" id ="delete_table_name" type="text" style="display:none"  />
+    </form>
+    <div>
+    <form action=<%=  "\"/welcome/select_action\"" %> id=<%="\"action_form\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/select_action"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <div style= "display: none" >
+       <input name="action_type" id ="action_type" type="text"   />
+       <input name="class_name" id ="action_class" type="text"   />
+       <input name="class_name2" id="action_class2" type="text" />
+       <div id="specific_action_variables">
+
+       </div>
+       </div>
+    </form>
+    </div>
+
+    <div>
+    <form action=<%=  "\"/welcome/make_suggestion\"" %> id=<%="\"make_suggestion\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/make_suggestion"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <div  id="make_suggestion_div" style= "display: none" >
+       <input name="suggest_class" id ="suggest_class" type="text" />
+       <input name="suggest_type" id ="suggest_type" type="text"  />
+       <input name="suggest_id" id ="suggest_id" type ="text" />
+       <div id="specific_suggest_variables">
+
+       </div>
+       </div>
+    </form>
+    </div>
+
+    <form action=<%=  "\"/welcome/display_page\"" %> id=<%="\"display_page\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/display_page"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div  style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <input name="page_name" id="display_page_name" type="text" style="display:none" />
+       <input name="option" id ="display_page_option" type="text" style="display:none"  />
+    </form>
+
+    <form action=<%=  "\"/welcome/update_main\"" %> id="update_main" method="post" onsubmit="new Ajax.Request('<%="/welcome/update_main"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <div style="display:none">
+       <input name="id" id="update_main_id" type="text" />
+       <input name="table_name" id ="update_main_table_name" type="text"  />
+       <input name="attribute_name" id="update_main_attribute_name" type="text" />
+       </div>
+    </form>
+
+
+    <form action=<%=  "\"/welcome/child_unload\"" %> id="child_unload_main" method="post" onsubmit="new Ajax.Request('<%="/welcome/child_unload"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
+      <div style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+       <div style="display:none">
+       <input name="id" id="child_unload_main_id" type="text" />
+       <input name="table_name" id ="child_unloade_main_table_name" type="text"  />
+       </div>
+    </form>
+    <div style="display:none">
+    <input type="text" id= "x_height" /><label> dummy_x</label>
+     <input type="text" id= "a_height" /><label> dummy_a</label>
+     <input type="text" id= "select_height" /><label> dummy_select</label>
+     <input type="text" id= "format_height" /><label> dummy_format</label>
+     <input type="text" id= "fx_height" /><label> dummy_fx</label>
+     <input type="text" id= "fp_height" /><label> dummy_fp</label>
+      <input type="text" id= "format_narrow_width" /><label> dummy_narrow_width</label>
+      <input type="text" id= "format_width" /><label> dummy_width</label>
+    </div>
+
+
+   <script type="text/javascript">
+        $('select_height').value = $('dummy_select').clientHeight;
+   $('format_height').value = $('dummy_format').clientHeight;
+   $('format_width').value = $('dummy_format').clientWidth;
+   $('format_narrow_width').value = $('dummy_format_narrow').clientWidth;
+   $('fp_height').value = $('dummy_fp').clientHeight;
+   $('fx_height').value = $('dummy_fx').clientHeight;
+   </script>
+   <div>
+     
+   </div>
+
+ 
+
+
+
+  <div id="hidden_div" style="display:none">
+
+  <% table_name = "Person" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+
+
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+  
+  <div id ="separator_Person" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Group" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+  <div id ="separator_Group" class ="separator_class">&nbsp</div>
+  
+  <% table_name = "Attendee" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+  <div  id ="separator_Attendee" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Lecture" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+
+  <div  id ="separator_Lecture" class ="separator_class">&nbsp</div>
+
+  <% table_name = "WillingLecturer" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+  <div id ="separator_WillingLecturer" class ="separator_class">&nbsp</div>
+  
+  <% table_name = "Tutorial" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+
+  <div id ="separator_Tutorial" class ="separator_class">&nbsp</div>
+
+  <% table_name = "TutorialSchedule" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_TutorialSchedule" class ="separator_class">&nbsp</div>
+
+     <% table_name = "WillingTutor" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_WillingTutor" class ="separator_class">&nbsp</div>
+
+        <% table_name = "MaximumTutorial" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_MaximumTutorial" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Course" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_Course" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Term" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_Term" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Day" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+
+   <div id ="separator_Day" class ="separator_class">&nbsp</div>
+
+  <% table_name = "User" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+   <div id ="separator_User" class ="separator_class">&nbsp</div>
+
+  <% table_name = "Institution" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+   <div id ="separator_Institution" class ="separator_class">&nbsp</div>
+
+
+   <% table_name = "EmailTemplate" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+   <div id ="separator_EmailTemplate" class ="separator_class">&nbsp</div>
+
+
+   <% table_name = "AgathaEmail" %>
+  <div id = <%="\"welcome_#{table_name}\""  %> >
+  <% search_controller =  @search_ctls[table_name] %>
+  <%= render(:partial => "shared/search_table", :object => search_controller) %>
+  </div>
+   <div id ="separator_AgathaEmail" class ="separator_class">&nbsp</div>
+
+
+  <div class ="separator_class">&nbsp</div>
+  <div id="welcome_GroupFiltering">
+  <div class ="separator_class">&nbsp</div>
+  <div class ="content_class" style="width: 100%">
+    <div class ="pad_class">
+      <h2>Group Filtering</h2>
+       <p>Update these settings if you want to restrict which records can be selected on the edit pages. For example, you can update the attendee/student entry below
+       so that on the attendee edit page, only current students are available for selection. </p>
+       <%= render(:partial => "shared/all_group_filters", :object => @all_group_filters) %>
+
+
+    </div>
+  </div>
+  </div>
+  <div id="welcome_FieldDisplayFormat">
+  <div class ="separator_class">&nbsp</div>
+
+  <div class ="content_class" style="width: 100%">
+    <div class ="pad_class">
+    <h2>Field Display Format</h2>
+    <p>Update these settings to alter the way references to records are displayed in other tables </p>
+    <form action="/welcome/update_formats"  method="post" onsubmit="new Ajax.Request('/welcome/update_formats', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;"><div style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
+
+         <%= render(:partial => "shared/format_controller", :object => @format_controller) %>
+        
+        <div>
+           <input name="commit" type="submit" value="Update" />
+        </div>
+    </form>
+  </div>
+ 
+  </div>
+  </div>
+
+  <div class ="separator_class">&nbsp</div>
+  <div class ="content_class" style="width: 100%"><br>d<br>d<br</div>
+  <div class ="separator_class">&nbsp</div>
+  <div class ="content_class" style="width: 100%"><br>d<br>d<br</div>
+  </div>
+  <script language="javascript">
+  content_end()
+  $("content_div").hide();
+  window.onload = function() {
+        display_page('','');
+        }
+   
+ 
+ 
+  </script>
+  <div id="two_column_div">
+ <div id="content_div_1" class="content_div" style="position: fixed;  top: 187px; left: 166px; right:0px; bottom:7px; overflow: auto;">
+<div id="first_div_1"> </div>
+
+  
+<div id="content_div_2" class="content_div" style="position: fixed;  top: 187px; left: 166px; right:0px; bottom:7px; overflow: auto;">
+<div id="first_div_2"> </div>
+
+  </div>
+  <div id="black_bar_separator_div" style ="position: fixed;top:187px; left: 166px;  bottom:7px; width: 7px; background-color: #000000;">&nbsp;</div>
+  </div>
+
+
+  </div>
+
+  <div id="disable_id" style ="position:absolute; top:0; right:0; width:100%; height: 100%; background-color: #ffffff;  opacity:0.0">
+</div>
+
+   <script language="javascript">
+
+
+
+     $("two_column_div").hide();
+     $("disable_id").hide;
+
+
+
+
+     </script>
+
+</html>
+

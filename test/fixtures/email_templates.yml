@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  from_email: MyString
+  to_email: MyString
+  subject: MyString
+  ruby_header: MyText
+  body: MyText
+  attachment_rule_id: 1
+  attachment_file_list: MyString
+
+two:
+  from_email: MyString
+  to_email: MyString
+  subject: MyString
+  ruby_header: MyText
+  body: MyText
+  attachment_rule_id: 1
+  attachment_file_list: MyString
