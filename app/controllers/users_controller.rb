@@ -23,6 +23,105 @@ class UsersController < ApplicationController
 
   # GET /users/new
   # GET /users/new.xml
+  def new_user
+    new_user = User.new(params[:user])   #
+    save_status = new_user.save;
+
+    respond_to do |format|
+      format.js  do
+        if(save_status)
+          render :update do |page|
+
+             if session[:administrator]
+                page.replace_html("user", :partial => "shared/create_user", :object => new_user );
+             else
+                page.replace_html("user", :partial => "shared/user", :object => new_user );
+             end
+             page << "alert(\"Username #{new_user.name} has been successfully created\")";
+         #   page.replace_html("flash", :partial => "shared/flash", :object => "Username #{new_user.name} has been successfully created");
+
+          end
+        else
+          render :update do |page|
+            page << "alert(\"Unable to create new user\")";
+           # page.replace_html("flash", :partial => "shared/flash", :object => "Unable to create new user");
+          end
+        end
+
+      end
+    end
+  end
+
+  def admin_update_user
+
+    if session[:administrator]
+      current_user  = User.find(params[:user_id])
+      update_status = false;
+      if( current_user)
+        current_user.update_attributes(params[:user])
+        update_status = current_user.save;
+      end
+      respond_to do |format|
+        format.js  do
+          if(update_status)
+            render :update do |page|
+              page.replace_html("user", :partial => "shared/create_user", :object => current_user );
+              page << "alert(\"Username #{current_user.name} has been successfully updated\")";
+            #  page.replace_html("flash", :partial => "shared/flash", :object => "Username #{current_user.name} has been successfully updated");
+
+            end
+          else
+            render :update do |page|
+              page << "alert(\"Unable to update user. Make sure new password and confirm password are identical\")";
+             # page.replace_html("flash", :partial => "shared/flash", :object => "Unable to update user");
+            end
+          end
+
+        end
+      end
+
+    else
+      respond_to do |format|
+        format.js  do
+
+          render :update do |page|
+            page << "alert(\"You do not have admin rights\")";
+        #    page.replace_html("flash", :partial => "shared/flash", :object => "You do not have admin rights");
+          end
+        end
+      end
+    end
+    
+  end
+
+
+  def update_user
+    @user = User.find(params[:user_id])
+    current_user = User.authenticate(@user.name, params[:old_password])
+    update_status = false;
+    if( current_user)
+      current_user.update_attributes(params[:user])
+      update_status = current_user.save;
+    end
+     
+    respond_to do |format|
+      format.js  do
+        if(update_status)
+          render :update do |page|
+            page.replace_html("user", :partial => "shared/user", :object => current_user );
+            page.replace_html("flash", :partial => "shared/flash", :object => "Username #{current_user.name} has been successfully updated");
+
+          end
+        else
+          render :update do |page|
+            page.replace_html("flash", :partial => "shared/flash", :object => "Unable to update user");
+          end
+        end
+
+      end
+    end
+
+  end
   def new
     @user = User.new
 
@@ -34,7 +133,12 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
+    @table_name = params[:table_name];
+    @id = params[:id];
+
+    @short_name = session[:search_ctls][@table_name].GetShortField(@id );
+
+    edit_helper();
   end
 
   # POST /users
@@ -47,15 +151,26 @@ class UsersController < ApplicationController
         flash[:notice] = "User #{@user.name} was successfully created."
         format.html { redirect_to(:action=>'index') }
         format.xml  { render :xml => @user, :status => :created,
-                             :location => @user }
+          :location => @user }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @user.errors,
-                             :status => :unprocessable_entity }
+          :status => :unprocessable_entity }
       end
     end
   end
+  def win_load
 
+    win_load_helper();
+
+  end
+
+  def win_unload
+    win_unload_helper();
+
+
+
+  end
   # PUT /users/1
   # PUT /users/1.xml
   def update
@@ -103,7 +218,7 @@ class UsersController < ApplicationController
     else
       update_status = false
     end
-      respond_to do |format|
+    respond_to do |format|
       if update_status
         flash[:notice] = "User #{@user.name} was successfully updated."
         format.html { redirect_to(:action=>'index') }
@@ -111,7 +226,7 @@ class UsersController < ApplicationController
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @user.errors,
-                             :status => :unprocessable_entity }
+          :status => :unprocessable_entity }
       end
 
 

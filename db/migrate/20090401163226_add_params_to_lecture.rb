@@ -5,10 +5,10 @@ class AddParamsToLecture < ActiveRecord::Migration
     remove_column :lectures, :day
     add_column :lectures, :day, :integer
     add_column :lectures, :lecture_time, :time
-    add_column :lectures, :location, :integer
-    add_column :lectures, :number_of_classes, :integer
-    add_column :lectures, :number_of_lectures, :integer
-    add_column :lectures, :hours, :integer
+    add_column :lectures, :location, :integer, :default => 1
+    add_column :lectures, :number_of_classes, :integer, :default => 0
+    add_column :lectures, :number_of_lectures, :integer, :default => 0
+    add_column :lectures, :hours, :integer, :default => 0
     add_column :lectures, :notes, :text
     
   end

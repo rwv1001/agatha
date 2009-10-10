@@ -1,15 +1,11 @@
-<h1>Editing Course Name</h1>
+<script type ="text/javascript">
+document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
+</script>
 
-<% form_for(@course) do |f| %>
-  <%= f.error_messages %>
+<div class ="content_class" style="width: 100%">
+  <div class ="pad_class">
 
-  <p>
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-	&nbsp;
-    <%= f.submit "Update" %>
-   
-  </p>
-<% end %>
-
-<%= link_to 'Back', courses_path %>
+    <h1><%="#{@short_name}"%>  </h1>
+    <%= render(:partial => "shared/edit_object", :object => @edit_object ) %>
+  </div>
+</div>

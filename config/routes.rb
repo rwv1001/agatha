@@ -1,13 +1,13 @@
 ActionController::Routing::Routes.draw do |map|
   
 
-  map.connect('', {:controller => "people", :action => "index"})
+  map.connect('', {:controller => "welcome", :action => "default"})
  
-  map.connect('admin',{:controller => "people", :action => "index"})
+  map.connect('admin',{:controller => "welcome", :action => "index"})
  
   map.connect('accessdenied', {:controller => "welcome", :action => "accessdenied"})
  
-  map.connect('index', {:controller => "people", :action => "index"})
+  map.connect('index', {:controller => "welcome", :action => "index"})
 
   map.connect('termly', {:controller => "welcome", :action => "termly"})
 
@@ -21,6 +21,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :lectures
 
+   
+  
   map.resources :pcourses
 
   map.resources :student_programmes
@@ -30,6 +32,15 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :people
   map.resources :courses
   map.resources :users
+  map.resources :institutions
+  map.resources :tutorials
+  map.resources :groups
+  map.resources :tutorial_schedules
+  map.resources :willing_tutors
+  map.resources :willing_lecturers
+  map.resources :email_templates
+  map.resources :agatha_emails
+  map.resources :maximum_tutorials
 
   # The priority is based upon order of creation: first created -> highest priority.
 

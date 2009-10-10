@@ -1,6 +1,6 @@
 class AddReligioushouseToPerson < ActiveRecord::Migration
   def self.up
-    add_column :people, :religious_house, :integer
+    add_column :people, :religious_house, :integer, :default => 1
   end
 
   def self.down

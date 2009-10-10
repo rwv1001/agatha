@@ -1,695 +1,85 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
+<html>
   <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <title>Agatha: People: <%= controller.action_name %></title>
-    <%= javascript_include_tag "prototype" %>
-   
-    <%= javascript_include_tag "test" %>
-    <%= javascript_include_tag :defaults %>
-    <%= stylesheet_link_tag  'agatha', 'scaffold' %>
-    <script type="text/javascript">
-      <!--
+    <title tal:content="template/title">Agatha People Page</title>
+     <%= javascript_include_tag "prototype" %>
+      <%= javascript_include_tag "template" %>
+      <%= javascript_include_tag "search_ctl" %>
+      <%= javascript_include_tag "display_format" %>
+      <%= javascript_include_tag "edit" %>
+     <%= stylesheet_link_tag  'agatha' %>
+    <script type="text/JavaScript">
 
-      
+<!--
 
-         
+var menu_width = 150;
+var white_space_width = 16;
+var logo_width = 150;
+var logo_height = 154;
+var title_div_height =173;
+var black_bar_height = 7;
+var white_bar_height = 7;
 
 
-      function groupButtonEnabler()
-      {
-        // var my_buttons = $$('#name_selection input.check');
-        var my_buttons = $$('#group_buttons input.list_button');
-        //alert(my_buttons.length.toString()+" Hello!!");
-        if($('group_list').selectedIndex == 0)
-        {
-          my_buttons.each(function(button){button.disabled = true});
-        }
-        else
-        {
-          my_buttons.each(function(button){button.disabled = false});
-        }
-      }
-      function listButtonEnabler()
-      {
-        // var my_buttons = $$('#name_selection input.check');
-        var my_buttons = $$('#list_buttons input.list_button');
-        //alert(my_buttons.length.toString()+" Hello!!");
-        if($('group_list').selectedIndex == 0)
-        {
-          my_buttons.each(function(button){button.disabled = true});
-        }
-        else
-        {
-          my_buttons.each(function(button){button.disabled = false});
-        }
-      }
-      function trim_white_space(string_val)
-      {
-        var stripped_val = string_val.replace(/^\s*|\s*$/g,'');
-        return stripped_val;
-      }
-      function newGroupButtonEnabler()
-      {
-        var my_button = $('new_group_button');
-        var my_text = $('new_group_name');
+//-->
+</script>
+<style type="text/css">
+td img {display: block;}
 
-        my_text.value = trim_white_space(my_text.value);
-        if(my_text.textLength == 0 )
-        {
-          my_button.disabled = true;
-        }
-        else
-        {
-          my_button.disabled = false;
-        }
 
-      }
-      function newListButtonEnabler()
-      {
-        var my_button = $('new_list_button');
-        var my_text = $('new_list_name');
+      #menu_div { background: #FFFF77; }
+      #content_div {background: #ffffff;}
+      .content_class {background:  #FFFFBB}
+      .pad_class { padding: 3px 13px 3px 13px}
+      .separator_class {background: #ffffff; width: 100%; height:10px}
 
-        my_text.value = trim_white_space(my_text.value);
-        if(my_text.textLength == 0 )
-        {
-          my_button.disabled = true;
-        }
-        else
-        {
-          my_button.disabled = false;
-        }
-      }
+      .supplementary-cell {   background: #DDDDDD;}
 
+</style>
 
+</head>
+  <body id ="details" bgcolor="#ffffff" onLoad ="on_load()" onUnload ="on_unload()"  >
+   <script language="javascript">
+ template_header();
+  </script>
+  <div id ="main_div">
 
+ <script language="javascript">
+ menu_begin();
+   </script>
 
 
+ 
 
 
 
+ <div style="clear:both; height: 20px"> &nbsp</div>
 
+<div style="clear:both; background-color: #FD3; padding-left: 10px"> <p> You are logged in as user <%=User.find(:first, :conditions=> {:id => session[:user_id]}).name %> </p></div>
+<div id ="flash" style="padding: 3px 13px 3px 13px">
 
 
+</div>
 
 
-      function removeAllOptions(selectbox)
-      {
 
-        var i;
-        for(i=selectbox.options.length-1; i>=0 ;i--)
-        {
-          selectbox.remove(i);
-        }
-      }
+   <script language="javascript">
+    menu_end();
 
-      function deleteCurrent(name)
-      {
-        table_value = parseInt($('table_selector').getValue());
-        current_filters = current_filterss[table_value];
-        possible_filters = possible_filterss[table_value];
+  </script>
 
 
-        for(i = 0; i< current_filters.length; i++)
-        {
-          if(current_filters[i][1]==name)
-          {
-            possible_filter = new Array();
-            possible_filter =  current_filters[i];
-            possible_filters.push(possible_filter);
-            options = $('possible_filters').options;
-            options.add( new Option(possible_filter[0], possible_filter[1]));
-            current_filters.splice(i,1);
-            break;
-          }
-        }
-        $('possible_filters_div').setAttribute("class", "shown_div");
 
+  <script language="javascript">
+  content_begin()
+  </script>
+   <div id ="session_div">
+  </div>
 
-      }
-      function displayHeaders(table_value)
-      {
+<%=  yield %>
+   <script language="javascript">
+  content_end()
+  </script>
+  </div>
 
-        header_div = $('search_headers')
-        rows = header_div.rows;
-        row0 = rows[0]
-        row1 = rows[1]
-        current_fields = current_fieldss[table_value]
-        num_fields = current_fields.length
-        generic_header0 =  row0.firstDescendant()
-        generic_header1 =  row1.firstDescendant()
-        while(row0.cells.length >num_fields)
-        {
-          row0.cells.length = num_fields;
-        }
-        while(row1.cells.length > num_fields)
-        {
-          row1.cells.length = num_fields;
-        }
-        new_header0 =  generic_header0
-        new_header1 =  generic_header1
-        for(i = 0; i<num_fields ;i++)
-        {
-          if(new_header0 == null )
-          {
-            new_header0 =  generic_header0.cloneNode(false)
-            row0.appendChild(new_header0);
-          }
-          if(new_header1 == null )
-          {
-            new_header1 =  generic_header1.cloneNode(false)
-            row1.appendChild(new_header1);
-          }
-          new_header0.setAttribute("class",current_fields[i][1])
-          new_header1.setAttribute("class",current_fields[i][1])
-          new_header0.textContent = current_fields[i][3]
-          // new_header1.textContent = current_fields[i][2]
-
-          on_click_string = "\"deleteColumn('" + current_fields[i][1] + "');return false;\""
-          new_header1.innerHTML = current_fields[i][2] +"<span class=\"remove_column\"><a href =\"#\" onclick = " + on_click_string + ">X</a> </span>"
-          new_header0 = new_header0.next();
-          new_header1 = new_header1.next();
-        }
-      }
-      function generateFieldBoxes(table_value) //this is just so we can pass columns to controller
-      {
-
-        current_fields =  getCurrentFields();
-        div_fields = $('current_fields');
-
-        while(div_fields.hasChildNodes())
-        {
-          div_fields.removeChild(div_fields.lastChild);
-        }
-
-        for(i = 0; i< current_fields.length ; i++ )
-        {
-          generateFieldBox(i);
-        }
-      }
-      function getCurrentFields()
-      {
-        table_value = parseInt($('table_selector').getValue());
-        current_fields = current_fieldss[table_value];
-        return  current_fields;
-      }
-      function getCurrentFields()
-      {
-        table_value = parseInt($('table_selector').getValue());
-        current_fields = current_fieldss[table_value];
-        return  current_fields;
-      }
-
-      function generateFieldBox(current_index)
-      {
-        current_fields =  getCurrentFields();
-        new_div = $('default_div_field').cloneNode(true);
-        //new_div.setAttribute("class", "shown_div");
-        div_id = "div_field_f_" +current_fields[current_index][1];
-        new_div.setAttribute("id", div_id );
-        children_elements = new_div.childElements();
-
-        field_text = children_elements[0];
-        field_text.name = "f_" + current_fields[current_index][1];
-        field_label = children_elements[1];
-        field_label.textContent = current_fields[current_index][0];
-
-        div_fields.appendChild( new_div);
-
-      }
-
-      function displayFilter(current_index)
-      {
-        current_filters =  getCurrentFilters();
-        new_div = $('default_div').cloneNode(true);
-        new_div.setAttribute("class", "shown_div");
-       // new_div.setStyle({visibility: 'visible'});
-        div_id = "div_filter_" +current_index;
-        new_div.setAttribute("id", div_id );
-        children_elements = new_div.childElements();
-        remove_button = children_elements[2];
-        remove_button.setAttribute("value", "Remove Filter" );
-        // remove_button.setAttribute("name");
-
-
-        filter_label = children_elements[1];
-        filter_label.textContent = current_filters[current_index][0];
-        filter_text = children_elements[0];
-        filter_text.value = current_filters[current_index][2];
-        filter_text.name = current_filters[current_index][1];
-        on_click_string1 = "$('" + div_id + "').remove();"
-        on_click_string2 = "deleteCurrent('" +  filter_text.name +"');";
-        on_click_string = on_click_string1  + on_click_string2;
-        remove_button.setAttribute("onClick",on_click_string);
-
-        div_filter.appendChild( new_div);
-
-
-
-      }
-      function deleteColumn(field_name)
-      {
-
-        table_value = parseInt($('table_selector').getValue());
-        current_fields = current_fieldss[table_value];
-        possible_fields = possible_fieldss[table_value];
-        if(current_fields.length <=3 )
-        {
-          alert("Cannot delete last three display columns");
-          return;
-        }
-        column_elements = $$("td." + field_name)
-        column_elements.each(function(element){element.remove()})
-        column_header_elements = $$("th." + field_name)
-        column_header_elements.each(function(element){element.remove()})
-        f_field_name = "f_"+field_name
-        for(i = 0; i< current_fields.length; i++)
-        {
-          if(current_fields[i][1]==field_name)
-          {
-            
-            possible_field =  current_fields[i];
-            possible_fields.push(possible_field);
-            options = $('field_selector').options;
-            options.add( new Option(possible_field[0], possible_field[1]));
-            current_fields.splice(i,1);
-            div_id = "div_field_" +f_field_name;
-            $(div_id).remove();
-            break;
-          }
-        }
-       $('field_selector_div').setAttribute("class", "shown_div");
-      }
-
-
-
-
-      function tableSelected()
-      {
-
-    //    $('default_div').hide();
-      //  $('default_div_field').hide();
-           $('field_selector_div').setAttribute("class","hidden_div")
-        table_value = parseInt($('table_selector').getValue());
-        possible_filters_elt =  $('possible_filters')
-
-        removeAllOptions( possible_filters_elt);
-       
-        options = possible_filters_elt.options;
-
-
-        possible_filters = possible_filterss[table_value];
-
-        for(i = 0; i<possible_filters.length; i++ )
-        {
-          options.add( new Option(possible_filters[i][0], possible_filters[i][1]));
-        }
-        if(possible_filters.length == 0)
-          {
-             $('possible_filters_div').setAttribute("class", "hidden_div");
-          }
-        else
-          {
-             $('possible_filters_div').setAttribute("class", "shown_div");
-
-          }
-          field_selector_elt = $('field_selector');
-
-        removeAllOptions( field_selector_elt );
-        field_options = field_selector_elt.options;
-        possible_fields = possible_fieldss[table_value];
-
-        for(i = 0; i<possible_fields.length; i++ )
-        {
-          field_options.add( new Option(possible_fields[i][0], possible_fields[i][1]));
-        }
-        if(possible_fields.length>0)
-          {
-            $('field_selector_div').setAttribute("class","shown_div")
-          }
-        generateFieldBoxes( table_value)
-
-
-
-        if(table_value != <%= @table_index %>)
-        {
-          $('search_results').hide();
-          //$('field_selector').disable();
-          $('search_headers_div').show();
-          displayHeaders(table_value);
-          $('group_selection').hide();
-        }
-        else
-        {
-          $('search_headers_div').hide();
-          $('search_results').show();
-        //  if(table_value == 0)
-        //    {
-          $('group_selection').show();
-        //    }
-        //    else
-        //    {
-        //      $('group_selection').hide();
-        //    }
-          //$('field_selector').enable();
-        }
-        loadSearchBoxes();
-      }
-
-
-      function getCurrentFilters()
-      {
-        table_value = parseInt($('table_selector').getValue());
-        current_filters = current_filterss[table_value];
-        return  current_filters;
-      }
-      function loadSearchBoxes()
-      {
-        current_filters =  getCurrentFilters();
-        div_filter = $('current_filters');
-
-        while(div_filter.hasChildNodes())
-        {
-          div_filter.removeChild(div_filter.lastChild);
-        }
-
-        for(i = 0; i< current_filters.length ; i++ )
-        {
-          displayFilter(i);
-
-
-
-        }
-
-
-      }
-
-  function disableSubmitters()
-  {
-    anchors =  $$('a')
-     anchors.each(function(button){button.disabled = true});
-     $('table_search').disabled = true;
-  }
-
-function searchOrder(index_value)
-{
-
-  order_element = $('default_order_text');
-  if(order_element)
-  {
-    order_element.setAttribute("id", "order_text");
-    order_element.setAttribute("name", "order_text");
-    order_element.setAttribute("value", index_value);
-  }
-
-  disableSubmitters();
-  my_form = $('search_form');
-  my_form.submit();
-
-  
-
-}
-function TestHandler2()
-{
- form_id = "test_form"
- $(form_id).submit();
-}
-
-     
-
-  function AddSearchFilter()
-  {
-    selected_val =  $('possible_filters').selectedIndex;
-    table_value = parseInt($('table_selector').getValue());
-    possible_filters = possible_filterss[table_value];
-
-
-    possible_filter = new Array();
-
-    possible_filter = possible_filters[selected_val];
-    x = 1;
-    if( possible_filter.length<3)
-    {
-      possible_filter.push(""); // search_string
-    }
-
-
-    current_filters = current_filterss[table_value];
-    current_filters.push(possible_filter);
-
-    possible_filters.splice(selected_val,1);
-
-    children_options =  $('possible_filters').childElements();
-    children_options[selected_val].remove();
-    displayFilter(current_filters.length - 1);
-
-    if(possible_filters.length == 0)
-    {
-         $('possible_filters_div').setAttribute("class","hidden_div")
-    }
-
-    filter_tag = possible_filter[1];
-    possible_fields = possible_fieldss[table_value];
-
-
-    for(i = 0; i< possible_fields.length; i++)
-    {
-      if(possible_fields[i][1]==filter_tag)
-      {
-
-        AddDisplayIndex(i );
-        if(table_value != <%= @table_index %>)
-        {
-          displayHeaders(table_value);
-        }
-        return;
-      }
-    }
-
-
-
-  }
-  function AddDisplayIndex(selected_val )
-  {
-    table_value = parseInt($('table_selector').getValue());
-    possible_fields = possible_fieldss[table_value];
-
-
-    
-
-    possible_field = possible_fields[selected_val].slice();
-    x = 1;
-
-
-    current_fields = current_fieldss[table_value];
-    current_fields.push(possible_field);
-
-    possible_fields.splice(selected_val,1);
-    if(possible_fields.length == 0)
-     {
-       $('field_selector_div').setAttribute("class","hidden_div")
-     }
-    children_options =  $('field_selector').childElements();
-    children_options[selected_val].remove();
-    generateFieldBox(current_fields.length - 1);
-
-  }
-
-  function AddDisplayField()
-  {
-    selected_val =  $('field_selector').selectedIndex;
-    AddDisplayIndex(selected_val)
-    if(table_value != <%= @table_index %>)
-    {
-      displayHeaders(table_value);
-    }
-    else
-    {
-
-        disableSubmitters();
-        my_form = $('search_form');
-        my_form.submit();
-        
-
-
-    }
-  }
-  function MM_preloadImages() { //v3.0
-  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
-    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
-}
-
-function MM_findObj(n, d) { //v4.01
-  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
-    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
-  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
-  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
-  if(!x && d.getElementById) x=d.getElementById(n); return x;
-}
-
-function MM_nbGroup(event, grpName) { //v6.0
-  var i,img,nbArr,args=MM_nbGroup.arguments;
-  if (event == "init" && args.length > 2) {
-    if ((img = MM_findObj(args[2])) != null && !img.MM_init) {
-      img.MM_init = true; img.MM_up = args[3]; img.MM_dn = img.src;
-      if ((nbArr = document[grpName]) == null) nbArr = document[grpName] = new Array();
-      nbArr[nbArr.length] = img;
-      for (i=4; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-        if (!img.MM_up) img.MM_up = img.src;
-        img.src = img.MM_dn = args[i+1];
-        nbArr[nbArr.length] = img;
-    } }
-  } else if (event == "over") {
-    document.MM_nbOver = nbArr = new Array();
-    for (i=1; i < args.length-1; i+=3) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = (img.MM_dn && args[i+2]) ? args[i+2] : ((args[i+1])? args[i+1] : img.MM_up);
-      nbArr[nbArr.length] = img;
-    }
-  } else if (event == "out" ) {
-    for (i=0; i < document.MM_nbOver.length; i++) {
-      img = document.MM_nbOver[i]; img.src = (img.MM_dn) ? img.MM_dn : img.MM_up; }
-  } else if (event == "down") {
-    nbArr = document[grpName];
-    if (nbArr)
-      for (i=0; i < nbArr.length; i++) { img=nbArr[i]; img.src = img.MM_up; img.MM_dn = 0; }
-    document[grpName] = nbArr = new Array();
-    for (i=2; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = img.MM_dn = (args[i+1])? args[i+1] : img.MM_up;
-      nbArr[nbArr.length] = img;
-  } }
-}
-
--->
-
-
-    </script>
-    <%= yield(:head) %>
-  </head>
-   <body bgcolor="#ffffff" >
-     <p style="color: green"><%= flash[:notice] %></p>
-    <table width="700" border="0">
-<p><%= link_to 'User Admin', :controller => 'users' %>, <%= link_to 'Logout', :controller => :admin, :action => 'logout'%> </p>
-      <tr>
-        <td width="164"><img src="/logo.png" alt="logo" width="150" height="154" align="left" longdesc="http://fido:8080/agatha/logo.html"></td>
-        <td width="526"><h1 align="center">Agatha</h1>
-          <h2 align="center">Blackfriars Hall/Studium<br>
-        Studies Database </h2></td>
-      </tr>
-      <tr>
-        <td colspan="2"><table border="0" cellpadding="0" cellspacing="0" width="700">
-<!-- fwtable fwsrc="/buttons.png" fwbase="/buttons.png" fwstyle="Dreamweaver" fwdocid = "1116515084" fwnested="0" -->
-  <tr>
-   <td><img src="/buttons/spacer.gif" width="116" height="1" border="0" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="117" height="1" border="0" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="117" height="1" border="0" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="350" height="1" border="0" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="1" height="1" border="0" alt="" /></td>
-  </tr>
-
-  <tr>
-   <td><a href="index" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','data','/buttons/data_f2.gif','/buttons/data_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','data','/buttons/data_f3.gif',1);"><img name="data" src="/buttons/data_f3.gif" width="116" height="31" border="0" id="data" alt="Data Entry" onload="MM_nbGroup('init','navbar1', 'data','/buttons/data.gif',1)" /></a></td>
-   <td><a href="termly" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','termly','/buttons/termly_f2.gif','/buttons/termly_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','termly','/buttons/termly_f3.gif',1);"><img name="termly" src="/buttons/termly.gif" width="117" height="31" border="0" id="termly" alt="Termly Letters" /></a></td>
-   <td><a href="mailing" onMouseOut="MM_nbGroup('out');" onMouseOver="MM_nbGroup('over','labels','/buttons/labels_f2.gif','/buttons/labels_f3.gif',1);" onClick="MM_nbGroup('down','navbar1','labels','/buttons/labels_f3.gif',1);"><img name="labels" src="/buttons/labels.gif" width="117" height="31" border="0" id="labels" alt="Mailing Labels" /></a></td>
-   <td rowspan="2"><img name="/buttons_r1_c4" src="/buttons/buttons_r1_c4.gif" width="350" height="32" border="0" id="buttons_r1_c4" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="1" height="31" border="0" alt="" /></td>
-  </tr>
-  <tr>
-   <td colspan="3"><img name="buttons_r2_c1" src="/buttons/buttons_r2_c1.gif" width="350" height="1" border="0" id="buttons_r2_c1" alt="" /></td>
-   <td><img src="/buttons/spacer.gif" width="1" height="1" border="0" alt="" /></td>
-  </tr>
-</table>        </td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td><p>&nbsp;</p></td>
-        </table>
-
-
-    <%= yield  %>
-
-<hr align="left" width="700">
-    <p align="left" class="tiny">Agatha database version 3.0 &copy; 2009 Robert Verrill OP </p>
-  
-  </body>
-   <script type="text/javascript">
-      <!--
-      document.observe('dom:loaded',loadJavaScript);
-      function loadJavaScript()
-      {
-
-  possible_fieldss  = new Array();
-
-<%  @search_controllers = session[:search_controllers] %>
-
-<%  for search_controller in  @search_controllers %>
-
-        possible_fields = new Array();
-        i = 0;
-  <% for poss_index in search_controller.possible_field_indices -%>
-
-          possible_fields.push(new Array('<%= search_controller.available_fields[poss_index ].full_name %>','<%= "#{search_controller.available_fields[ poss_index ].tag}" %>','<%= search_controller.available_fields[ poss_index ].header %>','<%= search_controller.available_fields[ poss_index ].qualifier %>' ));
-          i++;
-  <% end -%>
-
-        possible_fieldss.push(possible_fields);
-
-
-<% end -%>
-
-      current_fieldss= new Array();
-
-<%  for search_controller in  @search_controllers %>
-        current_fields = new Array();
-  <% for curr_index in search_controller.current_field_indices %>
-
-          current_fields.push(new Array('<%= search_controller.available_fields[curr_index].full_name %>',  '<%= "#{search_controller.available_fields[curr_index ].tag}" %>','<%= search_controller.available_fields[ curr_index ].header %>','<%= search_controller.available_fields[ curr_index ].qualifier %>'));
-
-  <% end %>
-        current_fieldss.push(current_fields);
-<% end -%>
-
-
-      possible_filterss  = new Array();
-
-<%  @search_controllers = session[:search_controllers] %>
-
-<%  for search_controller in  @search_controllers %>
-
-        possible_filters = new Array();
-        i = 0;
-  <% for poss_index in search_controller.possible_filter_indices -%>
-          possible_filters.push(new Array('<%= search_controller.available_fields[poss_index ].full_name %>','<%= search_controller.available_fields[ poss_index ].tag %>' ));
-          i++;
-  <% end -%>
-
-        possible_filterss.push(possible_filters);
-
-
-<% end -%>
-
-      current_filterss= new Array();
-
-<%  for search_controller in  @search_controllers %>
-        current_filters = new Array();
-  <% for curr_index in search_controller.current_filter_indices %>
-          current_filters.push(new Array('<%= search_controller.available_fields[curr_index].full_name %>',  '<%= search_controller.available_fields[curr_index ].tag %>', '<%= search_controller.available_fields[curr_index ].current_filter_string %>' ));
-
-  <% end %>
-        current_filterss.push(current_filters);
-<% end -%>
-  $('table_selector').observe('change',tableSelected);
-        $('add_filter').observe('click', AddSearchFilter);
-        $('add_field').observe('click', AddDisplayField);
-       
-        tableSelected();
-  }
-
-      -->
-    </script>
 </html>

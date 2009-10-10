@@ -1,48 +1,32 @@
-<script language="JavaScript">
-function passBack()
-{
-window.opener.location.reload();
-}
+<script type ="text/javascript">
+document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
 </script>
 
-<h1>Editing <%= @table_str %>  </h1>
+<div class ="content_class" style="width: 100%">
+  <div class ="pad_class">
 
-<% form_for(@current_object, @table_qualifier.to_sym,  :url => { :action => "update" }) do |f| %>
-  <%= f.error_messages %>
-  <% attributes_str = " #{@table_str}.columns" %>
-  <% attributes = eval(attributes_str) %>
-  <% column_width = 80 %>
-  <table>
-      <tr class="column-header">
-          <th>Field</th>
-          <th>Value</th>
-      </tr>
-      <%  for attribute in attributes %>
-      <tr class="<%= cycle('row-even', 'row-odd') %>">
-        <td><%= f.label attribute.name.to_sym %> </td>
+    <h1><%="#{@short_name}"%>  </h1>
+    <%= render(:partial => "shared/edit_object", :object => @edit_object ) %>
+    
 
-        <% data_type = attribute.type %>
-        <% case data_type 
-           when :text %>
-                <td class ="edit_column"><%= f.text_area attribute.name.to_sym,  :cols => column_width, :rows => 5, :class => 'edit_text'%></td>
-           <% when :integer %>
-           <% if attribute.name == "id" %>
-                <td class ="edit_column"><%= f.text_field attribute.name.to_sym, :size => column_width, :readonly => true, :class => 'edit_text' %></td>
-           <% else %>
-                <td class ="edit_column"><%= f.text_field attribute.name.to_sym,  :size => column_width, :class => 'edit_text' %></td>
-           <% end %>
-           <%  else %>
-                <td class ="edit_column"><%= f.text_field attribute.name.to_sym,  :size  => column_width, :class => 'edit_text' %></td>
-           <% end %>
-      </tr>
-      <% end %> 
-  </table>
+  </div>
+</div>
 
-  
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
 
-<%= link_to "Don't update", :action => :index  %>
+    <% if session[:administrator] %>
+      <div id ="user">
+      <%= render(:partial => "shared/create_user", :object => @user) %>
+      </div>
+
+      <% elsif @user %>
+      <div id ="user">
+      <%= render(:partial => "shared/user", :object => @user ) %>
+      </div>
+    <% end %>
+
+
+
+
+
+
 

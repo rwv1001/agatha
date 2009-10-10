@@ -1,38 +1,11 @@
+<script type ="text/javascript">
+document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
+</script>
 
-<h1>Editing user</h1>
+<div class ="content_class" style="width: 100%">
+  <div class ="pad_class">
 
-<% form_for(@user) do |f| %>
-  <%= f.error_messages %>
-  <%= f.hidden_field :id %>
- <fieldset>
-  <div>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <h1><%="#{@short_name}"%>  </h1>
+    <%= render(:partial => "shared/edit_object", :object => @edit_object ) %>
   </div>
-
-  <div>
-    <%= f.label 'Old Password' %>:
-    <%= f.password_field :old_password, :size => 40 %>
-  </div>
-
-  <div>
-
-    <%= f.label 'Password' %>:
-    <%= f.password_field :password, :size => 40 %>
-  </div>
-
-  <div>
-    <%= f.label 'Confirm' %>:
-    <%= f.password_field :password_confirmation, :size => 40 %>
-  </div>
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-   </fieldset>
-<% end %>
-
-
-<%= link_to 'Back', users_path %>
-
-
-
+</div>

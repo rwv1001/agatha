@@ -1,29 +1,112 @@
+class SearchResults
+  attr_reader :table
+  attr_accessor :table_type
+  attr_reader :search_controller
+  attr_reader :foreign_key
+  attr_reader :default_id
 
-class TestClass
-   attr_accessor :x
-   attr_accessor :y
-   def initialize(x_, y_)
-   @x = x_
-   @y = y_
-   end
+  def initialize(table_, table_type_, search_controller_, foreign_key_, default_id_)
+    @table = table_
+    @table_type = table_type_
+    @search_controller = search_controller_
+    @foreign_key = foreign_key_
+    @default_id = default_id_
+  end
+end
+class SearchResultsRow
+  attr_reader :row
+  attr_reader :search_controller
+  def initialize(row_, search_controller_)
+    @row = row_
+    @search_controller = search_controller_
+  end
+end
+
+class SearchResultsButtons
+  attr_reader :row
+  attr_reader :table_type
+  attr_reader :foreign_key
+  attr_reader :default_id
+  attr_reader :table_name
+
+  def initialize(row_, table_type_, foreign_key_, default_id_, table_name_)
+    @row = row_
+    @table_type = table_type_
+    @foreign_key = foreign_key_
+    @default_id = default_id_
+    @table_name = table_name_
+  end
+end
+class SearchResultsRowButton
+  attr_reader :search_results_row
+  attr_reader :search_results_button
+  def initialize(search_results_row_, search_results_button_)
+    @search_results_row = search_results_row_;
+    @search_results_button = search_results_button_;
+  end
+end
+class  TableSelection
+  attr_reader :table_index
+  attr_reader :search_controller
+  def initialize(search_controller_, table_index_)
+    @search_controller = search_controller_
+    @table_index = table_index_
+  end
+end
+
+class SearchControllerHeader
+  attr_reader :table_type
+  attr_reader :search_controller
+  def initialize(table_type_, search_controller_)
+    @table_type = table_type_
+    @search_controller = search_controller_
+  end
+end
+
+class SearchFilterHeader
+  attr_reader :table_type
+  attr_reader :row_type
+  attr_reader :extended_filter
+  attr_reader :table_name
+  attr_reader :num_filters
+  def initialize(table_type_, row_type_, extended_filter_, table_name_, num_filters_)
+    @table_type = table_type_
+    @row_type = row_type_
+    @extended_filter = extended_filter_
+    @table_name= table_name_
+    @num_filters = num_filters_
+  end
 
 end
+class TestClass
+  attr_accessor :x
+  attr_accessor :y
+  def initialize(x_, y_)
+    @x = x_
+    @y = y_
+  end
+end
+
 class FieldNode
   attr_accessor :parent
   attr_accessor :all_children
   attr_accessor :current_children
   attr_accessor :name
   attr_accessor :key
+  attr_accessor :available_fields_index
+  attr_accessor :current_flag
  
   attr_accessor :id
 
   
-  def initialize(parent_, name_, key_)
+  def initialize(parent_, name_, available_fields_index_, key_)
     @parent = parent_
     @all_children = []
     @current_children = []
     @name = name_
-    @key =  key_    
+    @key =  key_
+    @available_fields_index = available_fields_index_;
+    @current_flag = 0;
     @id = @@next_id
     @@next_id = @@next_id + 1;
   end
@@ -34,13 +117,13 @@ end
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
 class SearchField
-  include PeopleHelper
+  include EditHelper
+  attr_reader :name
   attr_accessor :header
   attr_accessor :id
   attr_accessor :full_name
   attr_accessor :qualifier
-  attr_accessor :search_token
-  attr_accessor :eval
+  attr_accessor :eval_str
   attr_accessor :data_type
   attr_accessor :current_filter_string
   attr_accessor :class_override
@@ -49,371 +132,81 @@ class SearchField
   attr_accessor :table_name
   attr_accessor :attribute_name
   attr_accessor :field_node
-  def initialize(field_string, qualifer_string,  eval_string, search_token, include_index_val, data_type_symbol, tag_symbol, id_val, table_name_str, attribute_name_, field_node_)
+  attr_accessor :foreign_class
+  attr_accessor :foreign_search_str
+  attr_accessor :primary
+  def initialize(field_string, qualifer_string,  eval_string, include_index_val, data_type_symbol, tag_symbol, id_val, table_name_str, attribute_name, field_node, foreign_class, primary)
     @header =field_string
     @qualifier =  qualifer_string
     @full_name = "#{qualifer_string}/#{field_string}"
     @tag = tag_symbol
-    @eval = eval_string
-    @search_token = search_token
+    @eval_str = eval_string
     @include_index = include_index_val
     @data_type = data_type_symbol
     @current_filter_string = "%"
     @class_override = "" #this is so that the select column stands out. - I'm not sure this is necessary.
     @id = id_val
     @table_name = table_name_str
-    @attribute_name = attribute_name_
-    @field_node = field_node_
-   # TestSQLString()
+    @attribute_name = attribute_name
+    @field_node = field_node
+    @foreign_class = foreign_class
+    @foreign_search_str = ''
+    @primary = primary
+    # TestSQLString()
   end
   def TestSQLString()
     @data_type = :integer
     @current_filter_string = ",, ,- 35 ABC aBVdE51 , 3 . 4.. -65 , 7-.. 8 ,9 3 ...9"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :integer
     @current_filter_string = "21, 3, -43"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :integer
     @current_filter_string = "-24..4"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :integer
     @current_filter_string = "%"
-    str = GetSQLString();
+    str = GetSQLString2();
     @current_filter_string = ""
-    str = GetSQLString();
+    str = GetSQLString2();
 
     @data_type = :time
     @current_filter_string = ",4:20 , ,3:90 ABC 85 , 3:40 . 4:20.. 6 2 4, 7.. 8:40 ,9 82:90 3 : 52 ...9"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :time
     @current_filter_string = "4:20 , 5, 3:30"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :time
     @current_filter_string = "4:20..19:30"
-    str = GetSQLString();
+    str = GetSQLString2();
 
     @data_type = :timestamp
     @current_filter_string = ",4-12-20 , ,1973-11 ABC 85 , 3 -02- 240 . 09-8-20.. 16-7 - 3 2-3 4-5, 1997-8.. 98-01-7 40-7-7 ,9-8-1 82-90-60 3 : 52 ...9"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :timestamp
     @current_filter_string = "4-12-20 , 2005, 3-2"
-    str = GetSQLString();
+    str = GetSQLString2();
     @data_type = :timestamp
     @current_filter_string = " 4-12-20.. 2005-11-19"
-    str = GetSQLString();
+    str = GetSQLString2();
 
     @data_type = :boolean
     @current_filter_string = 0;
-    str = GetSQLString();
+    str = GetSQLString2();
     @date_type = :boolean
     @current_filter_string = 1;
-    str = GetSQLString();
+    str = GetSQLString2();
 
     @data_type = :string
     @current_filter_string = "%a-6% danx"
-    str = GetSQLString();
+    str = GetSQLString2();
 
   end
-  def GetSQLString
-    case @data_type
-    when :integer
-      ret_val = ParseIntegerStr()      
-    when :time
-      ret_val = ParseTimeStr()
 
-    when :timestamp
-      ret_val = ParseTimeStampStr()
-    when :boolean
-      ret_val = ParseBooleanStr()
-    when :string, :text
-      ret_val = ParseTextStr()      
-    else
-      ret_val = ""
-    end
-    return  ret_val
-  end
   
-  def ParseIntegerStr()
-    ret_val = ""
-    the_orig_str = @current_filter_string
-
-    trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
-    trimmed_str = trimmed_str.gsub(/-\s+/,'-')
-    trimmed_str =trimmed_str.gsub(/(?:^\s+)|(?:\s+$)/,'')
-   
-    trimmed_str = trimmed_str.gsub(/\d\s+(\d|-)/){|s| s=s.gsub(/\s+/,',')  }
-    trimmed_str = trimmed_str.gsub(/\s+/,'')
-    
-    
-    
-    trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
-    trimmed_str = trimmed_str.gsub(/\,+/,',')
-    trimmed_str = trimmed_str.gsub(/-+/,'-')
-    trimmed_str =trimmed_str.gsub(/(?:^,+)|(?:,+$)|(?:^\.+)|(?:\.+$)/,'')
-    trimmed_str =trimmed_str.gsub(/\d\.-*\d/){|s| s = s.gsub(/\./, ',')}
-     scanner = StringScanner.new(trimmed_str );
-   matched_or_str = [];
-  # scan_match =  scanner.scan(/\.^-*[0-9]+,/)
-  # while scan_match !=nil do
-   #  matched_or_str << scan_match;
-  #   scan_match = scanner.scan(/\.^-*[0-9]+,/)
-  # end
-
-   # matched_or_str = trimmed_str.scan(/\.^-*[0-9]+,/);
-  #  matched_or_str = trimmed_str.scan(/[^\.]-*[0-9]+,/);
-  #  matched_or_str << trimmed_str.match(/,-*[0-9]+/);
-    
-    matched_ranges =  trimmed_str.scan(/-*[0-9]+\.{2}-*[0-9]+/);
-    for range in matched_ranges
-      reg_exp = Regexp.new(range);
-      trimmed_str = trimmed_str.gsub(reg_exp, '')
-    end
- 
-     matched_or_str = trimmed_str.scan(/-*[0-9]+/);
-    
-  
-    num_matched_ors = matched_or_str.length
-    if matched_or_str.length >0
-      ret_val = "("
-
-      for or_str in matched_or_str[0, num_matched_ors-1]
-        or_str = or_str.gsub(/,/,'')
-        ret_val = ret_val + "#{@search_token} = #{or_str} OR "
-      end
-      final_or = matched_or_str[num_matched_ors-1]
-      final_or = final_or.gsub(/,/,'')
-      ret_val = ret_val + "#{@search_token} = #{final_or})"
-    end
-    num_matched_ranges = matched_ranges.length
-    if num_matched_ranges >0
-      if num_matched_ors > 0
-        ret_val = ret_val + " OR "
-      end
-
-      for matched_range in matched_ranges[0,num_matched_ranges -1]
-        int_a = matched_range.match(/^-*\d+/);
-        int_b = matched_range.match(/-*\d+$/);
-        ret_val = ret_val + "( #{@search_token} BETWEEN #{int_a} AND #{int_b}) OR "
-      end
-      final_range = matched_ranges[num_matched_ranges -1];
-      int_a = final_range.match(/^-*\d+/);
-      int_b = final_range.match(/-*\d+$/);
-      ret_val = ret_val + "( #{@search_token} BETWEEN #{int_a} AND #{int_b})"
-    end
-    return ret_val;
-  end
-
-  def ParseTextStr()
-    ret_val = "#{@search_token} SIMILAR TO \'#{@current_filter_string}\'"
-    return ret_val
-  end
-
-  def ParseBooleanStr()
-    case @current_filter_string
-    when 1
-       ret_val = "#{@search_token} IS TRUE"
-    when 0
-       ret_val = "#{@search_token} IS FALSE"
-    else
-      ret_val = ""
-    end
-
-    return ret_val
-  end
-
-  def ParseTimeStr()
-    orig_str =@current_filter_string
-    trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
-    trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
-    trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
-    trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
-     trimmed_str = trimmed_str.gsub(/\s+/,'')
-    #trimmed_str = trimmed_str.gsub(/(\s+:\s*)|(\s*:\s+)/,':')
-    trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
-    trimmed_str = trimmed_str.gsub(/\,+/,',')
-    trimmed_str = trimmed_str.gsub(/:+/,':')
-    trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^:*)|(?::*$)/,'')
-    matched_ranges = []
-   # matched_ranges = trimmed_str.scan(/(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9]).{2}(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9])/);
-
-   # matched_range = trimmed_str.scan(/(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))\.{2}(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))/);
-    matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+)))/);
-    for matched_range in matched_ranges
-       reg_exp = Regexp.new(matched_range);
-       trimmed_str = trimmed_str.gsub(reg_exp, '')
-    end
-    # while matched_range do
-    #   x = matched_range
-    #   matched_ranges << matched_range
-    #   reg_exp = Regexp.new(matched_range);
-    #   trimmed_str = trimmed_str.gsub(reg_exp, '')
-      # matched_range = trimmed_str.match(/(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+))/);
-    # end
-
-    matched_or_strs  = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
-
-  #  matched_or_str = trimmed_str.match(/(?:\d+:\d+)|(?:\d+)/);
-     #matched_or_strs_scan = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
-    #matched_or_strs = []
-    #for matched_scan in matched_or_strs_scan
-    #  if matched_scan[0]
-    #     matched_or_strs << matched_scan[0]
-    #  else
-    #    matched_or_strs << matched_scan[1]
-    #  end
-
-   # end
-
-    
-   
-    ret_val  = ""
-    num_matched_ors = matched_or_strs.length
-    if matched_or_strs.length >0
-      ret_val = "("
-
-      for or_str in matched_or_strs[0, num_matched_ors-1]
-        or_str = AddMinutes(or_str)
-        ret_val = ret_val + "#{@search_token} = #{or_str} OR "
-      end
-      final_or = matched_or_strs[num_matched_ors-1]
-      final_or =  AddMinutes(final_or)
-      ret_val = ret_val + "#{@search_token} = #{final_or})"
-    end
-    num_matched_ranges = matched_ranges.length
-    if num_matched_ranges >0
-      if num_matched_ors > 0
-        ret_val = ret_val + " OR "
-      end
-      for matched_range in matched_ranges[0,num_matched_ranges -1]
-        time_a = matched_range.match(/^(?:(?:\d+:\d+)|(?:\d+))/);
-       if  time_a[0]
-          time_a = time_a[0]
-       else
-         time_a = ""
-       end
-       #   time_a = time_a[1]
-      # # end
-        time_b = matched_range.match(/(?:(?:\d+:\d+)|(?:\d+))$/);
-      if  time_b[0]
-          time_b = time_b[0]
-      else
-        time_b = ""
-        end
-     #     time_b = time_b[1]
-     #   end
-        time_a = AddMinutes(time_a)
-
-        time_b = AddMinutes(time_b)
-        ret_val = ret_val + "( #{@search_token} BETWEEN #{time_a} AND #{time_b}) OR "
-      end
-      final_range = matched_ranges[num_matched_ranges -1];
-      time_a = final_range.match(/(?:^(?:(?:\d+:\d+)|(?:\d+)))/);
-        if  time_a[0]
-         time_a = time_a[0]
-       else
-         time_a = ""
-        end
-        #  time_a = time_a[1]
-       # end
-      time_b =final_range.match(/(?:(?:(?:\d+:\d+)|(?:\d+))$)/);
-        if  time_b[0]
-        time_b = time_b[0]
-        else
-      time_b =""
-        end
-     time_a = AddMinutes(time_a)
-      
-      time_b = AddMinutes(time_b)
-      ret_val = ret_val + "( #{@search_token} BETWEEN #{time_a} AND #{time_b})"
-    end
-    return ret_val;
-  end
 
 
-  def ParseTimeStampStr()
-    the_current_str  = @current_filter_string
-    trimmed_str = @current_filter_string.gsub(/([A-Z]|[a-z])/,' ')
-    trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
-    trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
-    trimmed_str = trimmed_str.gsub(/\s/,'')
-   # trimmed_str = trimmed_str.gsub(/\s*-\s*/,'-')
-
-    #trimmed_str = trimmed_str.gsub(/(?:\s*\.)|(?:\.\s*)/,'.')
-    trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
-    trimmed_str = trimmed_str.gsub(/\,+/,',')
-    trimmed_str = trimmed_str.gsub(/-+/,'-')
-    trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^\.*)|(?:\.*$)/,'')
-   # matched_ranges1 = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
-   matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+)))/ )
-   # matched_range = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
-   # matched_ranges = []
-    for matched_range in matched_ranges
-      
-          
-      reg_exp = Regexp.new(matched_range);
-      trimmed_str = trimmed_str.gsub(reg_exp, '')
-    end
-
-    matched_or_str = trimmed_str.scan(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
-  #  matched_or_str << trimmed_str.match(/,(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
- #   matched_ranges << trimmed_str.scan(/(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9]))).{2}(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
-    ret_val  = ""
-    num_matched_ors = matched_or_str.length
-    if matched_or_str.length >0
-      ret_val = "("
-
-      for or_str in matched_or_str[0, num_matched_ors-1]
-        date_str = CompleteDate(or_str)
-        ret_val = ret_val + "#{@search_token} = #{date_str} OR "
-      end
-      date_str = CompleteDate(matched_or_str[num_matched_ors-1])
-      ret_val = ret_val + "#{@search_token} = #{date_str})"
-    end
-    num_matched_ranges = matched_ranges.length
-    if num_matched_ranges >0
-      if num_matched_ors > 0
-        ret_val = ret_val + " OR "
-      end
-      for matched_range in matched_ranges[0,num_matched_ranges -1]
-        date_a = matched_range.match(/^(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
-        if date_a
-          date_a = date_a[0]
-        else
-          date_a = ""
-        end
-        date_b = matched_range.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))$/);
-        if date_b
-          date_b = date_b[0]
-        else
-          date_b = ""
-        end
-        date_a = CompleteDate(date_a)
-        date_b= CompleteDate(date_b)
-        
-        ret_val = ret_val + "( #{@search_token} BETWEEN #{date_a} AND #{date_b}) OR "
-      end
-      final_range = matched_ranges[num_matched_ranges -1];
-      date_a = final_range.match(/^(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
-              if date_a
-          date_a = date_a[0]
-        else
-          date_a = ""
-        end
-      date_b = final_range.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))$/);
-           if date_b
-          date_b = date_b[0]
-        else
-          date_b = ""
-        end
-      date_a = CompleteDate(date_a)
-      date_b= CompleteDate(date_b)
-
-      ret_val = ret_val + "( #{@search_token} BETWEEN #{date_a} AND #{date_b})"
-    end
-   
-    return ret_val;
-  end
-    def AddMinutes(time_str)
+  def AddMinutes(time_str)
     hours = time_str.match(/(?:^(?:\d+))/)
 
     if hours
@@ -421,15 +214,15 @@ class SearchField
     else
       hours = "0"
     end
-   # hours = hours[0]
+    # hours = hours[0]
     if time_str =~ /:/
       mins = time_str.match(/(?:\d+$)/)
       #mins = mins[0]
       if mins
-      mins = mins[0]
-        else
-      mins = "00"
-    end
+        mins = mins[0]
+      else
+        mins = "00"
+      end
     else
       mins = "00"
     end
@@ -456,7 +249,7 @@ class SearchField
     year = nil
 
     if scan_length>0
-       year = scan_array[0]
+      year = scan_array[0]
     end
     if year == nil      
       year = "2009"
@@ -518,17 +311,17 @@ class SearchField
     trimmed_str = trimmed_str.gsub(/-+/,'-')
     trimmed_str =trimmed_str.gsub(/(?:^,+)|(?:,+$)|(?:^\.+)|(?:\.+$)/,'')
     trimmed_str =trimmed_str.gsub(/\d\.-*\d/){|s| s = s.gsub(/\./, ',')}
-     scanner = StringScanner.new(trimmed_str );
-   matched_or_str = [];
-  # scan_match =  scanner.scan(/\.^-*[0-9]+,/)
-  # while scan_match !=nil do
-   #  matched_or_str << scan_match;
-  #   scan_match = scanner.scan(/\.^-*[0-9]+,/)
-  # end
+    scanner = StringScanner.new(trimmed_str );
+    matched_or_str = [];
+    # scan_match =  scanner.scan(/\.^-*[0-9]+,/)
+    # while scan_match !=nil do
+    #  matched_or_str << scan_match;
+    #   scan_match = scanner.scan(/\.^-*[0-9]+,/)
+    # end
 
-   # matched_or_str = trimmed_str.scan(/\.^-*[0-9]+,/);
-  #  matched_or_str = trimmed_str.scan(/[^\.]-*[0-9]+,/);
-  #  matched_or_str << trimmed_str.match(/,-*[0-9]+/);
+    # matched_or_str = trimmed_str.scan(/\.^-*[0-9]+,/);
+    #  matched_or_str = trimmed_str.scan(/[^\.]-*[0-9]+,/);
+    #  matched_or_str << trimmed_str.match(/,-*[0-9]+/);
 
     matched_ranges =  trimmed_str.scan(/-*[0-9]+\.{2}-*[0-9]+/);
     for range in matched_ranges
@@ -536,7 +329,7 @@ class SearchField
       trimmed_str = trimmed_str.gsub(reg_exp, '')
     end
 
-     matched_or_str = trimmed_str.scan(/-*[0-9]+/);
+    matched_or_str = trimmed_str.scan(/-*[0-9]+/);
 
 
     num_matched_ors = matched_or_str.length
@@ -571,10 +364,27 @@ class SearchField
   end
 
   def ParseTextStr2()
-    if @current_filter_string.length == 0
+    ret_val= ""
+
+    @current_filter_string = @current_filter_string .gsub(/<%/){|s| 'naughty'};
+    @current_filter_string = @current_filter_string .gsub(/%>/){|s| 'naughty'};
+    safe_string = @current_filter_string.gsub(/\\*\"+/){|s| '\\"'};
+    safe_string = safe_string.gsub(/\n/){|s| '\\n'}
+    safe_string = safe_string.gsub(/\r/){|s| '\\r'}
+    safe_string = safe_string.gsub(/\v/){|s| '\\v'}
+    safe_string = safe_string.gsub(/\f/){|s| '\\f'}
+
+
+
+    safe_string = safe_string.gsub(/\'+/){|s| '\'\''}
+
+    possible_percent_str =   safe_string.gsub(/\s+/,'')
+    if safe_string.length == 0 || possible_percent_str == '%'
       ret_val = ""
-    else
-      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} SIMILAR TO \'#{@current_filter_string}\'"
+    elsif @foreign_class.length == 0
+      ret_val = "LOWER(a#{@field_node.parent.id}.#{@attribute_name}) SIMILAR TO LOWER(\'#{ safe_string}\')"
+    elsif @foreign_search_str.length>0
+      ret_val = "LOWER(" +  @foreign_search_str + ") SIMILAR TO LOWER(\'#{ safe_string}\')"
     end
     
     return ret_val
@@ -583,9 +393,9 @@ class SearchField
   def ParseBooleanStr2()
     case @current_filter_string
     when 1, "T", "t", "true", "TRUE", "True"
-       ret_val = "#{@search_token} IS TRUE"
+      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} IS TRUE"
     when 0, "F", "f", "false", "FALSE", "False"
-       ret_val = "#{@search_token} IS FALSE"
+      ret_val = "a#{@field_node.parent.id}.#{@attribute_name} IS FALSE"
     else
       ret_val = ""
     end
@@ -598,33 +408,33 @@ class SearchField
     trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
     trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
     trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
-     trimmed_str = trimmed_str.gsub(/\s+/,'')
+    trimmed_str = trimmed_str.gsub(/\s+/,'')
     #trimmed_str = trimmed_str.gsub(/(\s+:\s*)|(\s*:\s+)/,':')
     trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
     trimmed_str = trimmed_str.gsub(/\,+/,',')
     trimmed_str = trimmed_str.gsub(/:+/,':')
     trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^:*)|(?::*$)/,'')
     matched_ranges = []
-   # matched_ranges = trimmed_str.scan(/(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9]).{2}(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9])/);
+    # matched_ranges = trimmed_str.scan(/(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9]).{2}(?:(?:[0-1][0-9])|(2[0-3]))|(?:(?:(?:[0-1][0-9])|(?:2[0-3])):[0-5][0-9])/);
 
-   # matched_range = trimmed_str.scan(/(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))\.{2}(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))/);
+    # matched_range = trimmed_str.scan(/(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))\.{2}(?:(?:[0-9]+)|(?:[0-9]+:[0-9]+))/);
     matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+)))/);
     for matched_range in matched_ranges
-       reg_exp = Regexp.new(matched_range);
-       trimmed_str = trimmed_str.gsub(reg_exp, '')
+      reg_exp = Regexp.new(matched_range);
+      trimmed_str = trimmed_str.gsub(reg_exp, '')
     end
     # while matched_range do
     #   x = matched_range
     #   matched_ranges << matched_range
     #   reg_exp = Regexp.new(matched_range);
     #   trimmed_str = trimmed_str.gsub(reg_exp, '')
-      # matched_range = trimmed_str.match(/(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+))/);
+    # matched_range = trimmed_str.match(/(?:(?:\d+:\d+)|(?:\d+))\.{2}(?:(?:\d+:\d+)|(?:\d+))/);
     # end
 
     matched_or_strs  = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
 
-  #  matched_or_str = trimmed_str.match(/(?:\d+:\d+)|(?:\d+)/);
-     #matched_or_strs_scan = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
+    #  matched_or_str = trimmed_str.match(/(?:\d+:\d+)|(?:\d+)/);
+    #matched_or_strs_scan = trimmed_str.scan(/(?:\d+:\d+)|(?:\d+)/);
     #matched_or_strs = []
     #for matched_scan in matched_or_strs_scan
     #  if matched_scan[0]
@@ -633,7 +443,7 @@ class SearchField
     #    matched_or_strs << matched_scan[1]
     #  end
 
-   # end
+    # end
 
 
 
@@ -657,21 +467,21 @@ class SearchField
       end
       for matched_range in matched_ranges[0,num_matched_ranges -1]
         time_a = matched_range.match(/^(?:(?:\d+:\d+)|(?:\d+))/);
-       if  time_a[0]
+        if  time_a[0]
           time_a = time_a[0]
-       else
-         time_a = ""
-       end
-       #   time_a = time_a[1]
-      # # end
-        time_b = matched_range.match(/(?:(?:\d+:\d+)|(?:\d+))$/);
-      if  time_b[0]
-          time_b = time_b[0]
-      else
-        time_b = ""
+        else
+          time_a = ""
         end
-     #     time_b = time_b[1]
-     #   end
+        #   time_a = time_a[1]
+        # # end
+        time_b = matched_range.match(/(?:(?:\d+:\d+)|(?:\d+))$/);
+        if  time_b[0]
+          time_b = time_b[0]
+        else
+          time_b = ""
+        end
+        #     time_b = time_b[1]
+        #   end
         time_a = AddMinutes(time_a)
 
         time_b = AddMinutes(time_b)
@@ -679,20 +489,20 @@ class SearchField
       end
       final_range = matched_ranges[num_matched_ranges -1];
       time_a = final_range.match(/(?:^(?:(?:\d+:\d+)|(?:\d+)))/);
-        if  time_a[0]
-         time_a = time_a[0]
-       else
-         time_a = ""
-        end
-        #  time_a = time_a[1]
-       # end
+      if  time_a[0]
+        time_a = time_a[0]
+      else
+        time_a = ""
+      end
+      #  time_a = time_a[1]
+      # end
       time_b =final_range.match(/(?:(?:(?:\d+:\d+)|(?:\d+))$)/);
-        if  time_b[0]
+      if  time_b[0]
         time_b = time_b[0]
-        else
-      time_b =""
-        end
-     time_a = AddMinutes(time_a)
+      else
+        time_b =""
+      end
+      time_a = AddMinutes(time_a)
 
       time_b = AddMinutes(time_b)
       ret_val = ret_val + "( a#{@field_node.parent.id}.#{@attribute_name} BETWEEN #{time_a} AND #{time_b})"
@@ -707,17 +517,17 @@ class SearchField
     trimmed_str =trimmed_str.gsub(/(?:^\s*)|(?:\s*$)/,'')
     trimmed_str = trimmed_str.gsub(/\d\s+\d/){|s| s=s.gsub(/\s+/,',')  }
     trimmed_str = trimmed_str.gsub(/\s/,'')
-   # trimmed_str = trimmed_str.gsub(/\s*-\s*/,'-')
+    # trimmed_str = trimmed_str.gsub(/\s*-\s*/,'-')
 
     #trimmed_str = trimmed_str.gsub(/(?:\s*\.)|(?:\.\s*)/,'.')
     trimmed_str = trimmed_str.gsub(/\.{2,}/,'..')
     trimmed_str = trimmed_str.gsub(/\,+/,',')
     trimmed_str = trimmed_str.gsub(/-+/,'-')
     trimmed_str =trimmed_str.gsub(/(?:^,*)|(?:,*$)|(?:^\.*)|(?:\.*$)/,'')
-   # matched_ranges1 = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
-   matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+)))/ )
-   # matched_range = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
-   # matched_ranges = []
+    # matched_ranges1 = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
+    matched_ranges = trimmed_str.scan(/(?:(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+)))/ )
+    # matched_range = trimmed_str.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))\.{2}(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/ )
+    # matched_ranges = []
     for matched_range in matched_ranges
 
 
@@ -726,8 +536,8 @@ class SearchField
     end
 
     matched_or_str = trimmed_str.scan(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
-  #  matched_or_str << trimmed_str.match(/,(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
- #   matched_ranges << trimmed_str.scan(/(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9]))).{2}(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
+    #  matched_or_str << trimmed_str.match(/,(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
+    #   matched_ranges << trimmed_str.scan(/(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9]))).{2}(?:(?:\d{2})|(?:\d{4}))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2])))|(?:(?:(?:\d{2})|(?:\d{4}))-(?:(?:0{0,1}[1-9])|(?:1[1-2]))-(?:(?:0{0,1}[1-9])|(?:[1-3][0-9])))/);
     ret_val  = ""
     num_matched_ors = matched_or_str.length
     if matched_or_str.length >0
@@ -765,17 +575,17 @@ class SearchField
       end
       final_range = matched_ranges[num_matched_ranges -1];
       date_a = final_range.match(/^(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))/);
-              if date_a
-          date_a = date_a[0]
-        else
-          date_a = ""
-        end
+      if date_a
+        date_a = date_a[0]
+      else
+        date_a = ""
+      end
       date_b = final_range.match(/(?:(?:\d+-\d+-\d+)|(?:\d+-\d+)|(?:\d+))$/);
-           if date_b
-          date_b = date_b[0]
-        else
-          date_b = ""
-        end
+      if date_b
+        date_b = date_b[0]
+      else
+        date_b = ""
+      end
       date_a = CompleteDate(date_a)
       date_b= CompleteDate(date_b)
 
@@ -807,23 +617,33 @@ class SearchField
 end
 
 class SearchController
+  NOT_SET = 1;
+  NOT_SET_STR = "Not Set";
   attr_reader :table_name
+  attr_reader :tables_name
   attr_accessor :current_filter_indices # these refer to indices in @available_fields on which searches are curretnly done
-  attr_reader :current_field_indices # these are the columns of the table that are currently displayed
-  attr_reader :possible_field_indices # these are the available fields that are not currently displayed int the table
   attr_reader :available_fields #these are all the availabe fields extracted from the table and its :belongs_to associations
-  attr_reader :possible_field_names #
   attr_reader :possible_filter_names
   attr_accessor :possible_filter_indices
   attr_reader :current_filter_names
   attr_reader :current_filters
-  attr_reader :current_fields
+  attr_reader :extended_filters
+  attr_reader :external_filters;
+  attr_accessor :user_id;
+  attr_reader :filter_controller;
+  attr_reader :search_ctls
+  
+  attr_reader :fixed_indices
 
-  def initialize(table_name) #eg GroupMember
-    t1 = TestClass.new(1,2)
-    t2 = t1
-    t2.x = 3
-    t2.y =4;
+
+  def initialize(table_name, user_id_, administrator_) #eg GroupPerson
+
+    @user_id = user_id_
+    @administrator = administrator_
+    @active = false;
+   
+
+    
 
     @order_updated = false;
     @table_name = table_name
@@ -832,18 +652,24 @@ class SearchController
     @possible_filter_names =[]
     @limit_offset = 0;
     @limit_length = 250;
+    @fixed_indices = [];
+    @default_id = "";
+    @current_attribute_flag = 0;
+    @foreign_key_tree_hash = {};
+    @user_where_str="";
 
-   # @fields = [SearchField.new("First Name", "Person", "row.person.first_name", "people.first_name", 0, 0),
+    # @fields = [SearchField.new("First Name", "Person", "row.person.first_name", "people.first_name", 0, 0),
     #  SearchField.new("Second Name", "Person", "row.person.second_name", "people.second_name",0, 0)];
-    #@table = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+    #@table = GroupPerson.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
 
     #@table_index = 1;
     
 
-   # @@search_include = [:person, :attendee];
-   # group_member2 = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => @@search_include[0] );
+    # @@search_include = [:person, :attendee];
+    # group_person2 = GroupPerson.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => @@search_include[0] );
 
     @available_fields = [];
+    @hash_to_index = {};
     @max_level = 4;
     @level =0;
     process_reflections = true
@@ -851,7 +677,7 @@ class SearchController
     qualifiers_str = ""
     
     current_table = @table_name;
-   # @tables_name = @table_name.pluralize.downcase;
+    # @tables_name = @table_name.pluralize.downcase;
     @tables_name = QualifiersStr(@table_name)
     @search_include_strings = [""];
     @data_type_strings = [];
@@ -861,55 +687,97 @@ class SearchController
     qualifier = eval("HeaderStr(#{current_table}.name)")
     include_str = ""
     FieldNode.Reset();
-    @field_tree = FieldNode.new(nil, current_table, "");
+    @field_tree = FieldNode.new(nil, current_table, -1, current_table);
     ProcessTable(qualifier, qualifier_str, qualifiers_str, current_table, include_str, @field_tree ) #sets @available_fields
 
-    number_available_fields = @available_fields.length
-    default_number_of_fields = 5
+    @extended_filters = [];
+    @external_filters = [];
+    @foreign_filters = [];
+    for field in @available_fields
+      if(field.field_node.parent.id == 0)
+        @extended_filters << ExtendedFilter.new(:attribute,  field);
+      else
+        @foreign_filters << ExtendedFilter.new(:attribute,  field);
+      end
+    end
 
-    if number_available_fields <=default_number_of_fields
-      @current_field_indices =  (0 .. (number_available_fields -1)).to_a;
+    table_filters_str = "#{table_name}::ExtendedFilters"
+    table_filters =  eval(table_filters_str);
+    for filter in table_filters
+      filter_object = filter.filter_object;
+      if filter_object.class == SubQuery
+        @hash_to_index[filter_object.tag] = @extended_filters.length
+        @extended_filters << filter;
+      elsif filter_object.class == ForeignFilter
+        foreign_filter = FindForeignFilter(filter_object);
+        if foreign_filter !=nil
+         @hash_to_index[foreign_filter.filter_object.tag] = @extended_filters.length
+         @extended_filters << foreign_filter;
+        end
+      else
+        @external_filters << filter;
+      end
+      
 
-      @possible_field_indices = []
+    end
+
+    number_available_fields = @extended_filters.length
+
+    sql_str = "DisplayFilter.find_by_sql(\"SELECT table_name, filter_index, element_order FROM display_filters WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "' AND in_use = true) ORDER BY element_order asc\")"
+    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+    results = eval(sql_str);
+    if(results.length == 0)
+      sql_str = "DisplayFilter.find_by_sql(\"SELECT table_name, filter_index, element_order FROM display_filters WHERE (user_id = 0 AND table_name = '" + @tables_name + "' AND in_use = true) ORDER BY element_order asc\")"
+      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+      results = eval(sql_str);
+    end
+    if(results.length == 0)
+      default_number_of_fields = 5
+      if number_available_fields <=default_number_of_fields
+        @current_filter_indices =  (0 .. (number_available_fields -1)).to_a;
+        @possible_filter_indices = []
+      else
+        @current_filter_indices = (0..(default_number_of_fields-1)).to_a
+        @possible_filter_indices = (default_number_of_fields..(number_available_fields-1)).to_a
+      end
     else
-      @current_field_indices = (0..(default_number_of_fields-1)).to_a
-      @possible_field_indices = (default_number_of_fields..(number_available_fields-1)).to_a
-    end
-    @possible_field_names  = [];
-    for index in  @possible_field_indices
-      @possible_field_names << @available_fields[index].full_name
+      @current_filter_indices = []
+      @possible_filter_indices = []
+      for display_filter in results
+        @current_filter_indices << display_filter.filter_index.to_i;
+      end
+      for i in (0..(number_available_fields -1))
+        if(!@current_filter_indices.index(i))
+          @possible_filter_indices << i;
+        end
+      end
     end
 
-
-    @search_order = Array.new(@current_field_indices);
+    @search_order = Array.new(@current_filter_indices);
     @search_direction = []
     for index in @search_order
       @search_direction << :asc ;
     end
 
-    @possible_filter_indices = (0..(number_available_fields-1)).to_a
-    @possible_filter_names = []
-    for field in @available_fields
-      @possible_filter_names << field.full_name
-    end
-   
 
-    @current_fields = []
-    @current_filters = []
-    for index in @current_field_indices
-      @current_fields << @available_fields[index];
-    end
-    for index in @current_filter_indices
-      @current_filters << @available_fields[index];
-    end
+    #group_person2 = GroupPerson.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
 
+  end
 
-    #group_member2 = GroupMember.find(:all, :conditions => "people.second_name like '%Verr%'" , :include => :person);
+  def FindForeignFilter(foreign_filter_)
+    ret_val = nil;
+    @foreign_filters.each do |filter|
+      if filter.filter_object.field_node.parent.id != 0 && filter.filter_object.field_node.parent.key == foreign_filter_.foreign_key && filter.filter_object.attribute_name == foreign_filter_.attribute_name
+        ret_val = filter;
+      return ret_val;
+    end
+    end
+    return ret_val;
 
   end
   #     session[:search_table] = "People"
   #  session[:search_table] = "Attendee" #join of lecture_id and person_id
-  #   seesion[:search_table] = "GroupMembers" # join of group_id and perons_id
+  #   seesion[:search_table] = "GroupPersons" # join of group_id and perons_id
   #   seesion[:search_table] = "Lecture" #join of course_id and person_id
   #   session[:search_table] = "TutorialSchedule" #join of course_id and person_id
   #   session[:search_table] = "Tutorial" #join of tutorial_id and person_id
@@ -925,24 +793,279 @@ class SearchController
     @processed_nodes = [];
     @processed_child_nodes = [];
     @alias_id = 0;
-    if(@current_filter_indices.index(0) == nil && @current_field_indices.index(0) == nil)
+    if(@current_filter_indices.index(0) == nil)
       field = @available_fields[0]; #id must be retrieved
       field_node = field.field_node;
       process_node(field_node)
     end
+    @current_attribute_flag = @current_attribute_flag+1;
+    
     for index in @current_filter_indices
-      field = @available_fields[index];
-      field_node = field.field_node;
-      process_node(field_node)
+      filter_object = @extended_filters[index].filter_object;
+      if filter_object.class == SearchField
+        field = filter_object;
+        field_node = field.field_node;
+        field_node.current_flag = @current_attribute_flag;
+        @foreign_fields = [];
+        @f_f_level = 0;
+        find_foreign_fields(field)
+        for foreign_field in @foreign_fields
+          process_node(foreign_field.field_node)
+        end
+        process_node(field_node)
+      end
     end
-    for index in @current_field_indices
-      field = @available_fields[index];
-      field_node = field.field_node;
-      process_node(field_node)
-    end
-
-
   end
+  def find_foreign_fields(field)
+    if (field.foreign_class == nil)
+      x =1;
+      return;
+    end
+    if(field.foreign_class.length == 0)
+      return;
+    end
+    @f_f_level = @f_f_level + 1;
+    if @f_f_level > @max_level
+      @f_f_level = @f_f_level -1
+      return;
+    end
+    format_elts = FormatController.FormatElements(field.foreign_class.tableize, @user_id).format_elements_array;
+    for format_elt in format_elts
+      child_name = format_elt.field_name;
+      child_field = GetChildNode(field,child_name);
+      if child_field != nil
+        if(child_field.foreign_class.length == 0)
+          @foreign_fields << child_field
+        else
+          find_foreign_fields(child_field);
+        end
+      end
+    end
+    @f_f_level = @f_f_level - 1;
+  end
+  def construct_short_field_tree
+    @processed_nodes = [];
+    @processed_child_nodes = [];
+    @alias_id = 0;
+    parent_field = @available_fields[0].field_node.parent; #id must be retrieved
+
+    @foreign_fields = [];
+    @f_f_level = 0;
+
+    format_elts = FormatController.FormatElements(@table_name.tableize, @user_id).format_elements_array;
+    for format_elt in format_elts
+      child_name = format_elt.field_name;
+      child_field = GetShortChildNode(child_name);
+      if child_field != nil
+        if(child_field.foreign_class.length == 0)
+          @foreign_fields << child_field
+        else
+          find_foreign_fields(child_field);
+        end 
+      end
+    end
+    for foreign_field in @foreign_fields
+      process_node(foreign_field.field_node)
+    end
+  end
+  def GetSelectFields(member_id, group_id, member_attribute_name, class_search_controller, order_by_id_)
+    ret_val = []   
+    
+    if group_id != 0
+      if member_id != SearchController::NOT_SET
+         group_member = GroupMember.new( NOT_SET_STR, NOT_SET);
+         ret_val << group_member;
+      end
+      eval_str1 = "#{@table_name}.find_by_sql(\"SELECT id FROM #{tables_name} WHERE group_id=#{group_id} AND #{member_attribute_name}=#{member_id} \").length";
+
+      id_pres_count = eval(eval_str1);
+
+
+      if id_pres_count == 0
+        short_string = class_search_controller.GetShortField(member_id);
+        group_member = GroupMember.new( short_string, member_id);
+        ret_val << group_member;
+      end
+
+      ret_val  = ret_val + GetAllShortFieldsWhere(order_by_id_, "asc", false,  member_attribute_name, "a0.group_id = #{group_id}");
+    else
+      group_member = GroupMember.new( NOT_SET_STR, NOT_SET);
+      ret_val << group_member;
+      ret_val = ret_val  + class_search_controller.GetAllShortFieldsWhere(order_by_id_, "asc", false,  "", "");
+    end
+    return ret_val;
+  end
+  def GetAllShortFieldsWhere(order_by_id, order_direction, have_not_set, id_str_, where_str_)
+    construct_short_field_tree;
+    @sql_str = "SELECT a0.id, "
+    if id_str_.length>0
+      @sql_str << "a0." + id_str_ + ", "
+    end
+    get_short_select_string
+
+    @sql_str << " FROM #{@tables_name} a#{@field_tree.id} "
+    @join_str = ""
+    get_join_string(@field_tree)
+    @sql_str << @join_str
+    where_str = "";
+    if !have_not_set
+      where_str << " a0.id != #{NOT_SET} "
+    end
+    if where_str_.length >0
+      if where_str.length >0
+        where_str << " AND "
+      end
+      where_str << where_str_;
+    end
+    if where_str.length >0
+      @sql_str << " WHERE " + where_str;
+    end
+    if(order_by_id)
+      @sql_str << " ORDER BY a0.id " + order_direction;
+    else
+      @sql_str << " ORDER BY short_string " + order_direction;
+    end
+
+    eval_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")";
+
+    begin
+      ret_val =[]
+      results = eval(eval_str);
+      if id_str_.length >0
+        result_id_str = "result."+id_str_
+      else
+        result_id_str = "result.id"
+      end
+
+      for result in results
+        result_id = eval(result_id_str)
+        ret_val << GroupMember.new( result.short_string, result_id);
+      end
+    rescue Exception => exc
+      ret_val = [];
+    end
+    return ret_val;
+  end
+
+  def GetAllShortFields(order_by_id, order_direction, have_not_set)
+    return GetAllShortFieldsWhere(order_by_id, order_direction, have_not_set,"", "");
+  end
+
+  def GetShortField(id_)
+    construct_short_field_tree;
+    @sql_str = "SELECT a0.id, "
+    get_short_select_string
+    @sql_str << " FROM #{@tables_name} a#{@field_tree.id} "
+    @join_str = ""
+    get_join_string(@field_tree)
+    @sql_str << @join_str
+    @where_str = "WHERE a0.id = #{id_}";
+    @sql_str << @where_str;
+    eval_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")";
+    begin
+      ret_val = eval(eval_str)[0].short_string;
+
+    rescue Exception => exc
+      ret_val = "";
+    end
+    if ret_val == nil
+      ret_val = "";
+    end
+    return ret_val;
+  end
+  def get_foreign_select_string(filter)
+    @gfss_level = @gfss_level +1;
+    if @gfss_level > @max_level
+      @gfss_level = @gfss_level -1;
+      return;
+    end
+
+    format_elts = FormatController.FormatElements(filter.foreign_class.tableize, @user_id).format_elements_array;
+    for format_elt in format_elts
+      child_name = format_elt.field_name;
+      child_field = GetChildNode(filter,child_name);
+      if child_field != nil
+        child_node = child_field.field_node;
+        if(child_field.foreign_class.length == 0)
+          @foreign_str << " || " if(@foreign_str.length >0)
+          @foreign_str << "a#{child_node.parent.id}.#{child_node.name}"
+        else
+          get_foreign_select_string(child_field);
+        end
+      end
+      if format_elt.insert_string.length >0
+        @foreign_str << " || " if(@foreign_str.length >0)
+        @foreign_str << "'#{format_elt.insert_string}'"
+      end
+    end
+    @gfss_level = @gfss_level -1;
+  end
+  def GetShortChildNode(child_name)
+    child_field = nil;
+    parent_node = @available_fields[0].field_node.parent
+    for c in parent_node.all_children
+      if c.name == child_name
+        child_field = @available_fields[c.available_fields_index];
+        break;
+      end
+    end
+    return child_field;
+  end
+  def get_short_select_string
+    
+    @gfss_level =0;
+    @foreign_str = "";
+    format_elts = FormatController.FormatElements(@table_name.tableize, @user_id).format_elements_array;
+    for format_elt in format_elts
+      child_name = format_elt.field_name;
+      child_field =GetShortChildNode(child_name)
+       
+      if child_field != nil
+        child_node = child_field.field_node;
+
+        if(child_field.foreign_class.length == 0)
+          @foreign_str << " || " if(@foreign_str.length >0)
+          @foreign_str << "a#{child_node.parent.id}.#{child_node.name}"
+        else
+          get_foreign_select_string(child_field);
+        end
+      end
+      if format_elt.insert_string.length >0
+        @foreign_str << " || " if(@foreign_str.length >0)
+        @foreign_str << "'#{format_elt.insert_string}'"
+      end
+    end
+    # if @foreign_str.length>0
+    @sql_str << " CASE a0.id WHEN #{NOT_SET} THEN '#{NOT_SET_STR}' ELSE "
+    @sql_str << @foreign_str;
+    @sql_str << " END "
+    @sql_str <<" AS short_string"
+    #  end
+  end
+
+  def GetLastShortField()
+    min_id_str = "#{@table_name}.find(:last).id"
+    begin
+      min_id =eval(min_id_str)
+    rescue Exception => exc
+      min_id = 0
+    end
+    ret_str = GetShortField(min_id)
+    return ret_str;
+  end
+
+  def GetChildNode(field,child_name)
+    field_node = @foreign_key_tree_hash[field.full_name]
+    child_field = nil;
+    for c in field_node.all_children
+      if c.name == child_name
+        child_field = @available_fields[c.available_fields_index];
+        break;
+      end
+    end
+    return child_field;
+  end
+
   def process_node(field_node)
     if @processed_child_nodes.index(field_node.id) == nil
       current_node = field_node
@@ -962,7 +1085,27 @@ class SearchController
         end
       end
     end
+  end
 
+  def process_node_old(field_node)
+    if @processed_child_nodes.index(field_node.id) == nil
+      current_node = field_node
+      @processed_child_nodes << current_node.id;
+      parent_node = current_node.parent;
+      while(parent_node!=nil)
+        if(@processed_nodes.index(parent_node.id) == nil)
+          @processed_nodes << parent_node.id
+          parent_node.current_children = []
+        end
+        parent_node.current_children << current_node
+        @processed_child_nodes << current_node.id
+        current_node = parent_node
+        parent_node = parent_node.parent
+        if @processed_child_nodes.index(current_node.id) != nil
+          break;
+        end
+      end
+    end
 
     #if field_node.parent !=nil
     #  if(@processed_nodes.index(field_node.parent.id) == nil)
@@ -978,35 +1121,97 @@ class SearchController
     #end
   end
   def get_sql_string
-     construct_current_field_tree
-     @sql_str = "SELECT"
-     get_select_string(@field_tree)
-     @sql_str[@sql_str.length - 1] = ' '
-     @sql_str << "FROM #{@tables_name} a#{@field_tree.id} "
-     @join_str = ""
-     get_join_string(@field_tree)
-     @sql_str << @join_str
-     @where_str = "";
-     get_where_string;
-     @sql_str <<  @where_str
-     @order_str = "";
-     get_order_string;
-     @sql_str << @order_str;
+    construct_current_field_tree
+    @sql_str = "SELECT "
+    get_select_string(@field_tree)    
+    @sql_str[@sql_str.length - 1] = ' '
+    get_sub_query_string()
+    @sql_str << "FROM #{@tables_name} a#{@field_tree.id} "
+    @join_str = ""
+    get_join_string(@field_tree)
+    @sql_str << @join_str
+    @where_str = "";
+    get_where_string;
+    @sql_str <<  @where_str
+    @order_str = "";
+    get_order_string;
+    @sql_str << @order_str;
     # @sql_str << " LIMIT #{@limit_length} OFFSET #{@limit_offset} "
   end
 
-  def get_select_string(field_node)    
+  def get_sub_query_string
+    x_count = 0;
+    for filter_index in @current_filter_indices
+      filter_object = @extended_filters[filter_index].filter_object
+      if filter_object.class == SubQuery
+        sub_query_str = filter_object.select_string;
+        sub_query_str = sub_query_str.gsub(/current_argument_value/, filter_object.current_argument_value.to_s );
+        local_count = 0;
+        sub_query_str.scan(/b\d/){|b_str| local_count = [b_str.match(/\d/)[0].to_i,local_count].max}
+        sub_query_str = sub_query_str.gsub(/b\d/){|s| 'x'+(s.match(/\d/)[0].to_i + x_count).to_s}
+        x_count  = local_count+ x_count;
+        @sql_str << ', '+sub_query_str + ' AS ' +  filter_object.variable_name + ' '
+      end
+    end
+
+  end
+
+  def get_select_string(field_node)
     for child_node in field_node.current_children
-      if child_node.current_children.length == 0
-        @sql_str << " a#{field_node.id}.#{child_node.name}"
-        if field_node.parent != nil
-          @sql_str << " AS a#{field_node.id}_#{child_node.name}"
+      if child_node.current_children.length == 0 && child_node.current_flag ==  @current_attribute_flag
+        filter =  @available_fields[child_node.available_fields_index]
+        filter.foreign_search_str = ""
+        foreign_class =filter.foreign_class
+        if(foreign_class.length == 0)
+          @sql_str << " a#{field_node.id}.#{child_node.name}"
+          if field_node.parent != nil
+            @sql_str << " AS a#{field_node.id}_#{child_node.name}"
+          end
+          @sql_str << ","
+        else
+          @gfss_level =0;
+          @foreign_str = "";
+          get_foreign_select_string(filter)
+          # if @foreign_str.length>0
+          @foreign_str = " CASE a#{field_node.id}.#{child_node.name} WHEN #{NOT_SET} THEN '#{NOT_SET_STR}' ELSE " +@foreign_str +" END "
+          filter.foreign_search_str = @foreign_str
+       #   @sql_str << " CASE a#{field_node.id}.#{child_node.name} WHEN #{NOT_SET} THEN '#{NOT_SET_STR}' ELSE "
+          @sql_str << @foreign_str;
+         # @sql_str << " END "
+          @sql_str <<" AS a#{field_node.id}_#{child_node.name}"
+          @sql_str << ","
+          # end
         end
-        @sql_str << ","
       else
         get_select_string(child_node)
       end
     end
+  end
+
+  def get_foreign_select_string(filter)
+    @gfss_level = @gfss_level +1;
+    if @gfss_level > @max_level
+      @gfss_level = @gfss_level -1;
+      return;
+    end
+
+    format_elts = FormatController.FormatElements(filter.foreign_class.tableize, @user_id).format_elements_array;
+    for format_elt in format_elts
+      child_name = format_elt.field_name;
+      child_field = GetChildNode(filter,child_name);
+      if child_field != nil
+        child_node = child_field.field_node;
+        if(child_field.foreign_class.length == 0)
+          @foreign_str << " || " if(@foreign_str.length >0)
+          @foreign_str << "a#{child_node.parent.id}.#{child_node.name}"
+        else
+          get_foreign_select_string(child_field);
+        end
+      end
+      @foreign_str << " || " if(@foreign_str.length >0)
+      @foreign_str << "'#{format_elt.insert_string}'"
+    end
+    @gfss_level = @gfss_level -1;
   end
 
   def get_join_string(field_node)
@@ -1018,11 +1223,11 @@ class SearchController
       nested_joins = [];
       for child_node1 in field_node.current_children
         if child_node1.current_children.length > 0
-          nested_joins << child_node1;         
-        end       
+          nested_joins << child_node1;
+        end
       end
       if nested_joins.length >0
-        @join_str << "INNER JOIN ( #{field_node.name} a#{field_node.id} ";
+        @join_str << "INNER JOIN ( #{field_node.name.tableize} a#{field_node.id} ";
         for child_node2 in nested_joins
           get_join_string(child_node2)
         end
@@ -1030,35 +1235,67 @@ class SearchController
         
       else
         if field_node.current_children.length > 0
-          @join_str << "INNER JOIN #{field_node.name} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
+          @join_str << "INNER JOIN #{field_node.name.tableize} a#{field_node.id} ON  a#{field_node.parent.id}.#{field_node.key} = a#{field_node.id}.id "
         end
-      end     
-    end    
+      end
+    end
   end
 
+
   def get_where_string
-   num_filters = @current_filter_indices.length;
-   if num_filters >0
-     @where_str = " WHERE ";
-    for index in @current_filter_indices[0,  (num_filters -1)]
-      filter = @available_fields[index];
-      filter_str = filter.GetSQLString2;
-      if filter_str.length >0
-        @where_str = @where_str + "#{filter_str} AND "
+    num_filters = @current_filter_indices.length;
+    @where_str = "a0.id != #{NOT_SET} "
+    if num_filters >0
+
+      for index in @current_filter_indices
+        filter = @extended_filters[index].filter_object;
+        if filter.class == SearchField
+          filter_str = filter.GetSQLString2;
+          if filter_str.length >0
+            @where_str = @where_str + " AND #{filter_str} "
+          end
+        end
       end
 
-    end
-    final_index = @current_filter_indices[num_filters -1];
-    filter = @available_fields[final_index];
+      user_where_eval_str = eval("#{table_name}::USER_WHERE_STR");
+      if  user_where_eval_str.length >0
+         user_where_str = eval(user_where_eval_str);
+         @where_str << " AND " + user_where_str if user_where_str.length>0
+       end
 
-    filter_str  =  filter.GetSQLString2
-    if filter_str.length >0
-      @where_str = @where_str + "#{filter_str}"
+      external_where_str = external_where_string;
+      if external_where_str.length >0
+
+      @where_str << " AND " + external_where_str;
+      end
+     
+      @where_str = @where_str + " OR (a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id})" if @default_id.length != 0
     else
-      @where_str = @where_str.gsub(/AND\s*$/){|s| ''};
+      @where_str = " OR a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
     end
-   end
-   @where_str = "" if @where_str == " WHERE "
+    
+    if  @where_str.length >0
+      @where_str = " WHERE  (" + @where_str +")";
+    end
+  end
+  def external_where_string
+    y_count = 0;
+    ret_where_str = "";
+    for external_filter in @external_filters      
+      
+      for arg in external_filter.filter_object.current_arguments
+        if ret_where_str.length >0
+          ret_where_str << " AND "
+        end
+        external_where_str = external_filter.filter_object.where_str;
+        external_where_str = external_where_str.gsub(/arg_value/, arg.member_id.to_s );
+        local_count = 0;
+        external_where_str.scan(/b\d/){|b_str| local_count = [b_str.match(/\d/)[0].to_i,local_count].max}
+        external_where_str = external_where_str.gsub(/b\d/){|s| 'y'+(s.match(/\d/)[0].to_i + y_count).to_s}
+        ret_where_str << external_where_str;
+      end      
+    end
+    return ret_where_str;
   end
 
   def get_order_string
@@ -1067,10 +1304,19 @@ class SearchController
     number_of_orders = @search_order.length
     number_of_orders = 2 if number_of_orders >2
     for i in  (0..( number_of_orders - 1))
-      field = @available_fields[@search_order[i]]
-      node_id = field.field_node.parent.id;
-      field_name = field.attribute_name
-      @order_str << " a#{ node_id}.#{field_name}  #{@search_direction[i].to_s },"
+      field = @extended_filters[@search_order[i]].filter_object
+      if field.class == SearchField
+        node_id = field.field_node.parent.id;
+        field_name = field.attribute_name
+        if(field.field_node.parent.parent == nil && field.foreign_class.length == 0)
+          @order_str << " a#{ node_id}.#{field_name}  #{@search_direction[i].to_s },"
+        else
+          @order_str << " a#{ node_id}_#{field_name}  #{@search_direction[i].to_s },"
+        end
+      elsif field.class == SubQuery
+        @order_str << " #{field.variable_name}  #{@search_direction[i].to_s },"
+
+      end
     end
     @order_str[(@order_str.length) -1] = ' ';
 
@@ -1080,122 +1326,142 @@ class SearchController
     ret_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")"
     return ret_str;
   end
-  
-  def get_eval_string
-   # Person.find(:all,:conditions => session[:searchstr], :order => Person::SortOrder[session[:sortOption]] )
-   # session[:searchstr] = "second_name SIMILAR TO \'" + session[:searchstr2nd] + "\' AND first_name SIMILAR TO \'"
-  #  + session[:searchstr1st] + "\' AND entry_year = \'" + session[:searchstrYear] + "\'"
-   # GroupMember.find(:first, :conditions => "people.second_name like '%Verr%'" , :include => :person);
 
-    condition_str = "";
+  def get_eval_string_no_sub
+    get_sql_string_no_sub
+    ret_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")"
+    return ret_str;
+  end
+
+  def GetUpdateObjects(edit_table_name_, attribute_name_, ids_)
+    if !@active
+      return [];
+    end
+    construct_current_field_tree
+    @update_nodes = [];
+    @sn_level = 0;
+    @edit_table = edit_table_name_;
+    @attribute_name =attribute_name_;
+    scan_nodes(@field_tree);
+    if @update_nodes.length == 0
+      return [];
+    else
+      get_update_sql_string(ids_);
+      eval_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")";
+      ret_val = eval(eval_str);
+    end
+    x = 1;
+    return ret_val;
+  end
+  def get_update_where_string(ids_)
 
     num_filters = @current_filter_indices.length;
-   if num_filters >0
-    for index in @current_filter_indices[0,  (num_filters -1)]
-      filter = @available_fields[index];
-      filter_str = filter.GetSQLString;
-      if filter_str.length >0
-        condition_str = condition_str + "#{filter.GetSQLString} AND "
-      end
-      
-    end
 
-    final_index = @current_filter_indices[num_filters -1];
-    filter = @available_fields[final_index];
-
-    filter_str  =  filter.GetSQLString
-    if filter_str.length >0
-      condition_str = condition_str + "#{filter.GetSQLString}"
-    else
-      condition_str = condition_str.gsub(/AND\s*$/){|s| ''};
-    end
-   end
-     order_str = "\'"
-    #for  i in  (0..(@search_order.length - 1))
-        i = 0;
-        filter = @available_fields[@search_order[i]]
-        order_str = "#{order_str} #{filter.search_token} #{@search_direction[i].to_s },"
-   # end
-    order_length = order_str.length;
-    order_str[order_length - 1] = "\'"
-    
-    current_includes = []
-    for index in @current_filter_indices
-      filter = @available_fields[index];
-      current_index = filter.include_index
-      if  current_index != 0 && current_includes.index(current_index) == nil
-          current_includes << current_index        
+    for field_id in @update_nodes
+      if @where_str.length >0
+        @where_str =  @where_str + " OR "
       end
-    end
-    for index in @current_field_indices
-      filter = @available_fields[index];
-      current_index = filter.include_index
-      if  current_index != 0 && current_includes.index(current_index) == nil
-          current_includes << current_index
-      end
-    end  
-    if current_includes.length >0
-      if current_includes.length == 1
-        index = current_includes[0]
-        include_str = @search_include_strings[index]
-      else
-        include_str = "["
-        for include_index in current_includes
-          include_str = "#{include_str} #{@search_include_strings[include_index]},"
+      @where_str =   @where_str + "(a0.id != #{NOT_SET} AND a#{field_id}.id IN (" #{id_}  "
+      in_str ="";
+      for id in ids_
+        if in_str.length>0
+          in_str << ","
         end
-        include_str_length = include_str.length
-        include_str[include_str_length-1] = "]"
+        in_str << " #{id}"
       end
-
-    else
-      include_str = ""
-    end
-
-    ret_str = "#{@table_name}.find(:all"
-    if condition_str.length >0
-      ret_str = ret_str + ",:conditions => \"#{condition_str}\""
-    end
-    if order_str.length >0
-      ret_str = ret_str + ", :order => #{order_str}"
-    end
-    if include_str.length >0
-      ret_str = ret_str + ",  :include => #{include_str}"
-    end
-    ret_str = ret_str + ")"
-
-  #  ret_str = "#{@table_name}.find(:all,:conditions => \"#{condition_str}\", :order => #{order_str},  :include => #{include_str})"
-
-  #  else
+      in_str << ")"
+      @where_str  = @where_str  + in_str;
 
 
+      if num_filters >0
 
-        #  ret_str = "#{@table_name}.find(:all)"
+        for index in @current_filter_indices
+          filter = @extended_filters[index].filter_object;
+          if filter.class == SearchField
+            if((filter.field_node.parent.id == field_id && filter.attribute_name == @attribute_name)==false)
+              filter_str = filter.GetSQLString2;
+              if filter_str.length >0
+                @where_str = @where_str + " AND #{filter_str} "
+              end
+            end
+          end          
+        end
 
       
- #   end
+        @where_str = @where_str + ")"
 
-    return ret_str;
+        @where_str = @where_str + " OR a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
+      else
+        @where_str = "a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
+      end
+    end
+    if  @where_str.length >0
+      @where_str = " WHERE  (" + @where_str + ")";
+    end    
+  end
 
+  def get_update_sql_string(ids_)
+    construct_current_field_tree
+    @sql_str = "SELECT "
+    get_select_string(@field_tree)
+    @sql_str[@sql_str.length - 1] = ' '
+    @sql_str[@sql_str.length - 1] = ' '
+    get_sub_query_string()
+    @sql_str << "FROM #{@tables_name} a#{@field_tree.id} "
+    @join_str = ""
+    get_join_string(@field_tree)
+    @sql_str << @join_str
+    @where_str = "";
+    get_update_where_string(ids_);
+    @sql_str <<  @where_str
+    @order_str = "";
+    get_order_string;
+    @sql_str << @order_str;
+    # @sql_str << " LIMIT #{@limit_length} OFFSET #{@limit_offset} "
+  end
 
+ 
+  def scan_nodes(field_node_)
+    @sn_level = @sn_level+1;
+    if(@sn_level >10)
+      @sn_level = @sn_level - 1;
+      return;
+    end
+    for child_node in field_node_.current_children
+      if(field_node_.name == @edit_table && child_node.name == @attribute_name)
+        if(@update_nodes.index(field_node_.id) == nil )
+          @update_nodes<<field_node_.id;
+        end
+      end
+      scan_nodes(child_node)
+    end
+    
+    @sn_level = @sn_level - 1;    
   end
 
 
-  def updateFilters(current_filter_indices_)
-    num_available_fields = @available_fields.length;
+  def updateFilters(current_filter_indices_,  update_display_)
+    @active = true;
+    num_available_fields = @extended_filters.length;
     @possible_filter_indices = [];
     for i in (0..(num_available_fields-1))
       curr_i = @current_filter_indices.index(i)
       if(curr_i ==nil)
         if(current_filter_indices_.index(i) != nil)
           @current_filter_indices << i;
-         
+          @search_order << i;
+          @search_direction << :asc;
         else
           @possible_filter_indices << i;
         end
       else
         if(current_filter_indices_.index(i) == nil)
           @current_filter_indices.delete_at(curr_i);
-          
+          ord_i = @search_order.index(i)
+          if(ord_i !=nil)
+            @search_order.delete_at(ord_i);
+            @search_direction.delete_at(ord_i);
+          end
           @possible_filter_indices << i;
         end
       end
@@ -1203,7 +1469,37 @@ class SearchController
     end
 
 
+    if update_display_
+      sql_str = "DisplayFilter.find_by_sql(\"SELECT id, table_name, filter_index, element_order, in_use FROM display_filters WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "') ORDER BY element_order asc\")"
+      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+      old_fields = eval(sql_str);
+      old_fields_count  = old_fields.length;
+      new_fields_count = @current_filter_indices.length;
+      for i in (0..(new_fields_count-1))
+        if i>=old_fields_count
+          display_filter = DisplayFilter.new;
+        else
+          display_filter = old_fields[i];
+        end
+        display_filter.table_name =  @tables_name;
+        display_filter.user_id = @user_id;
+        display_filter.filter_index = @current_filter_indices[i];
+        display_filter.element_order = i;
+        display_filter.in_use = true;
+        display_filter.save;
+      end
+    
+      if old_fields_count > new_fields_count
+        for i in (new_fields_count..(old_fields_count-1))
+          old_fields[i].in_use =false;
+          old_fields[i].save;
+        end
+      end
+    end
   end
+
+
+
   def binary_search(array_, val_) #searches for insertion point for val_ in ordered array_
     ret_val = 0;
     if array_.length == 0
@@ -1230,37 +1526,31 @@ class SearchController
   end
 
 
- def updateFields(current_field_indices_)
-    num_available_fields = @available_fields.length;
-    @possible_field_indices = [];
-    for i in (0..(num_available_fields-1))
-      curr_i = @current_field_indices.index(i)
-      if(curr_i ==nil)
-        if(current_field_indices_.index(i) != nil)
-          #insert_pos = binary_search(@current_field_indices, i)
-          @current_field_indices << i;
-          @search_order << i;
-          @search_direction << :asc;
-        else
-          @possible_field_indices << i;
-        end
+
+  def UpdateOrder(order_field_name)
+    order_index = @hash_to_index[order_field_name]
+    if(order_index == @search_order[0])
+      if @search_direction[0] == :asc
+        @search_direction[0] = :desc
       else
-        if(current_field_indices_.index(i) == nil)
-          @current_field_indices.delete_at(curr_i);
-          ord_i = @search_order.index(i)
-          if(ord_i !=nil)
-            @search_order.delete_at(ord_i);
-            @search_direction.delete_at(ord_i);
-          end
-          @possible_field_indices << i;
-        end
+        @search_direction[0] = :asc
+      end
+    else
+      old_pos = @search_order.index(order_index)
+      if(old_pos !=nil)
+        search_dir = @search_direction[old_pos];
+        @search_order.delete_at(old_pos);
+        @search_direction.delete_at(old_pos);
+        @search_order.insert(0,order_index);
+        @search_direction.insert(0,search_dir);
+        @order_updated = true;
       end
     end
-    @current_field_indices =  @current_field_indices.sort
   end
-
-
-  def UpdateOrder(order_index)
+  def setDefaultId(default_id_)
+    @default_id = default_id_;
+  end
+  def UpdateOrder2(order_index)
     if(order_index == @search_order[0])
       if @search_direction[0] == :asc
         @search_direction[0] = :desc
@@ -1281,18 +1571,101 @@ class SearchController
 
   end
 
-  def AddFilter(index)
+  def SetExtendedFilterControllers(search_ctls_)
+    filter_id = 0;
+    for extended_filter in @extended_filters
+      if extended_filter.filter_object.class == SubQuery
+        extended_filter.filter_object.selection_controller = search_ctls_[extended_filter.filter_object.argument_class];
+      end
+    end
+    for extended_filter in @external_filters
+        extended_filter.filter_object.class_search_controller = search_ctls_[extended_filter.filter_object.argument_class];
+        extended_filter.filter_object.selection_controller = search_ctls_[extended_filter.filter_object.group_class];
+        extended_filter.filter_object.id = filter_id;
+        extended_filter.filter_object.set_user_id(@user_id, @administrator);
+        filter_id = filter_id+1;
+      end
+      @filter_controller = FilterController.new(search_ctls_, @table_name, @user_id);
+      @search_ctls = search_ctls_;
+  end
+  def UpdateFiltersFromDB()
+   for ex_filter in @external_filters
+     ex_filter.filter_object.Update();
+   end
+  end
+  def GetPossibleExternalFilters()
+    ret_val = [];
+    for ex_filter in @external_filters
+
+      if ex_filter.filter_object.current_arguments.length==0
+        ret_val << ex_filter.filter_object
+      end
+    end
+    return ret_val;
 
   end
-
-  def RemoveFilter(index)
-
+  def GetCurrentExternalFilters()
+    ret_val = [];
+    for ex_filter in @external_filters
+      
+      if ex_filter.filter_object.current_arguments.length>0
+        ret_val << ex_filter.filter_object
+      end
+    end
+    return ret_val;    
+  end
+  
+  def GetExternalFilterElement(filter_id, elt_index)
+    external_filter = @external_filters[filter_id].filter_object;
+    ret_val = ExternalFilterElement.new(elt_index, external_filter);
+    return ret_val;
   end
 
-
-
-  def Search #uses filters to update Table
+  def save_external_filters_to_db
     
+    sql_str = "ExternalFilterValue.find_by_sql(\"SELECT id, table_name, filter_id, member_id, group_id, in_use FROM external_filter_values WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "') ORDER BY id asc\")"
+    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+    old_external_filter_elts = eval(sql_str);
+    old_external_filter_elt_count  = old_external_filter_elts.length;
+    filter_count = 0;
+    
+    for external_filter in @external_filters
+      for arg_value in external_filter.filter_object.current_arguments
+        if filter_count >= old_external_filter_elt_count
+          external_filter_elt  = ExternalFilterValue.new;
+        else
+          external_filter_elt = old_external_filter_elts[filter_count];
+        end
+        external_filter_elt.table_name = @tables_name;
+        external_filter_elt.user_id = @user_id;
+        external_filter_elt.filter_id = external_filter.filter_object.id;
+        external_filter_elt.in_use = true;
+        external_filter_elt.member_id = arg_value.member_id;
+        external_filter_elt.group_id = arg_value.group_id;        
+        external_filter_elt.save;
+        filter_count = filter_count+1;
+      end
+    end
+
+    while filter_count < old_external_filter_elt_count
+      external_filter_elt = old_external_filter_elts[filter_count];
+      external_filter_elt.in_use = false;
+      external_filter_elt.save;
+      filter_count = filter_count+1;
+    end
+
+
+  end
+  
+  def CreateNewExternalFilter(filter_id)
+    external_filter = @external_filters[filter_id].filter_object;
+    external_filter.current_arguments = [];
+    new_arg =  GetExternalFilterElement(filter_id, 0);
+    new_arg.group_id = 0;
+    new_member_id_str = "#{external_filter.class_name}.find(:last)";
+    new_arg.member_id = eval(new_member_id_str).id;
+    external_filter.current_arguments << new_arg;
+    return external_filter;    
   end
 
 
@@ -1301,6 +1674,7 @@ class SearchController
 
     @level = @level + 1;
     if @level > @max_level
+      @level = @level - 1;
       return
     end
     include_index = @search_include_strings.index(include_str);
@@ -1331,49 +1705,83 @@ class SearchController
       end
       foreign_key = reflection.options[:foreign_key];
       tables_name = QualifiersStr(reflection_table_name)
-      sub_tree = FieldNode.new(parent_tree,tables_name , foreign_key);
-      parent_tree.all_children << sub_tree;
 
+      sub_tree = FieldNode.new(parent_tree,reflection.class_name,-1, foreign_key);
+      parent_tree.all_children << sub_tree;
+      # @foreign_key_tree_hash[foreign_key] = sub_tree;
+      full_name = "#{reflection_qualifier}"
+      @foreign_key_tree_hash[full_name] = sub_tree;
       ProcessTable(reflection_qualifier, reflection_qualifier_str, reflection_qualifiers_str, reflection_table_name, reflection_include_str, sub_tree)
-       
+
     end
     @level = @level - 1
   end
-  #This is a helper function for ProcessTable. It does a local field extraction for the current_table
-  def ExtractFields(qualifier, qualifier_str, qualifiers_str, current_table, include_index, parent_tree)
-    #attribute_eval_str = "#{current_table}.column_names"
-    attribute_eval_str = "#{current_table}.columns"
-    attributes = eval(attribute_eval_str)
+  #This is a helper function for ProcessTable. It does a local field extraction for the table_name_str
+  def ExtractFields(qualifier, qualifier_str, qualifiers_str, table_name_str, include_index_val, parent_tree)
+    #attribute_eval_str = " AttributeList.new(#{table_name_str}).attribute_elements"
+    attribute_eval_str = " AttributeList.new(#{table_name_str})"
+    attribute_list = eval(attribute_eval_str)
+    reflection_hash = attribute_list.reflections;
+    attributes = attribute_list.attribute_elements
     for attribute in attributes
       attribute_name= attribute.name()
-      attribute_type  = attribute.type
-      #attribute_index = @data_type_strings.index(attribute_type)
-      #  if  attribute_index == nil
-      #    attribute_index = @data_type_strings.length
-      #     @data_type_strings << attribute_type;
-      #  end
-      if parent_tree.parent == nil
-        eval_str = "row.#{attribute_name}"
+      if attribute.foreign_key.length == 0
+        data_type_symbol  = attribute.data_type
       else
-        eval_str = "row.a#{parent_tree.id}_#{attribute_name}"
+        data_type_symbol = :string
       end
-      #eval_str = "row.#{qualifier_str}#{attribute_name}"
-      token_str = "#{qualifiers_str}#{attribute_name}"
-      #temp_header_str = eval("#{current_table}.attribute_name('#{attribute_name}')");
-      header_str = HeaderStr(attribute_name);
-      #  x =  HeaderStr("   one_two_three  ")
-      #  y =  HeaderStr("  MyNameIsRobertVerrill_ItIsSoId_id iD  and it is true   ")
-      tag_symbol =  QualifierStr("#{qualifier}_#{header_str}")
 
-      field_node = FieldNode.new(parent_tree, attribute_name, "");
+      if data_type_symbol == :time
+      if parent_tree.parent == nil && attribute.foreign_key.length == 0
+
+        eval_string ="row.#{attribute_name}.strftime(\"%H:%M\")"
+
+      else
+        eval_string ="row.a#{parent_tree.id}_#{attribute_name}.strftime(\"%H:%M\")"
+      end
+
+      else
+
+
+      if parent_tree.parent == nil && attribute.foreign_key.length == 0
+
+        eval_string = "row.#{attribute_name}"
+      else
+        eval_string = "row.a#{parent_tree.id}_#{attribute_name}"
+      end
+      end
+      if attribute.foreign_key.length == 0
+        foreign_class = ""
+        field_string = HeaderStr(attribute_name);
+      else
+        foreign_class = reflection_hash[attribute.name];
+        field_string = HeaderStr(attribute.foreign_key);
+      end
+      
+      
+      qualifer_string = qualifier
+      tag_symbol =  QualifierStr("#{qualifier}_#{field_string}")
+      id_val = @new_index_val
+
+      available_fields_index = @available_fields.length;
+
+      field_node = FieldNode.new(parent_tree, attribute_name, available_fields_index, "");
       parent_tree.all_children << field_node;
-     
-      @available_fields << SearchField.new(header_str, qualifier, eval_str, token_str, include_index, attribute_type, tag_symbol, @new_index_val,  current_table, attribute_name, field_node)
+      if parent_tree.parent == nil
+        primary = attribute.primary;
+      else
+        primary = false;
+      end
+      
+
+
+      @available_fields << SearchField.new(field_string, qualifer_string, eval_string, include_index_val, data_type_symbol, tag_symbol, id_val,  table_name_str, attribute_name, field_node, foreign_class, primary)
+      @hash_to_index[tag_symbol] = @available_fields.length - 1;
       @new_index_val = @new_index_val+1
     end
-   
+
   end
-    def HeaderStr(in_str)
+  def HeaderStr(in_str)
 
     ret_str = in_str.strip;
     ret_str = ret_str.gsub(/_/){|s| ' '};

@@ -9,7 +9,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090427101245) do
+ActiveRecord::Schema.define(:version => 20091005094334) do
+
+  create_table "agatha_emails", :force => true do |t|
+    t.string   "from_email",     :default => ""
+    t.string   "to_email",       :default => ""
+    t.string   "subject",        :default => ""
+    t.text     "body",           :default => ""
+    t.string   "attachments",    :default => ""
+    t.boolean  "sent",           :default => false
+    t.integer  "template_id",    :default => 1
+    t.integer  "person_id",      :default => 1
+    t.integer  "term_id",        :default => 1
+    t.integer  "course_id",      :default => 1
+    t.string   "attached_files"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -20,8 +36,8 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
   end
 
   create_table "attendees", :force => true do |t|
-    t.integer  "lecture_id", :null => false
-    t.integer  "person_id",  :null => false
+    t.integer  "lecture_id", :default => 1, :null => false
+    t.integer  "person_id",  :default => 1, :null => false
     t.boolean  "examined"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -30,6 +46,8 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.integer  "mark_type"
     t.text     "comment"
   end
+
+  add_index "attendees", ["lecture_id", "person_id"], :name => "unique_attendees", :unique => true
 
   create_table "course_csvs", :force => true do |t|
     t.string  "course_name"
@@ -63,9 +81,200 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.datetime "updated_at"
   end
 
-  create_table "group_members", :force => true do |t|
+  create_table "display_filters", :force => true do |t|
+    t.integer "user_id",       :default => 1
+    t.string  "table_name"
+    t.integer "filter_index"
+    t.integer "element_order"
+    t.boolean "in_use"
+  end
+
+  create_table "email_templates", :force => true do |t|
+    t.string   "template_name",        :default => ""
+    t.string   "from_email",           :default => ""
+    t.string   "subject",              :default => ""
+    t.text     "ruby_header",          :default => ""
+    t.text     "body",                 :default => ""
+    t.integer  "attachment_rule_id",   :default => 1
+    t.string   "attachment_file_list", :default => ""
+    t.boolean  "term_dependency",      :default => true
+    t.boolean  "course_dependency",    :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "global_warnings",      :default => ""
+    t.text     "personal_warnings",    :default => ""
+  end
+
+  create_table "external_filter_values", :force => true do |t|
+    t.integer  "user_id",    :default => 1
+    t.string   "table_name"
+    t.integer  "filter_id",  :default => 1
+    t.integer  "member_id",  :default => 1
+    t.integer  "group_id",   :default => 1
+    t.boolean  "in_use"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "format_elements", :force => true do |t|
+    t.integer "user_id",       :default => 1
+    t.string  "table_name"
+    t.string  "field_name"
+    t.string  "insert_string"
+    t.integer "element_order"
+    t.boolean "in_use"
+  end
+
+  create_table "group_agatha_emails", :force => true do |t|
     t.integer  "group_id"
-    t.integer  "person_id"
+    t.integer  "agatha_email_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_attendees", :force => true do |t|
+    t.integer  "group_id",    :default => 1
+    t.integer  "attendee_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_attendees", ["attendee_id", "group_id"], :name => "unique_group_attendees", :unique => true
+
+  create_table "group_courses", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "course_id",  :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_courses", ["course_id", "group_id"], :name => "unique_group_courses", :unique => true
+
+  create_table "group_days", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "day_id",     :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_days", ["day_id", "group_id"], :name => "unique_group_days", :unique => true
+
+  create_table "group_email_templates", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "email_template_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_filters", :force => true do |t|
+    t.integer  "user_id",     :default => 1
+    t.string   "table_name"
+    t.text     "foreign_key"
+    t.integer  "group_id",    :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_institutions", :force => true do |t|
+    t.integer  "group_id",       :default => 1
+    t.integer  "institution_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_institutions", ["group_id", "institution_id"], :name => "unique_group_institutions", :unique => true
+
+  create_table "group_lectures", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "lecture_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_lectures", ["group_id", "lecture_id"], :name => "unique_group_lectures", :unique => true
+
+  create_table "group_locations", :force => true do |t|
+    t.integer  "group_id",    :default => 1
+    t.integer  "location_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_locations", ["group_id", "location_id"], :name => "unique_group_locations", :unique => true
+
+  create_table "group_people", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "person_id",  :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_people", ["group_id", "person_id"], :name => "unique_group_people", :unique => true
+
+  create_table "group_programmes", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "programme_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_programmes", ["group_id", "programme_id"], :name => "unique_group_programmes", :unique => true
+
+  create_table "group_term_names", :force => true do |t|
+    t.integer  "group_id",     :default => 1
+    t.integer  "term_name_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_term_names", ["group_id", "term_name_id"], :name => "unique_group_term_names", :unique => true
+
+  create_table "group_terms", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "term_id",    :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_terms", ["group_id", "term_id"], :name => "unique_group_terms", :unique => true
+
+  create_table "group_tutorial_schedules", :force => true do |t|
+    t.integer  "group_id",             :default => 1
+    t.integer  "tutorial_schedule_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_tutorial_schedules", ["group_id", "tutorial_schedule_id"], :name => "unique_group_tutorial_schedules", :unique => true
+
+  create_table "group_tutorials", :force => true do |t|
+    t.integer  "group_id",    :default => 1
+    t.integer  "tutorial_id", :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_tutorials", ["group_id", "tutorial_id"], :name => "unique_group_tutorials", :unique => true
+
+  create_table "group_users", :force => true do |t|
+    t.integer  "group_id",   :default => 1
+    t.integer  "user_id",    :default => 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_users", ["group_id", "user_id"], :name => "unique_group_users", :unique => true
+
+  create_table "group_willing_lecturers", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "willing_lecturer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_willing_tutors", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "willing_tutor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -74,7 +283,14 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.string   "group_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "table_name"
+    t.integer  "owner_id",   :default => 1
+    t.boolean  "private"
+    t.integer  "readers_id", :default => 1
+    t.integer  "writers_id", :default => 1
   end
+
+  add_index "groups", ["group_name", "table_name"], :name => "unique_groups", :unique => true
 
   create_table "institutions", :force => true do |t|
     t.string   "old_name"
@@ -86,7 +302,6 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.string   "term_city"
     t.string   "term_postcode"
     t.string   "conventual_name"
-    t.boolean  "institution_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -106,18 +321,18 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
   end
 
   create_table "lectures", :force => true do |t|
-    t.integer  "course_id",          :null => false
-    t.integer  "person_id",          :null => false
-    t.integer  "term_id"
-    t.text     "exam"
+    t.integer  "course_id",          :default => 1, :null => false
+    t.integer  "person_id",          :default => 1, :null => false
+    t.integer  "term_id",            :default => 1
+    t.string   "exam"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "day_id"
     t.time     "lecture_time"
-    t.integer  "location_id"
-    t.integer  "number_of_classes"
-    t.integer  "number_of_lectures"
-    t.integer  "hours"
+    t.integer  "location_id",        :default => 1
+    t.integer  "number_of_classes",  :default => 0
+    t.integer  "number_of_lectures", :default => 0
+    t.integer  "hours",              :default => 0
     t.text     "notes"
   end
 
@@ -126,9 +341,19 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.integer "max_people"
   end
 
-  create_table "pcourses", :force => true do |t|
-    t.integer  "course_id",    :null => false
-    t.integer  "programme_id", :null => false
+  create_table "maximum_tutorials", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "max_tutorials"
+    t.integer  "term_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "open_records", :force => true do |t|
+    t.integer  "user_id",    :default => 1
+    t.string   "table_name"
+    t.integer  "record_id",  :default => 1
+    t.boolean  "in_use"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -152,13 +377,16 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.string   "other_home_phone"
     t.string   "fax"
     t.text     "notes"
-    t.integer  "entry_year"
+    t.integer  "entry_term_id",      :default => 1,    :null => false
     t.string   "next_of_kin"
     t.string   "conventual_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "institution_id"
-    t.integer  "religious_house_id"
+    t.integer  "institution_id",     :default => 1
+    t.integer  "religious_house_id", :default => 1
+    t.text     "previous_studies"
+    t.text     "interests"
+    t.boolean  "html_email",         :default => true
   end
 
   create_table "person_csvs", :force => true do |t|
@@ -197,15 +425,8 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.integer "status_id"
   end
 
-  create_table "programmes", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
+    t.string   "session_id", :default => "1", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -221,24 +442,6 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.integer "sort_key"
   end
 
-  create_table "student_courses", :force => true do |t|
-    t.integer  "person_id",    :null => false
-    t.integer  "course_id",    :null => false
-    t.integer  "term"
-    t.integer  "year"
-    t.string   "grade"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "programme_id"
-  end
-
-  create_table "student_programmes", :force => true do |t|
-    t.integer  "person_id",    :null => false
-    t.integer  "programme_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "term_csvs", :force => true do |t|
     t.integer  "name"
     t.datetime "startdate"
@@ -252,7 +455,7 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
   end
 
   create_table "terms", :force => true do |t|
-    t.integer  "term_name_id"
+    t.integer  "term_name_id", :default => 1
     t.integer  "year"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -270,20 +473,19 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
   end
 
   create_table "tutorial_schedules", :force => true do |t|
-    t.integer  "person_id"
-    t.integer  "course_id"
-    t.integer  "term_id"
-    t.integer  "total_tutorials"
+    t.integer  "person_id",                :default => 1
+    t.integer  "course_id",                :default => 1
+    t.integer  "term_id",                  :default => 1
+    t.integer  "number_of_tutorials",      :default => 0
     t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "number_of_tutorial_hours", :default => 0
   end
 
   create_table "tutorials", :force => true do |t|
-    t.integer  "person_id"
-    t.integer  "tutorial_schedule_id"
-    t.integer  "number_of_tutorials"
-    t.integer  "hours"
+    t.integer  "person_id",            :default => 1
+    t.integer  "tutorial_schedule_id", :default => 1
     t.text     "comment"
     t.integer  "mark"
     t.integer  "mark_type"
@@ -292,10 +494,34 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
     t.text     "notes"
   end
 
+  add_index "tutorials", ["person_id", "tutorial_schedule_id"], :name => "unique_tutorials", :unique => true
+
+  create_table "user_pages", :force => true do |t|
+    t.integer  "user_id",    :default => 1
+    t.string   "page_name",  :default => "Person"
+    t.integer  "option_id",  :default => 0
+    t.boolean  "is_active",  :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_pages", ["page_name", "user_id"], :name => "unique_page_names", :unique => true
+
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "hashed_password"
     t.string   "salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "person_id",       :default => 1
+  end
+
+  add_index "users", ["name"], :name => "unique_users", :unique => true
+
+  create_table "willing_lecturers", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "course_id"
+    t.integer  "order_of_preference"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -307,12 +533,20 @@ ActiveRecord::Schema.define(:version => 20090427101245) do
   end
 
   create_table "willing_teachers", :force => true do |t|
-    t.integer  "person_id"
-    t.integer  "course_id"
+    t.integer  "person_id",           :default => 1
+    t.integer  "course_id",           :default => 1
     t.integer  "order_of_preference"
     t.boolean  "can_lecture"
     t.boolean  "can_tutor"
     t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "willing_tutors", :force => true do |t|
+    t.integer  "person_id"
+    t.integer  "course_id"
+    t.integer  "order_of_preference"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

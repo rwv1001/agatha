@@ -1,24 +1,11 @@
-<h1>Editing attendee</h1>
+<script type ="text/javascript">
+document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
+</script>
 
-<% form_for(@attendee) do |f| %>
-  <%= f.error_messages %>
+<div class ="content_class" style="width: 100%">
+  <div class ="pad_class">
 
-  <p>
-    <%= f.label :lecture_id %><br />
-    <%= f.text_field :lecture_id %>
-  </p>
-  <p>
-    <%= f.label :person_id %><br />
-    <%= f.text_field :person_id %>
-  </p>
-  <p>
-    <%= f.label :examined %><br />
-    <%= f.check_box :examined %>
-  </p>
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
-
-<%= link_to 'Show', @attendee %> |
-<%= link_to 'Back', attendees_path %>
+    <h1><%="#{@short_name}"%>  </h1>
+    <%= render(:partial => "shared/edit_object", :object => @edit_object ) %>
+  </div>
+</div>

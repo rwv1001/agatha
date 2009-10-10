@@ -14,7 +14,12 @@
 <tr class="<%= cycle('row-even', 'row-odd') %>"> 
   <td>Text</td>
   <td>H% </td>
-  <td>Gives all entries with value starting with H</td>
+  <td>Gives all entries with value starting with H. It is case sensitive</td>
+</tr>
+<tr class="<%= cycle('row-even', 'row-odd') %>">
+  <td>Text</td>
+  <td>(H|h)% </td>
+  <td>Gives all entries with value starting with H or h. </td>
 </tr>
 <tr class="<%= cycle('row-even', 'row-odd') %>" >
   <td>Text</td>
@@ -24,7 +29,7 @@
 <tr class="<%= cycle('row-even', 'row-odd') %>" >
   <td>Text</td>
   <td>H%y </td>
-  <td>Gives all entries with value starting with H and ending with y </td>
+  <td>Gives all entries with value starting with H and ending with y. Beware of trailing whitespace </td>
 </tr>
 <tr class="<%= cycle('row-even', 'row-odd') %>" >
   <td>Text</td>

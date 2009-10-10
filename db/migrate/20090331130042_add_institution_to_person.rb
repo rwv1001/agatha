@@ -1,6 +1,6 @@
 class AddInstitutionToPerson < ActiveRecord::Migration
   def self.up
-    add_column :people, :institution, :integer
+    add_column :people, :institution, :integer, :default => 1
   end
 
   def self.down

@@ -19,7 +19,7 @@ class CreatePeople < ActiveRecord::Migration
       t.string :other_home_phone
       t.string :fax
       t.text :notes
-      t.integer :entry_year
+      t.integer :entry_year, :null => false, :default => 1
       t.string :next_of_kin
       t.string :conventual_name
 

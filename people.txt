@@ -110,13 +110,63 @@ ruby script/generate migration rename_term_number_to_term_name_id
 ruby script/generate model term_name name:string
 rake db:migrate
 
-agatha_dev=#  DROP TABLE attendee_csvs; DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_csvs; DROP TABLE courses; DROP TABLE   day_csvs; DROP TABLE days; DROP TABLE group_members; DROP TABLE groups; DROP TABLE institutions; DROP TABLE lecture_csvs; DROP TABLE lectures; DROP TABLE locations; DROP TABLE pcourses; DROP TABLE people; DROP TABLE people_csv; DROP TABLE person_csvs; DROP TABLE personstatus_csvs; DROP TABLE programmes; DROP TABLE schema_migrations;DROP TABLE sessions; DROP TABLE status_csvs; DROP TABLE student_courses; DROP TABLE student_programmes; DROP TABLE term_csvs; DROP TABLE term_names; DROP TABLE terms; DROP TABLE test_csv; DROP TABLE tutorial_csvs; DROP TABLE tutorial_schedules; DROP TABLE tutorials; DROP TABLE users; DROP TABLE willing_teacher_csvs; DROP TABLE willing_teachers;
+agatha_dev=#  DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_csvs; DROP TABLE courses; DROP TABLE   day_csvs; DROP TABLE days; DROP TABLE  group_people; DROP TABLE groups; DROP TABLE institutions; DROP TABLE lecture_csvs; DROP TABLE lectures; DROP TABLE locations; DROP TABLE people;  DROP TABLE person_csvs; DROP TABLE personstatus_csvs;  DROP TABLE schema_migrations;DROP TABLE sessions; DROP TABLE status_csvs;  DROP TABLE term_csvs; DROP TABLE term_names; DROP TABLE terms; DROP TABLE tutorial_csvs; DROP TABLE tutorial_schedules; DROP TABLE tutorials; DROP TABLE users; DROP TABLE willing_teacher_csvs; DROP TABLE willing_teachers; DROP TABLE format_elements; DROP TABLE display_filters; DROP TABLE group_programmes; DROP TABLE group_courses; DROP TABLE group_institutions; DROP TABLE group_lectures; DROP TABLE group_terms; DROP TABLE group_days; DROP TABLE group_tutorial_schedules; DROP TABLE group_locations; DROP TABLE group_term_names; DROP TABLE group_filters; DROP TABLE group_users; DROP TABLE open_records; DROP TABLE user_pages;  DROP TABLE external_filter_values; DROP TABLE group_attendees;DROP TABLE group_tutorials;DROP TABLE group_willing_lecturers;DROP TABLE group_willing_tutors;DROP TABLE maximum_tutorials;DROP TABLE willing_lecturers;DROP TABLE willing_tutors; DROP TABLE agatha_emails; DROP TABLE email_templates; DROP TABLE group_email_templates; DROP TABLE group_agatha_emails;
 
-agatha_dev=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/people.csv' DELIMITERS ',' CSV; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ',' CSV; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses.csv' DELIMITERS ',' CSV; COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles.csv' DELIMITERS ',' CSV; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses.csv' DELIMITERS ',' CSV; COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms.csv' DELIMITERS ',' CSV; COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ',' CSV; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ',' CSV; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' DELIMITERS ',' CSV;
+
+agatha_dev=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/people4.csv' DELIMITERS ',' CSV; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ',' CSV; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses2.csv' DELIMITERS ',' CSV; COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles.csv' DELIMITERS ',' CSV; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses.csv' DELIMITERS ',' CSV; COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms.csv' DELIMITERS ',' CSV; COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ',' CSV; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ',' CSV; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' DELIMITERS ',' CSV;
 
 sudo apt-get install irb
 ruby script/console
->> User.create(:name => 'agathaapp', :password => '0iRDCsalcs', :password_confirmation => '0iRDCsalcs')
+>> User.create(:name => 'agathaapp', :password => 'qwerty', :password_confirmation => 'qwerty', :person_id => 729)
+   Group.create(:group_name => 'Not Set', :table_name => '', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => true, :readers_id => 0, :writers_id => 0)
+   Group.create(:group_name => 'Administrator', :table_name => 'users', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => false, :readers_id => 2, :writers_id => 2)
+    admin_group = Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"})
+    admin_group.readers_id = admin_group.id
+    admin_group.writers_id = admin_group.id
+    GroupUser.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"}).id, :user_id =>  User.find(:first, :conditions =>{:name => "agathaapp"}).id)
+
+
+  Group.create(:group_name => 'Student', :table_name => 'users', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => false, :readers_id => admin_group.id, :writers_id => admin_group.id)
+  Group.create(:group_name => 'Lector', :table_name => 'users', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => false, :readers_id => admin_group.id, :writers_id => admin_group.id)
+  lector_group =  Group.find(:first, :conditions =>{:group_name => "Lector", :table_name => "users"})
+  lector_group.readers_id = lector_group.id
+  lector_group.writers_id = admin_group.id
+  student_group = Group.find(:first, :conditions =>{:group_name => "Student", :table_name => "users"})
+  student_group.readers_id = lector_group.id
+  student_group.writers_id = admin_group.id
+  
+  User.create(:name => 'gaine', :password => 'qwerty', :password_confirmation => 'qwerty', :person_id => 32)
+  User.create(:name => 'verrill', :password => 'qwerty', :password_confirmation => 'qwerty', :person_id => 729)
+  GroupUser.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Lector", :table_name => "users"}).id, :user_id =>  User.find(:first, :conditions =>{:name => "gaine"}).id)
+  GroupUser.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Student", :table_name => "users"}).id, :user_id =>  User.find(:first, :conditions =>{:name => "verrill"}).id)
+
+lector_group =  Group.find(:first, :conditions =>{:group_name => "Lector", :table_name => "users"})
+Group.create(:group_name => 'Test Lectures - agathaapp', :table_name => 'lectures', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => false, :readers_id => 1, :writers_id => 1)
+Group.create(:group_name => 'Test Lectures - verrill', :table_name => 'lectures', :owner_id => User.find(:first, :conditions =>{:name => "verrill"}).id, :private => true, :readers_id => 1, :writers_id => 1)
+Group.create(:group_name => 'Test Lectures - gaine', :table_name => 'lectures', :owner_id => User.find(:first, :conditions =>{:name => "gaine"}).id, :private => false, :readers_id => lector_group.id, :writers_id => 1)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - agathaapp", :table_name => "lectures"}).id, :lecture_id => 1)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - agathaapp", :table_name => "lectures"}).id, :lecture_id => 2)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - agathaapp", :table_name => "lectures"}).id, :lecture_id => 3)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - agathaapp", :table_name => "lectures"}).id, :lecture_id => 4)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - gaine", :table_name => "lectures"}).id, :lecture_id => 5)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - gaine", :table_name => "lectures"}).id, :lecture_id => 6)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - gaine", :table_name => "lectures"}).id, :lecture_id => 7)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - verrill", :table_name => "lectures"}).id, :lecture_id => 8)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - verrill", :table_name => "lectures"}).id, :lecture_id => 9)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - verrill", :table_name => "lectures"}).id, :lecture_id => 10)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - verrill", :table_name => "lectures"}).id, :lecture_id => 11)
+GroupLecture.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Test Lectures - verrill", :table_name => "lectures"}).id, :lecture_id => 12)
+
+
+
+types of users
+alumni - could see own reports if not censored
+students - could maybe make requests to study courses and see own reports if not censored
+lectors - these are the teachers. They can't add anyone to their course, but can accept or reject teaching load and can see details of students and reports that tutor lets them see, add marks to students. Can't see all student comments on their lecturing if censored by student.
+tutors - these can add and removed students who they are responsible for from courses. can be lecture scheduler. Can't change status of any person
+location owners - they can decide whether lectures can take place in their lecture hall
+lecture scheduler - these people can set up lecture schedules and decide who teaches their schedule and can make requests to location owners and who can add students to their schedule.
+administrators - these have total power. In particular they are the only ones who can change statuses of users and above categories of people
 
 >> TermName.create(:name => 'Hilary');
 >> TermName.create(:name => 'Trinity');
@@ -124,32 +174,446 @@ ruby script/console
 
 agatha3=#  DELETE FROM sessions;
 
-id		AutoNumber
-old_name	Text
-title		Text
-first_name	Text	
-second_name	Text
-postnominals	Text
-salutation	Text
-term_address	Text
-term_city	Text
-term_postcode	Text
-term_home_phone	Text
-term_work_phone	Text
-mobile		Text
-email		Text
-other_address	Text
-other_city	Text
-other_postcode	Text
-other_home_phone	Text
-Fax		Text
-Notes		Memo
-supervisor	Number
-entry_year	Number
-matriculated	Number
-senior_status	Yes/No
-programme	Number
-religious_house	Number
-next_of_kin	Text
-home_institution	Number
-conventual_name	Text
+ActiveRecord::Base.connection.tables
+
+ruby script/generate model format_element user_id:integer table_name:string field_name:string insert_string:string order:integer
+gedit db/migrate/20090401150948_create_format_element #delete t.timestamps
+rake db:migrate
+
+ruby script/console
+FormatElement.create(:user_id => 0, :table_name => 'people', :field_name => 'second_name', :insert_string => ', ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'people', :field_name => 'first_name', :insert_string => '', :element_order => 2, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'courses', :field_name => 'name', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'institutions', :field_name => 'conventual_name', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'groups', :field_name => 'group_name', :insert_string => '', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'lectures', :field_name => 'course_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'lectures', :field_name => 'term_id', :insert_string => ' ', :element_order => 2, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'term_names', :field_name => 'name', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'terms', :field_name => 'term_name_id', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'terms', :field_name => 'year', :insert_string => ' ', :element_order => 2, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'days', :field_name => 'short_name', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'locations', :field_name => 'name', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'tutorial_schedules', :field_name => 'course_id', :insert_string => ' ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'group_people', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'group_people', :field_name => 'person_id', :insert_string => ', ', :element_order => 2, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'group_lectures', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+FormatElement.create(:user_id => 0, :table_name => 'group_lectures', :field_name => 'lecture_id', :insert_string => '', :element_order => 2, :in_use => true)
+ruby script/generate migration rename_order_to_element_order
+
+ruby script/generate migration add_in_use_to_format_elements in_use:bool
+
+ruby script/generate model display_filter user_id:integer table_name:string filter_index:integer element_order:integer in_use:bool
+gedit db/migrate/20090401150948_create_display_filter #delete t.timestamps
+
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 0, :element_order => 0, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 1, :element_order => 1, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 2, :element_order => 2, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 3, :element_order => 3, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 4, :element_order => 4, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 12, :element_order => 4, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'attendees', :filter_index => 0, :element_order => 0, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'attendees', :filter_index => 1, :element_order => 1, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'attendees', :filter_index => 2, :element_order => 2, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'attendees', :filter_index => 3, :element_order => 3, :in_use => true);
+DisplayFilter.create(:user_id => 0, :table_name => 'attendees', :filter_index => 6, :element_order => 4, :in_use => true)
+
+ruby script/generate migration rename_table_group_members_to_group_person
+
+ruby script/generate model group_programme group_id:integer programme_id:integer;
+ruby script/generate model group_course group_id:integer course_id:integer;
+ruby script/generate model group_institution group_id:integer institution_id:integer;
+ruby script/generate model group_lecture group_id:integer lecture_id:integer;
+ruby script/generate model group_term group_id:integer term_id:integer;
+ruby script/generate model group_day group_id:integer day_id:integer;
+ruby script/generate model group_tutorial_schedule group_id:integer tutorial_schedule_id:integer;
+ruby script/generate model group_location group_id:integer location_id:integer;
+ruby script/generate model group_term_name group_id:integer term_name_id:integer;
+ruby script/generate model group_attendee group_id:integer attendee_id:integer;
+ruby script/generate model group_tutorial group_id:integer tutorial_id:integer;
+ruby script/generate model group_willing_tutor group_id:integer willing_tutor_id:integer;
+ruby script/generate model group_willing_lecturer group_id:integer willing_lecturer_id:integer;
+ruby script/generate model group_email_template group_id:integer email_template_id:integer;
+ruby script/generate model group_email group_id:integer email_id:integer;
+
+ruby script/generate migration add_table_name_to_groups table_name:text
+
+ruby script/generate model group_filter user_id:integer table_name:text foreign_key:text group_id:integer
+
+ruby script/generate migration remove_institution_type_from_institutions
+ruby script/generate migration remove_pcourse
+ruby script/generate migration student_programme
+
+ruby script/generate model open_record user_id:integer table_name:string record_id:integer in_use:boolean
+ruby script/generate migration group_person_unique
+
+ruby script/generate migration group_programme_unique;
+ruby script/generate migration group_course_unique;
+ruby script/generate migration group_institution_unique;
+ruby script/generate migration group_lecture_unique;
+ruby script/generate migration group_term_unique;
+ruby script/generate migration group_day_unique;
+ruby script/generate migration group_tutorial_schedule_unique;
+ruby script/generate migration group_location_unique;
+ruby script/generate migration group_term_name_unique;
+
+ruby script/generate migration add_user_settings_to_groups;
+ruby script/generate migration add_person_id_to_users;
+ruby script/generate model group_user group_id:integer user_id:integer;
+ruby script/generate migration group_user_unique;
+ruby script/generate migration user_name_unique;
+ruby script/generate migration group_unique;
+ruby script/generate migration attendee_unique;
+ruby script/generate migration tutorial_unique;
+ruby script/generate migration group_attendee_unique;
+ruby script/generate migration group_tutorial_unique;
+
+ruby script/generate migration alter_tutorial_hours
+
+SUBQUERIES
+number_of_lectures_courses_attended IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COUNT(*) FROM lectures b1 INNER JOIN attendees b2 ON b2.lecture_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_lectures_courses_attended  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lectures_courses_attended DESC;
+
+number_of_lectures_attended IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_lectures),0) FROM lectures b1 INNER JOIN attendees b2 ON b2.lecture_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_lectures_attended  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lectures_attended  DESC;
+
+number_of_classes_attended IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_classes),0) FROM lectures b1 INNER JOIN attendees b2 ON b2.lecture_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_classes_attended   FROM people a0 WHERE a0.id > 1 ORDER BY number_of_classes_attended   DESC;
+
+
+number_of_lecture_hours_attended IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.hours),0) FROM lectures b1 INNER JOIN attendees b2 ON b2.lecture_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_lecture_hours_attended  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lecture_hours_attended    DESC;
+
+number_of_tutorials_courses_attended
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COUNT(*) FROM tutorial_schedules b1 INNER JOIN tutorials b2 ON b2.tutorial_schedule_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_tutorials_courses_attended  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorials_courses_attended DESC;
+
+number_of_tutorials_attended
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_tutorials),0) FROM tutorial_schedules b1 INNER JOIN tutorials b2 ON b2.tutorial_schedule_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_tutorials_attended FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorials_attended  DESC;
+
+number_of_tutorial_hours_attended
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_tutorial_hours),0) FROM tutorial_schedules b1 INNER JOIN tutorials b2 ON b2.tutorial_schedule_id = b1.id WHERE b1.term_id = 22 AND b2.person_id = a0.id) AS number_of_tutorial_hours_attended FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorial_hours_attended  DESC;
+
+
+number_of_lecture_courses_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COUNT(*) FROM lectures b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_lecture_courses_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lecture_courses_taught DESC;
+
+number_of_lectures_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_lectures),0) FROM lectures b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_lectures_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lectures_taught DESC;
+
+
+number_of_classes_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_classes),0) FROM lectures b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_classes_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_classes_taught DESC;
+
+number_of_lecture_hours_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.hours),0) FROM lectures b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_lecture_hours_taught FROM people a0 WHERE a0.id > 1 ORDER BY number_of_lecture_hours_taught DESC;
+
+
+number_of_tutorials_courses_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COUNT(*) FROM tutorial_schedules b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_tutorials_courses_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorials_courses_taught DESC;
+
+
+number_of_tutorials_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_tutorials),0) FROM tutorial_schedules b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_tutorials_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorials_taught DESC;
+
+number_of_tutorial_hours_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(b1.number_of_tutorials),0) FROM tutorial_schedules b1 WHERE b1.term_id = 22 AND b1.person_id = a0.id) AS number_of_tutorials_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorials_taught DESC;
+
+ 
+number_of_tutorial_hours_taught IN TERM 22
+SELECT a0.id, a0.first_name, a0.second_name, (SELECT COALESCE(SUM(a1.number_of_tutorial_hours),0) FROM tutorial_schedules a1 WHERE a1.term_id = 22 AND a1.person_id = a0.id) AS number_of_tutorial_hours_taught  FROM people a0 WHERE a0.id > 1 ORDER BY number_of_tutorial_hours_taught DESC;
+**************************************************************************************
+
+number_of_students_at_lecture
+SELECT a0.id, a83.name || ' ' || ', ' || a107.name || ' ' || ' ' || a101.year || ' ' || ' ' AS a0_lecture, (SELECT COUNT(*) FROM attendees b1 WHERE b1.lecture_id = a0.id ) AS number_of_students_at_lecture FROM lectures a0 INNER JOIN courses a83 ON a0.course_id = a83.id INNER JOIN ( terms a101 INNER JOIN term_names a107 ON a101.term_name_id = a107.id ) ON a0.term_id = a101.id WHERE (a0.id != 1 ) ORDER BY number_of_students_at_lecture  desc; 
+
+
+
+FILTERS:
+PEOPLE IN GROUP 3
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM group_people a1 WHERE a1.person_id = a0.id AND a1.group_id = arg_value)>0 ;
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 INNER JOIN group_people a2 ON a0.id = a2.person_id  WHERE a2.group_id = 3;
+
+
+PEOPLE NOT IN GROUP 3
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM group_people b1 WHERE b1.person_id = a0.id AND b1.group_id = arg_value)=0;
+
+PEOPLE WHO HAVE ATTENED LECTURE 337
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 WHERE b1.person_id = a0.id AND b1.lecture_id = arg_value)>0;
+
+PEOPLE WHO HAVE NOT ATTENED LECTURE 337
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 WHERE b1.person_id = a0.id AND b1.lecture_id = arg_value)=0;
+
+PEOPLE WHO HAVE ATTENDED COURSE 37
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b2.course_id = arg_value AND b1.person_id = a0.id)>0;
+
+PEOPLE WHO HAVE NOT ATTENDED COURSE 37
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b2.course_id = arg_value AND b1.person_id = a0.id)=0;
+
+PEOPLE WHO HAVE LECTURED COURSE 37
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM lectures b1 WHERE b1.course_id = arg_value AND b1.person_id = a0.id)>0;
+
+PEOPLE WHO HAVE TUTORED COURSE 37
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM tutorial_schedules b1 WHERE b1.course_id = arg_value AND b1.person_id = a0.id)>0;
+
+PEOPLE WHO HAVE TUTORED PERSON 692
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM tutorials b1 INNER JOIN tutorial_schedules b2 ON b2.id = b1.tutorial_schedule_id WHERE b2.person_id = a0.id AND b1.person_id = arg_value)>0;
+
+PEOPLE WHO HAVE LECTURED PERSON 692
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b2.person_id = a0.id AND b1.person_id = arg_value)>0;
+
+PEOPLE WHO HAVE BEEN TUTORED BY PERSON 697
+SELECT a0.id, a0.first_name, a0.second_name FROM people a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b2.person_id = arg_value AND b1.person_id = a0.id)>0;
+
+PEOPLE WHO HAVE TUTORED IN TERM
+PEOPLE WHO HAVE NOT TUTORED IN TERM
+PEOPLE WHO HAVE BEEN TUTORED IN TERM
+PEOPLE WHO HAVE NOT BEEN TUTORED IN TERM
+PEOPLE WHO HAVE LECTURED IN TERM
+PEOPLE WHO HAVE NOT LECTURED IN TERM
+PEOPLE WHO HAVE BEEN LECTURED IN TERM
+PEOPLE WHO HAVE NOT BEEN LECTURED IN TERM
+**************************************************************************************
+Courses lectured to person
+Courses tutored to person
+Courses lectured by person
+Courses tutored by person
+
+
+
+**************************************************************************************
+LECTURE COURSES ATTENDED  BY PERSON
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b1.person_id = arg_value AND b2.course_id = a0.id)>0;
+
+LECTURE COURSES NOT ATTENDED  BY PERSON
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM attendees b1 INNER JOIN lectures b2 ON b2.id = b1.lecture_id WHERE b1.person_id = arg_value AND b2.course_id = a0.id)=0;
+
+COURSES IN GROUP 4
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM group_courses b1 WHERE b1.course_id = a0.id AND b1.group_id = arg_value)>0;
+
+COURSES NOT IN GROUP 4
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM group_courses b1 WHERE b1.course_id = a0.id AND b1.group_id = arg_value)=0;
+
+TUTORIAL COURSES ATTENDED BY PERSON
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM tutorials b1 INNER JOIN tutorial_schedules b2 ON b2.id = b1.tutorial_schedule_id WHERE b1.person_id = arg_value AND b2.course_id = a0.id)>0;
+
+TUTORIAL COURSES NOT ATTENDED BY PERSON
+SELECT a0.id, a0.name FROM courses a0 WHERE (SELECT COUNT(*) FROM tutorials b1 INNER JOIN tutorial_schedules b2 ON b2.id = b1.tutorial_schedule_id WHERE b1.person_id = arg_value AND b2.course_id = a0.id)=0;
+
+**************************************************************************************
+GROUPS HAVING PERSON
+SELECT a0.id, a0.group_name FROM groups a0 WHERE a0.table_name ='people' AND (SELECT COUNT(*) FROM group_people b1 WHERE b1.group_id = a0.id AND b1.person_id = arg_value)>0;
+
+GROUPS NOT HAVING PERSON
+SELECT a0.id, a0.group_name FROM groups a0 WHERE a0.table_name ='people' AND (SELECT COUNT(*) FROM group_people b1 WHERE b1.group_id = a0.id AND b1.person_id = arg_value)=0;
+
+GROUPS HAVING COURSE
+SELECT a0.id, a0.group_name FROM groups a0 WHERE a0.table_name ='courses' AND (SELECT COUNT(*) FROM group_courses b1 WHERE b1.group_id = a0.id AND b1.course_id = arg_value)>0;
+
+GROUPS NOT HAVING COURSE
+SELECT a0.id, a0.group_name FROM groups a0 WHERE a0.table_name ='courses' AND (SELECT COUNT(*) FROM group_courses b1 WHERE b1.group_id = a0.id AND b1.course_id = arg_value)=0;
+
+
+
+******************************************
+SELECT a0.id, a0.group_name FROM groups a0 WHERE a0.table_name = 'people' ORDER BY a0.group_name;
+******************************************
+Courses taught in term
+Courses with lecture_schedule in group
+Courses with tutorial_schedule in group
+Courses with attendee in group
+Courses with tutorial in group
+Courses with lecturer in group
+Courses with student in group
+Lectures with student in group
+Lectures with lecturer in group
+People who are to be examined in lecture
+People who must attended lecture
+People in any group
+People not in any group
+
+
+
+ruby script/generate model user_page user_id:integer page_name:string option_id:integer is_active:boolean
+ruby script/generate migration page_name_unique
+
+
+ruby script/generate model external_filter_value user_id:integer table_name:string filter_id:integer member_id:integer group_id:integer in_use:boolean
+GroupLecture.find_by_sql("SELECT COUNT(*) FROM group_lectures WHERE group_id=36 AND lecture_id=210 ")
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Make create work
+check that edit works for all classes
+have group add, delete, new for each class
+make lectures so that the event=location time, week flexible
+make terms so that the have a start and end date
+have term length copied from previous year by default
+have an option box which selects which select action to perform
+need to make it the links in menu work, but also that various div/buttons appear/disappear when select action to perform
+make it so you can lectures to a person/group of people and vice versa
+make it so you can add courses to a person/group of people - either first schedule in the future or create new schedule with unassigned date
+
+need to have a button for creating new institutions;
+I've had the idea for setting width of select divs in search fitlers etc. First draw in remote place, calculate width, set width, then insert in proper location.
+have second_lecturer_id and third_lecturer_id
+Make it easy to set who will do exams and which are compulsory.
+
+
+Lecture points to group_lecture_event_id
+LectureEvent: time, location, day, week
+Term: Monday0 date, number of weeks
+
+I want a prelimary version in which doesn't break when upgraded.
+
+
+
+ruby script/generate model lecture_event day_id:integer lecture_time:time location_id:integer group_exception_id:integer
+ruby script/generate model event_excetpion day_id:integer lecture_time:time location_id:integer week:integer
+ruby script/generate model group_event_excetpion group_id:integer event_excetpion_id:integer;
+ruby script/generate migration rename_day_id_lecture_event_id
+You need to update import_csv.
+You need to rewrite any bit that refers to day_id in controller
+
+change text to str
+
+ruby script/generate migration change_text_to_string
+ruby script/generate migration entry_year_to_entry_term
+
+willing teachers:
+ruby script/generate model willing_lecturer person_id:integer course_id:integer order_of_preference:integer
+ruby script/generate model willing_tutor person_id:integer course_id:integer order_of_preference:integer
+ruby script/generate model maximum_tutorial person_id:integer max_tutorials:integer term_id:integer
+
+ This text will be pre-loaded in the editor when it is rendered.
+        <%=  render :inline => x.comment %>
+        here we can edit the ruby code <%=  render :text => x.comment %>
+
+ruby script/generate model email_template from_email:string to_email:string subject:string ruby_header:text body:text attachment_rule_id:integer attachment_file_list:string 
+ruby script/generate model attachment_file_list list_name:string file_id;integer
+ruby script/generate model agatha_email from_email:string to_email:string subject:string body:text attachments:string sent:boolean template_id:integer person_id:integer term_id:integer attached_files:string
+ruby script/generate model attachment_rule rule_name:string rule_string:text (eg. (a0.file_type = 'essay titles' or 'module descriptor' AND a0.class_type = 'course' AND (SELECT COUNT(*) FROM tutorials b1 JOIN tutorial_schedules b2 ON b1.tutorial_schedule_id = b2.id WHERE b1.person_id = person_arg, b2.term_id = term_arg AND b2.course_id = a0.association_name)>0)
+
+ruby script/generate model attachment file_id:integer association_name:string (eg. Moral Philosophy) file_type:string (eg reading list) class_type:string (eg. course)
+
+ruby script/generate migration add_html_email
+ruby script/generate migration add_warnings
+
+given person, term id and attachment_rule_id, 
+files = Attachment.find_by_sql("SELECT * FROM attachments a0 WHERE (a0.file_type = 'reading list' AND a0.class_type = 'course' AND (SELECT COUNT(*) FROM tutorials b1 JOIN tutorial_schedules b2 ON b1.tutorial_schedule_id = b2.id WHERE b1.person_id = #{person_id}, b2.term_id = #{term_id} AND b2.course_id = a0.association_name)>0)") 
+
+Files page:
+have one page for adding files to database
+one page for deleting files from database
+double page, one side files in db, other side could be people, courses, lectures, tutorial schedules, groups, institutions. the action div contains a select box for current file_type for corresponding left pane class or an input for new file_types. Have check boxes for files and 'Assign' for each row in right-hand pane. 
+
+ruby script/generate mailer AgathaMailer email
+
+
+test message: please ignore 
+
+This message was automatically generated for testing the Blackfriars Hall student database, and was sent unintentionally. Please accept my apologies.
+Dear <%= person.first_name %>
+this text is red, but this text is bold
+Yours sincerely,
+Database tester
+
+<div style="background-color: #F00">This message was automatically generated for testing the Blackfriars Hall student database, and was sent unintentionally.</div> <p>Please<i> </i>accept my apologies.</p> <p>I really didn't mean it</p><br>Dear Daniel<br><span style="color: rgb(255, 0, 0);" tag="span" class="yui-tag-span yui-tag">this text is red</span>, <b>but this text is bold</b><br>Yours sincerely,<br>Database tester<br>
+
+
+
+first_term = term;  
+second_term_id = term.id + 1 ; 
+second_term = Term.find(second_term_id);
+third_term_id = term.id + 2; 
+third_term = Term.find(third_term_id);
+first_term_name = TermName.find(first_term.term_name_id).name;
+first_term_year = first_term.year;
+second_term_name = TermName.find(second_term.term_name_id).name;
+second_term_year = second_term.year;
+third_term_name = TermName.find(third_term.term_name_id).name;
+third_term_year = third_term.year;
+confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'");
+if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end;
+first_term_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0");
+second_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0");
+third_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0");
+if first_term_lectures.length>0 || second_term_lectures.length>0 || third_term_lectures.length>0 then make_lecture_request = true; 
+else make_lecture_request = false;
+end;
+num_terms = 0;
+if first_term_lectures.length >0 then num_terms = num_terms+1 end;
+if second_term_lectures.length  >0 then num_terms = num_terms+1 end;
+if third_term_lectures.length  >0 then num_terms = num_terms+1 end;
+terms_str = "(#{term.id},#{second_term_id },#{third_term_id})";
+courses = Course.find_by_sql("SELECT * FROM courses a0 WHERE (SELECT COUNT(*) FROM lectures a1 WHERE a1.course_id = a0.id AND a1.person_id = #{person.id} AND a1.term_id IN #{terms_str} AND (SELECT COUNT(*) FROM group_lectures a2 WHERE a2.group_id=#{confirmed_id} AND a2.lecture_id = a1.id)=0)>0");
+num_topics = courses.length;
+num_lectures = first_term_lectures.length + second_term_lectures.length + third_term_lectures.length; 
+
+Dear <%= person.salutation %>,
+
+I hope you are well and the academic year has gone smoothly.
+
+Thank you for your teaching done for Blackfriars this year soon to end.
+
+I am soon going to have to sort out who teaches what to whom, and when, in the coming academic year. It will assist that process if at this stage I find out what you and our other tutors can offer us, insofar as you can predict your availability. I hope my questions don’t pose too much of a distraction at this time.
+
+So, could you let me know if there’s a Term in the coming academic year that is specially good, or specially bad, for doing some tutorials for Blackfriars?
+
+Also, roughly how many tutorials a week you could reasonably do for us?
+
+Could you remind me which topics you would specially like to teach if students need them, and which others you could teach if necessary?
+
+<% if make_lecture_request %>Could you also let me know if you would be available to give lectures on the following <%="topic".pl(num_topics)%> in the <%="term".pl(num_terms)%> specified, and if there are any constraints on the days and times at which you can give the <%="lecture".pl(num_lectures)%>?
+
+<% if first_term_lectures.length >0 %><% i = 0; ii=first_term_lectures.length-1; %><%=first_term_name%> Term <%= first_term_year %>: <%first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %>
+
+<% if second_term_lectures.length >0 %><% i = 0; ii=second_term_lectures.length-1; %><%=second_term_name%> Term <%= second_term_year %>: <%second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %>
+
+<% if third_term_lectures.length >0 %><% i = 0; ii=third_term_lectures.length-1; %><%=third_term_name%> Term <%= third_term_year %>: <%third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %>
+
+<%end%>With many thanks for your help, and best wishes,
+
+Richard.
+(Richard Conrad, O.P., Vice Regent).
+
+"Enquiry re availability"
+
+"<%= me.email %>"
+
+"Availability for teaching for Blackfriars next year?"
+
+"<% first_term = term;   second_term_id = term.id + 1 ;  second_term = Term.find(second_term_id); third_term_id = term.id + 2;  third_term = Term.find(third_term_id); first_term_name = TermName.find(first_term.term_name_id).name; first_term_year = first_term.year; second_term_name = TermName.find(second_term.term_name_id).name; second_term_year = second_term.year; third_term_name = TermName.find(third_term.term_name_id).name; third_term_year = third_term.year; confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'"); if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end; first_term_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.pthird_term_yearerson_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); second_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); third_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); if first_term_lectures.length>0 || second_term_lectures.length>0 || third_term_lectures.length>0 then make_lecture_request = true;  else make_lecture_request = false; end; num_terms = 0; if first_term_lectures.length >0 then num_terms = num_terms+1 end; if second_term_lectures.length  >0 then num_terms = num_terms+1 end; if third_term_lectures.length  >0 then num_terms = num_terms+1 end; terms_str = "(#{term.id},#{second_term_id },#{third_term_id})"; courses = Course.find_by_sql("SELECT * FROM courses a0 WHERE (SELECT COUNT(*) FROM lectures a1 WHERE a1.course_id = a0.id AND a1.person_id = #{person.id} AND a1.term_id IN #{terms_str} AND (SELECT COUNT(*) FROM group_lectures a2 WHERE a2.group_id=#{confirmed_id} AND a2.lecture_id = a1.id)=0)>0"); num_topics = courses.length; num_lectures = first_term_lectures.length + second_term_lectures.length + third_term_lectures.length; %>"
+
+
+"Dear <%= person.salutation %>,<br><br>I hope you are well and the academic year has gone smoothly.<br><br>Thank you for your teaching done for Blackfriars this year soon to end.<br><br>I am soon going to have to sort out who teaches what to whom, and when, in the coming academic year. It will assist that process if at this stage I find out what you and our other tutors can offer us, insofar as you can predict your availability. I hope my questions don’t pose too much of a distraction at this time.<br><br>So, could you let me know if there’s a Term in the coming academic year that is specially good, or specially bad, for doing some tutorials for Blackfriars?<br><br>Also, roughly how many tutorials a week you could reasonably do for us?<br><br>Could you remind me which topics you would specially like to teach if students need them, and which others you could teach if necessary?<br><br><% if make_lecture_request %>Could you also let me know if you would be available to give lectures on the following <%="topic".pl(num_topics)%> in the <%="term".pl(num_terms)%> specified, and if there are any constraints on the days and times at which you can give the <%="lecture".pl(num_lectures)%>?<br><br><% if first_term_lectures.length >0 %><% i = 0; ii=first_term_lectures.length-1; %><u><b><%=first_term_name%> Term <%= first_term_year %></b></u>: <%first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if second_term_lectures.length >0 %><% i = 0; ii=second_term_lectures.length-1; %><u><b><%=second_term_name%> Term <%= second_term_year %></b></u>: <%second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if third_term_lectures.length >0 %><% i = 0; ii=third_term_lectures.length-1; %><u><b><%=third_term_name%> Term <%= third_term_year %></b></u>: <%third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><%end%>With many thanks for your help, and best wishes,<br><br>Richard.<br>(Richard Conrad, O.P., Vice Regent).<i-1%><br><p></p> <p></p></i-1%>"
+
+"michaelmas_term_id = TermName.find(:first,:conditions=>{:name =>"Michaelmas"}).id;   if michaelmas_term_id != term.term_name_id   then  warning_str << "WARNING: you haven't selected a Michaelmas term." end"
+
+
+
+
+EmailTemplate.create(:template_name => "Enquiry re availability", :from_email => "<%= me.email %>", :subject => "Availability for teaching for Blackfriars next year?", :ruby_header=> %q{<% first_term = term;   second_term_id = term.id + 1 ;  second_term = Term.find(second_term_id); third_term_id = term.id + 2;  third_term = Term.find(third_term_id); first_term_name = TermName.find(first_term.term_name_id).name; first_term_year = first_term.year; second_term_name = TermName.find(second_term.term_name_id).name; second_term_year = second_term.year; third_term_name = TermName.find(third_term.term_name_id).name; third_term_year = third_term.year; confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'"); if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end; first_term_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); second_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); third_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); if first_term_lectures.length>0 || second_term_lectures.length>0 || third_term_lectures.length>0 then make_lecture_request = true;  else make_lecture_request = false; end; num_terms = 0; if first_term_lectures.length >0 then num_terms = num_terms+1 end; if second_term_lectures.length  >0 then num_terms = num_terms+1 end; if third_term_lectures.length  >0 then num_terms = num_terms+1 end; terms_str = "(#{term.id},#{second_term_id },#{third_term_id})"; courses = Course.find_by_sql("SELECT * FROM courses a0 WHERE (SELECT COUNT(*) FROM lectures a1 WHERE a1.course_id = a0.id AND a1.person_id = #{person.id} AND a1.term_id IN #{terms_str} AND (SELECT COUNT(*) FROM group_lectures a2 WHERE a2.group_id=#{confirmed_id} AND a2.lecture_id = a1.id)=0)>0"); num_topics = courses.length; num_lectures = first_term_lectures.length + second_term_lectures.length + third_term_lectures.length; %>},:body=>%q{Dear <%= person.salutation %>,<br><br>I hope you are well and the academic year has gone smoothly.<br><br>Thank you for your teaching done for Blackfriars this year soon to end.<br><br>I am soon going to have to sort out who teaches what to whom, and when, in the coming academic year. It will assist that process if at this stage I find out what you and our other tutors can offer us, insofar as you can predict your availability. I hope my questions don’t pose too much of a distraction at this time.<br><br>So, could you let me know if there’s a Term in the coming academic year that is specially good, or specially bad, for doing some tutorials for Blackfriars?<br><br>Also, roughly how many tutorials a week you could reasonably do for us?<br><br>Could you remind me which topics you would specially like to teach if students need them, and which others you could teach if necessary?<br><br><% if make_lecture_request %>Could you also let me know if you would be available to give lectures on the following <%="topic".pl(num_topics)%> in the <%="term".pl(num_terms)%> specified, and if there are any constraints on the days and times at which you can give the <%="lecture".pl(num_lectures)%>?<br><br><% if first_term_lectures.length >0 %><% i = 0; ii=first_term_lectures.length-1; %><u><b><%=first_term_name%> Term <%= first_term_year %></b></u>: <%first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if second_term_lectures.length >0 %><% i = 0; ii=second_term_lectures.length-1; %><u><b><%=second_term_name%> Term <%= second_term_year %></b></u>: <%second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if third_term_lectures.length >0 %><% i = 0; ii=third_term_lectures.length-1; %><u><b><%=third_term_name%> Term <%= third_term_year %></b></u>: <%third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><%end%>With many thanks for your help, and best wishes,<br><br>Richard.<br>(Richard Conrad, O.P., Vice Regent).<i-1%><br><p></p> <p></p></i-1%>},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%q{michaelmas_term_id = TermName.find(:first,:conditions=>{:name =>"Michaelmas"}).id;   if michaelmas_term_id != term.term_name_id   then  warning_str << "WARNING: you haven't selected a Michaelmas term." end}, :personal_warnings=>"")
+
+
+
+
+EmailTemplate.create(:template_name => "Next year's planned tuition, for tutors",  :from_email => "<%= me.email %>", :subject => "Next year's teaching for Blackfriars?", :ruby_header=> %Q{<%  first_term = term;     second_term_id = term.id + 1 ;     second_term = Term.find(second_term_id);     third_term_id = term.id + 2;     third_term = Term.find(third_term_id);     first_term_name = TermName.find(first_term.term_name_id).name;     first_term_year = first_term.year;     second_term_name = TermName.find(second_term.term_name_id).name;     second_term_year = second_term.year;     third_term_name = TermName.find(third_term.term_name_id).name;     third_term_year = third_term.year;       confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'");     language_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'courses' AND group_name='Language Classes'");     if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end;     if language_groups.length >0 then language_group_id = language_groups[0].id else language_group_id = 0 end;     first_term_lectures = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     second_term_lectures =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     third_term_lectures =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     first_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  second_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     first_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{first_term.id} AND person_id = #{person.id}");     if first_term_tutorial_schedules.length > 0 then       first_term_tutorial_str = "";       first_term_tutorial_schedules.each do |tutorial_schedule1|         if (first_term_tutorial_str.length >0) then first_term_tutorial_str << ", "; end;         first_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       first_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{first_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       first_term_tutorials = [];     end;     second_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  second_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     second_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{second_term.id} AND person_id = #{person.id}");     if second_term_tutorial_schedules.length > 0 then       second_term_tutorial_str = "";       second_term_tutorial_schedules.each do |tutorial_schedule1|         if (second_term_tutorial_str.length >0) then second_term_tutorial_str << ", "; end;         second_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       second_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{second_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       second_term_tutorials = [];     end;     third_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     third_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{third_term.id} AND person_id = #{person.id}");     if third_term_tutorial_schedules.length > 0 then       third_term_tutorial_str = "";       third_term_tutorial_schedules.each do |tutorial_schedule1|         if (third_term_tutorial_str.length >0) then third_term_tutorial_str << ", "; end;         third_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       third_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{third_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       third_term_tutorials = [];     end;     students = Person.find_by_sql("SELECT  *, a0.first_name || '  ' || a0.second_name  AS student_name FROM people a0  WHERE (a0.id != 1  AND (SELECT COUNT(*) FROM tutorials y1 INNER JOIN tutorial_schedules y2 ON y2.id = y1.tutorial_schedule_id WHERE y1.person_id = a0.id AND y2.person_id = #{person.id} AND  y2.term_id = #{term.id})>0 ) ORDER BY  student_name  asc ");   %>},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+
+EmailTemplate.create(:template_name => "",  :from_email => "<%= me.email %>", :subject => "", :ruby_header=> %Q{},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+EmailTemplate.create(:template_name => "",  :from_email => "<%= me.email %>", :subject => "", :ruby_header=> %Q{},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+EmailTemplate.create(:template_name => "",  :from_email => "<%= me.email %>", :subject => "", :ruby_header=> %Q{},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+EmailTemplate.create(:template_name => "",  :from_email => "<%= me.email %>", :subject => "", :ruby_header=> %Q{},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+EmailTemplate.create(:template_name => "",  :from_email => "<%= me.email %>", :subject => "", :ruby_header=> %Q{},:body=>%Q{},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{}, :personal_warnings=>"")
+
+
+
+"Dear <%= person.salutation%>,<br><br>I have been working out who should teach what to whom and how at Blackfriars in the course of the coming academic year, and I should like to invite you to undertake the following teaching. If the proposed lecture courses are acceptable, they will stand. The tutorial courses are liable to fine-tuning as the year develops, but should stay substantially the same. I will of course be in touch term-by-term to confirm or fine-tune the arrangements.<br><br><% if (first_term_lectures.length + first_term_language_classes.length + first_term_tutorials.length) >0 %><u><b><%=first_term_name%> Term <%= first_term_year %></b></u>:<% if first_term_lectures.length >0%><br><br><b>Lectures</b>:<% first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students =lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if first_term_language_classes.length >0%><br><br><b>Language Classes</b>:<% first_term_language_classes.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students = lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if first_term_tutorials.length> 0%><br><br><b>Tutorials</b>:<% first_term_tutorials.each do |tutorial| num_tutorials = tutorial.num_tutorials.to_i; student = tutorial.student_name; course = tutorial.course_name%><br><%=num_tutorials%> <%="tutorial".pl(num_tutorials)%> on <%=course%> for <%=student%> <% end %> <% end %><% end %><br><br><% if (second_term_lectures.length + second_term_language_classes.length + second_term_tutorials.length) >0 %><u><b><%=second_term_name%> Term <%= second_term_year %></b></u>:<% if second_term_lectures.length >0%><br><br><b>Lectures</b>:<% second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students =lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if second_term_language_classes.length >0%><br><br><b>Language Classes</b>:<% second_term_language_classes.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students = lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if second_term_tutorials.length> 0%><br><br><b>Tutorials</b>:<% second_term_tutorials.each do |tutorial| num_tutorials = tutorial.num_tutorials.to_i; student = tutorial.student_name; course = tutorial.course_name%><br><%=num_tutorials%> <%="tutorial".pl(num_tutorials)%> on <%=course%> for <%=student%> <% end %> <% end %><% end %><br><br><% if (third_term_lectures.length + third_term_language_classes.length + third_term_tutorials.length) >0 %><u><b><%=third_term_name%> Term <%= third_term_year %></b></u>:<% if third_term_lectures.length >0%><br><br><b>Lectures</b>:<% third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students =lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if third_term_language_classes.length >0%><br><br><b>Language Classes</b>:<% third_term_language_classes.each do |lecture| course_name = Course.find(lecture.course_id).name; num_students = lecture.number_of_students_at_lecture.to_i %><br><u><%=course_name%></u>. <%if num_students>0%> I expect roughly <%=num_students%> <%= "student".pl(num_students)%> to attend.&nbsp; <%else%> I currently don't know how many students will attend<%end%><% end %> <% end %><% if third_term_tutorials.length> 0%><br><br><b>Tutorials</b>:<% third_term_tutorials.each do |tutorial| num_tutorials = tutorial.num_tutorials.to_i; student = tutorial.student_name; course = tutorial.course_name%><br><%=num_tutorials%> <%="tutorial".pl(num_tutorials)%> on <%=course%> for <%=student%> <% end %> <% end %><% end %><br>"
+
+
+
+EmailTemplate.create(:template_name => "Next year's planned tuition, for tutors",  :from_email => "<%= me.email %>", :subject => "Next year's teaching for Blackfriars?", :ruby_header=> %Q{<%  first_term = term; })
+
+
+<%  first_term = term;     second_term_id = term.id + 1 ;     second_term = Term.find(second_term_id);     third_term_id = term.id + 2;     third_term = Term.find(third_term_id);     first_term_name = TermName.find(first_term.term_name_id).name;     first_term_year = first_term.year;     second_term_name = TermName.find(second_term.term_name_id).name;     second_term_year = second_term.year;     third_term_name = TermName.find(third_term.term_name_id).name;     third_term_year = third_term.year;       confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'");     language_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'courses' AND group_name='Language Classes'");     if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end;     if language_groups.length >0 then language_group_id = language_groups[0].id else language_group_id = 0 end;     first_term_lectures = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     second_term_lectures =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     third_term_lectures =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)=0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     first_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  second_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     first_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{first_term.id} AND person_id = #{person.id}");     if first_term_tutorial_schedules.length > 0 then       first_term_tutorial_str = "";       first_term_tutorial_schedules.each do |tutorial_schedule1|         if (first_term_tutorial_str.length >0) then first_term_tutorial_str << ", "; end;         first_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       first_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{first_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       first_term_tutorials = [];     end;     second_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  second_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     second_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{second_term.id} AND person_id = #{person.id}");     if second_term_tutorial_schedules.length > 0 then       second_term_tutorial_str = "";       second_term_tutorial_schedules.each do |tutorial_schedule1|         if (second_term_tutorial_str.length >0) then second_term_tutorial_str << ", "; end;         second_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       second_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{second_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       second_term_tutorials = [];     end;     third_term_language_classes = Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");  third_term_language_classes =  Lecture.find_by_sql("SELECT *, (SELECT COUNT(*) FROM attendees x1 WHERE x1.lecture_id = a0.id) AS number_of_students_at_lecture  FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_courses a2 WHERE a2.group_id = #{language_group_id} AND a2.course_id = a0.course_id)>0 AND(SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)>0");     third_term_tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE term_id = #{third_term.id} AND person_id = #{person.id}");     if third_term_tutorial_schedules.length > 0 then       third_term_tutorial_str = "";       third_term_tutorial_schedules.each do |tutorial_schedule1|         if (third_term_tutorial_str.length >0) then third_term_tutorial_str << ", "; end;         third_term_tutorial_str << tutorial_schedule1.id.to_s;       end;       third_term_tutorials = Tutorial.find_by_sql("SELECT  *, a10.number_of_tutorials AS num_tutorials, a99.first_name || '  ' || a99.second_name  AS student_name,   a83.name  AS course_name FROM tutorials a0 INNER JOIN people a99 ON  a0.person_id = a99.id INNER JOIN ( tutorial_schedules a10 INNER JOIN courses a83 ON  a10.course_id = a83.id ) ON a0.tutorial_schedule_id = a10.id  WHERE  (a0.id != 1  AND (a0.tutorial_schedule_id IN (#{third_term_tutorial_str}) )) ORDER BY  course_name asc, student_name  asc");     else       third_term_tutorials = [];     end;     students = Person.find_by_sql("SELECT  *, a0.first_name || '  ' || a0.second_name  AS student_name FROM people a0  WHERE (a0.id != 1  AND (SELECT COUNT(*) FROM tutorials y1 INNER JOIN tutorial_schedules y2 ON y2.id = y1.tutorial_schedule_id WHERE y1.person_id = a0.id AND y2.person_id = #{person.id} AND  y2.term_id = #{term.id})>0 ) ORDER BY  student_name  asc ");   %>
+
+
+EmailTemplate.create(:template_name => "Enquiry re availability", :from_email => "<%= me.email %>", :subject => "Availability for teaching for Blackfriars next year?", :ruby_header=> %Q{<% first_term = term;   second_term_id = term.id + 1 ;  second_term = Term.find(second_term_id); third_term_id = term.id + 2;  third_term = Term.find(third_term_id); first_term_name = TermName.find(first_term.term_name_id).name; first_term_year = first_term.year; second_term_name = TermName.find(second_term.term_name_id).name; second_term_year = second_term.year; third_term_name = TermName.find(third_term.term_name_id).name; third_term_year = third_term.year; confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'"); if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end; first_term_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); second_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); third_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); if first_term_lectures.length>0 || second_term_lectures.length>0 || third_term_lectures.length>0 then make_lecture_request = true;  else make_lecture_request = false; end; num_terms = 0; if first_term_lectures.length >0 then num_terms = num_terms+1 end; if second_term_lectures.length  >0 then num_terms = num_terms+1 end; if third_term_lectures.length  >0 then num_terms = num_terms+1 end; terms_str = "(#{term.id},#{second_term_id },#{third_term_id})"; courses = Course.find_by_sql("SELECT * FROM courses a0 WHERE (SELECT COUNT(*) FROM lectures a1 WHERE a1.course_id = a0.id AND a1.person_id = #{person.id} AND a1.term_id IN #{terms_str} AND (SELECT COUNT(*) FROM group_lectures a2 WHERE a2.group_id=#{confirmed_id} AND a2.lecture_id = a1.id)=0)>0"); num_topics = courses.length; num_lectures = first_term_lectures.length + second_term_lectures.length + third_term_lectures.length; %>},:body=>%Q{Dear <%= person.salutation %>,<br><br>I hope you are well and the academic year has gone smoothly.<br><br>Thank you for your teaching done for Blackfriars this year soon to end.<br><br>I am soon going to have to sort out who teaches what to whom, and when, in the coming academic year. It will assist that process if at this stage I find out what you and our other tutors can offer us, insofar as you can predict your availability. I hope my questions don’t pose too much of a distraction at this time.<br><br>So, could you let me know if there’s a Term in the coming academic year that is specially good, or specially bad, for doing some tutorials for Blackfriars?<br><br>Also, roughly how many tutorials a week you could reasonably do for us?<br><br>Could you remind me which topics you would specially like to teach if students need them, and which others you could teach if necessary?<br><br><% if make_lecture_request %>Could you also let me know if you would be available to give lectures on the following <%="topic".pl(num_topics)%> in the <%="term".pl(num_terms)%> specified, and if there are any constraints on the days and times at which you can give the <%="lecture".pl(num_lectures)%>?<br><br><% if first_term_lectures.length >0 %><% i = 0; ii=first_term_lectures.length-1; %><u><b><%=first_term_name%> Term <%= first_term_year %></b></u>: <%first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if second_term_lectures.length >0 %><% i = 0; ii=second_term_lectures.length-1; %><u><b><%=second_term_name%> Term <%= second_term_year %></b></u>: <%second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if third_term_lectures.length >0 %><% i = 0; ii=third_term_lectures.length-1; %><u><b><%=third_term_name%> Term <%= third_term_year %></b></u>: <%third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><%end%>With many thanks for your help, and best wishes,<br><br>Richard.<br>(Richard Conrad, O.P., Vice Regent).<i-1%><br><p></p> <p></p></i-1%>},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{michaelmas_term_id = TermName.find(:first,:conditions=>{:name =>"Michaelmas"}).id;   if michaelmas_term_id != term.term_name_id   then  warning_str << "WARNING: you haven't selected a Michaelmas term." end}, :personal_warnings=>"")
+
