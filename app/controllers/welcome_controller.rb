@@ -2622,7 +2622,7 @@ RAILS_DEFAULT_LOGGER.flush
               group_person.person_id = person.id;
               group_person.save;
             rescue Exception =>exc
-              RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred" );
+              RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (person)" );
             end
           end
         end
@@ -2746,7 +2746,7 @@ RAILS_DEFAULT_LOGGER.flush
           new_attendee.examined = csv_attendee.examined;
           new_attendee.save;
         rescue Exception => exc
-          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred" );
+          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (new_attendee)" );
         end
       end
     end
@@ -2806,7 +2806,7 @@ RAILS_DEFAULT_LOGGER.flush
         begin
           tutorial.save;
         rescue Exception => exc
-          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred" );
+          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (tutorial_schedule)" );
         end
       end
     end
