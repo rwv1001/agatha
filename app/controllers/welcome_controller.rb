@@ -583,9 +583,9 @@ class WelcomeController < ApplicationController
     end
     RAILS_DEFAULT_LOGGER.error("page name is #{page_name}, option_id is #{option_id}");
     if(option_id >=  @displayPageCl.DisplayPages[page_name].length)
-      option_id  = 0;
-       user_display_page.option_id = 0;
+      option_id  = 0;      
     end
+    RAILS_DEFAULT_LOGGER.error("2 page name is #{page_name}, option_id is #{option_id}");
     user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
     user_page.user_id = @user_id;
     user_page.page_name =  user_display_page.page_name;
