@@ -5,7 +5,7 @@ class WelcomeController < ApplicationController
   def display_init()
   
 
-  displayPageCl = DisplayPagesClass.new;
+ 
   @displayPageCl = DisplayPagesClass.new;
   @displayPageCl.DisplayPages["Person"]=[];
  

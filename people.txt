@@ -100,7 +100,7 @@ do checkbox stuff for editing lists.
 agathaapp@rover> su root
 root@rover> su postgres
 postgres@rover>psql agatha3 postgres
-agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/person6.csv' DELIMITERS ','; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ','; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses2.csv' DELIMITERS ',';  COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles2.csv' DELIMITERS ','; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses2.csv' DELIMITERS ',';  COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms2.csv' DELIMITERS ',';  COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures2.csv' DELIMITERS ','; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ','; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ','; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials3.csv' DELIMITERS ',' ;
+agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/person62.csv' DELIMITERS ','; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ','; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses3.csv' DELIMITERS ',';  COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles2.csv' DELIMITERS ','; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses2.csv' DELIMITERS ',';  COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms2.csv' DELIMITERS ',';  COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures2.csv' DELIMITERS ','; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ','; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ','; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials3.csv' DELIMITERS ',' ;
 
 ruby script/generate migration rename_tutorial_tutorial_id_to_tutorial_schedule_id
 rake db:migrate
@@ -115,6 +115,7 @@ agatha_dev=#  DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_
 
 agatha_dev=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/people4.csv' DELIMITERS ',' CSV; COPY status_csvs FROM '/home/agathaapp/AgathaJPG/statuses2.csv' DELIMITERS ',' CSV; COPY personstatus_csvs FROM '/home/agathaapp/AgathaJPG/peoplestatuses2.csv' DELIMITERS ',' CSV; COPY course_csvs FROM '/home/agathaapp/AgathaJPG/coursetitles.csv' DELIMITERS ',' CSV; COPY lecture_csvs FROM '/home/agathaapp/AgathaJPG/lecture_courses.csv' DELIMITERS ',' CSV; COPY term_csvs FROM '/home/agathaapp/AgathaJPG/terms.csv' DELIMITERS ',' CSV; COPY attendee_csvs FROM '/home/agathaapp/AgathaJPG/lectures.csv' DELIMITERS ',' CSV; COPY day_csvs FROM '/home/agathaapp/AgathaJPG/days.csv' DELIMITERS ',' CSV; COPY willing_teacher_csvs FROM '/home/agathaapp/AgathaJPG/willing_to_teach.csv' DELIMITERS ',' CSV; COPY tutorial_csvs FROM '/home/agathaapp/AgathaJPG/tutorials.csv' DELIMITERS ',' CSV;
 
+agatha3# INSERT INTO users ("name",hashed_password,salt,person_id) VALUES ('agathaapp','d67b7d4eb690358b0fdd62e6eb5686c091b0bf21','-6138813780.865122206190294',729);
 sudo apt-get install irb
 ruby script/console
 >> User.create(:name => 'agathaapp', :password => 'qwerty', :password_confirmation => 'qwerty', :person_id => 729)
