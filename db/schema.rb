@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091005094334) do
+ActiveRecord::Schema.define(:version => 20090930163149) do
 
   create_table "agatha_emails", :force => true do |t|
     t.string   "from_email",     :default => ""
@@ -36,9 +36,9 @@ ActiveRecord::Schema.define(:version => 20091005094334) do
   end
 
   create_table "attendees", :force => true do |t|
-    t.integer  "lecture_id", :default => 1, :null => false
-    t.integer  "person_id",  :default => 1, :null => false
-    t.boolean  "examined"
+    t.integer  "lecture_id", :default => 1,     :null => false
+    t.integer  "person_id",  :default => 1,     :null => false
+    t.boolean  "examined",   :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "compulsory"
@@ -99,10 +99,10 @@ ActiveRecord::Schema.define(:version => 20091005094334) do
     t.string   "attachment_file_list", :default => ""
     t.boolean  "term_dependency",      :default => true
     t.boolean  "course_dependency",    :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.text     "global_warnings",      :default => ""
     t.text     "personal_warnings",    :default => ""
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "external_filter_values", :force => true do |t|

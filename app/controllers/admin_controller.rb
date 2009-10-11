@@ -26,6 +26,15 @@ class AdminController < ApplicationController
       if user
         session[:user_id] = user.id
         admin_group = Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"});
+        if(admin_group == nil)
+          Group.create(:group_name => 'Not Set', :table_name => '', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => true, :readers_id => 0, :writers_id => 0)
+          Group.create(:group_name => 'Administrator', :table_name => 'users', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => false, :readers_id => 2, :writers_id => 2)
+          admin_group = Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"})
+          admin_group.readers_id = admin_group.id
+          admin_group.writers_id = admin_group.id
+          GroupUser.create(:group_id => Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"}).id, :user_id =>  User.find(:first, :conditions =>{:name => "agathaapp"}).id)
+          admin_group = Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"});
+        end
         if GroupUser.exists?(["user_id = #{session[:user_id]} AND group_id = #{admin_group.id}"])
           session[:administrator] = true;
           update_terms

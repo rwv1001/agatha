@@ -10,6 +10,8 @@ class CreateEmailTemplates < ActiveRecord::Migration
       t.string :attachment_file_list, :default => ""
       t.boolean :term_dependency, :default => true
       t.boolean :course_dependency, :default => false
+      t.text :global_warnings, :default => ""
+      t.text :personal_warnings, :default => ""
 
       t.timestamps
     end
