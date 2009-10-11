@@ -499,8 +499,9 @@ class WelcomeController < ApplicationController
     @all_group_filters = FilterController.GetAllGroupFilters(user_id);
 
     session[:format_controller] = @format_controller
+    string_update
     unless session[:search_ctls]
-      string_update
+      
       InitializeSessionController()
       RAILS_DEFAULT_LOGGER.error("inialization index");
     else
@@ -599,6 +600,10 @@ class WelcomeController < ApplicationController
       RAILS_DEFAULT_LOGGER.error("old_page_name = #{old_page_name}");
       RAILS_DEFAULT_LOGGER.error("old_option_id = #{old_option_id}");
       RAILS_DEFAULT_LOGGER.flush
+            if old_option_id > @displayPageCl.DisplayPages[old_page_name].length
+              old_option_id  = 0;
+            end
+
       old_display_page = @displayPageCl.DisplayPages[old_page_name][old_option_id];
     else
       old_display_page = nil;
@@ -701,11 +706,13 @@ class WelcomeController < ApplicationController
      @displayPageCl = session[:displayPageCl];
     edited_table_name = params[:table_name];
     id = params[:id];
+    ids = [];
+    ids << id.to_i;
     respond_to do |format|
       format.js  do
         render :update do |page|
           search_ctl = @search_ctls = session[:search_ctls][edited_table_name];
-          updated_objects = search_ctl.GetUpdateObjects(edited_table_name, "id", id);
+          updated_objects = search_ctl.GetUpdateObjects(edited_table_name, "id", ids);
           if updated_objects.length>0
             row = updated_objects[0];
             search_results_row = SearchResultsRow.new(row, search_ctl)
@@ -720,6 +727,9 @@ class WelcomeController < ApplicationController
             page << "open_windows.unset('#{edited_table_name}_#{row.id}')"
                       page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
+            if option_id > @displayPageCl.DisplayPages[page_name].length
+              option_id  = 0;
+            end
             user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
@@ -772,6 +782,10 @@ class WelcomeController < ApplicationController
           end
             page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
+            if option_id > @displayPageCl.DisplayPages[page_name].length
+              option_id  = 0;
+            end
+
             user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
@@ -906,6 +920,9 @@ class WelcomeController < ApplicationController
             page << "resizeX();"
             page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
+            if option_id > @displayPageCl.DisplayPages[page_name].length
+              option_id  = 0;
+            end
             user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
