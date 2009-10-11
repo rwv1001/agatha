@@ -581,6 +581,7 @@ class WelcomeController < ApplicationController
     if user_page == nil
       user_page = UserPage.new;
     end
+    RAILS_DEFAULT_LOGGER.error("page name is #{page_name}, option_id is #{option_id}");
     user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
     user_page.user_id = @user_id;
     user_page.page_name =  user_display_page.page_name;
