@@ -533,6 +533,7 @@ class WelcomeController < ApplicationController
   end
 
   def display_page
+    RAILS_DEFAULT_LOGGER.error("display_page");
     
     old_page_name =  session[:current_page_name];
     old_option_id = session[:current_option_id];
@@ -540,7 +541,7 @@ class WelcomeController < ApplicationController
     if @displayPageCl == nil
       RAILS_DEFAULT_LOGGER.error("I just do not understand how this can be nil");
       RAILS_DEFAULT_LOGGER.flush
-    elsif  @displayPageCl.DisplayPages.length == 0
+    elsif @displayPageCl.DisplayPages == nil || @displayPageCl.DisplayPages.length == 0
       RAILS_DEFAULT_LOGGER.error("I am rather mystified");
       RAILS_DEFAULT_LOGGER.flush
       display_init();
