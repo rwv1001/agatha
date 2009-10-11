@@ -540,6 +540,10 @@ class WelcomeController < ApplicationController
     if @displayPageCl == nil
       RAILS_DEFAULT_LOGGER.error("I just do not understand how this can be nil");
       RAILS_DEFAULT_LOGGER.flush
+    elsif  @displayPageCl.DisplayPages.length == 0
+      RAILS_DEFAULT_LOGGER.error("I am rather mystified");
+      RAILS_DEFAULT_LOGGER.flush
+      display_init();
     end
     page_name = params[:page_name];
     @user_id=session[:user_id];
