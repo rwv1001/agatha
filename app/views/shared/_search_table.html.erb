@@ -125,9 +125,9 @@
         
         <div style="padding-left: 7px" id=<%="#{table_name}_action_div"%>  >
       
-       <% if  WelcomeController::DisplayPageCl.DisplayPages.has_key?(table_name) %>
+       <% if  search_controller.displayPageCl.DisplayPages.has_key?(table_name) %>
         <select id= <%=  "\"action_select_#{table_name}\"" %> onchange= <%="\"action_select('#{table_name}');return false;\""%> >
-            <% WelcomeController::DisplayPageCl.DisplayPages[table_name].each do | display_page| %>
+            <% search_controller.displayPageCl.DisplayPages[table_name].each do | display_page| %>
               <% if display_page.unrestricted || session[:administrator] %>
               
                 <option id=<%="\"action_select_#{table_name}_#{display_page.option_id}\""%> value = <%="\"#{display_page.option_id}\""%> >

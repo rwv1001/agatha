@@ -1,455 +1,459 @@
 # coding: utf-8
 class WelcomeController < ApplicationController
+  attr_reader :displayPageCl
 
+  def display_init()
+  
 
-  DisplayPageCl = DisplayPagesClass.new;
-
-  DisplayPageCl.DisplayPages["Person"]=[];
+  displayPageCl = DisplayPagesClass.new;
+  @displayPageCl = DisplayPagesClass.new;
+  @displayPageCl.DisplayPages["Person"]=[];
  
-  DisplayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Select action", true,
+  @displayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Select action", true,
     [ DisplayDiv.new("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select-cell",".select_options",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [], [".max_tutorials_div",".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person",  "Edit",true,
+  @displayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person",  "Edit",true,
     [ DisplayDiv.new("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [], [".max_tutorials_div",".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Person"]<<  PageView.new("people", "Person",  "Create group",true,
+  @displayPageCl.DisplayPages["Person"]<<  PageView.new("people", "Person",  "Create group",true,
     [ DisplayDiv.new("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [".group_div"], [".max_tutorials_div",".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Delete people",true,
+  @displayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Delete people",true,
     [ DisplayDiv.new("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell",  ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [".delete_div"], [".max_tutorials_div",".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Add to groups",true,
+  @displayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Add to groups",true,
     [ DisplayDiv.new("welcome_Person", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [], [".max_tutorials_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('people'); set_action_class('Person','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Person"]<< PageView.new("people", "Person", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Person", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [], [".max_tutorials_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('people'); set_action_class('Person','Group','remove_from_groups')")]);
-  DisplayPageCl.DisplayPages["Person"]<<  PageView.new("people", "Person",  "Set Max Tutorials",true,
+  @displayPageCl.DisplayPages["Person"]<<  PageView.new("people", "Person",  "Set Max Tutorials",true,
     [ DisplayDiv.new("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Person_action_div", "first_menu_div", [], [], [".max_tutorials_div"], [".group_div",".delete_div"],"")]);
-  DisplayPageCl.RegisterClasses("Person",["welcome_Person"],[".help-cell",".search_title",  ".default_class"],[".add_attendee_options",".tutorial_assign_title",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".add_to_lecture_title",".add_to_willing_tutor_title", ".send-cell",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Person",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Person",["welcome_Person"],[".help-cell",".search_title",  ".default_class"],[".add_attendee_options",".tutorial_assign_title",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".add_to_lecture_title",".add_to_willing_tutor_title", ".send-cell",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Person",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-  DisplayPageCl.DisplayPages["Institution"]=[];
-  DisplayPageCl.DisplayPages["Institution"]<<PageView.new("people", "Institution", "Select action", true,
+  @displayPageCl.DisplayPages["Institution"]=[];
+  @displayPageCl.DisplayPages["Institution"]<<PageView.new("people", "Institution", "Select action", true,
     [ DisplayDiv.new("welcome_Institution", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select-cell",".select_options",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution",  "Edit",true,
+  @displayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution",  "Edit",true,
     [ DisplayDiv.new("welcome_Institution", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Institution"]<<  PageView.new("people", "Institution",  "Create group",true,
+  @displayPageCl.DisplayPages["Institution"]<<  PageView.new("people", "Institution",  "Create group",true,
     [ DisplayDiv.new("welcome_Institution", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Delete institutions",true,
+  @displayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Delete institutions",true,
     [ DisplayDiv.new("welcome_Institution", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell",  ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Add to groups",true,
+  @displayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Add to groups",true,
     [ DisplayDiv.new("welcome_Institution", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('institutions'); set_action_class('Institution','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Institution"]<< PageView.new("people", "Institution", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Institution", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Institution_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('institutions'); set_action_class('Institution','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("Institution",["welcome_Institution"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell", ".send-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Institution",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Institution",["welcome_Institution"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell", ".send-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Institution",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["Course"]=[];
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses","Course",  "Select Action",true,
+  @displayPageCl.DisplayPages["Course"]=[];
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses","Course",  "Select Action",true,
      [ DisplayDiv.new("welcome_Course", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],"")]);
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Edit",true,
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Edit",true,
     [ DisplayDiv.new("welcome_Course", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],"")]);
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Create lectures",true,
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Create lectures",true,
     [ DisplayDiv.new("welcome_Course", "first_div", ["content_div"],["two_column_div"], [".create-cell",".suggest-cell",".dummy-cell"], [".create-email-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"]," set_action_class('Course','','create_lecture_from_course');set_suggestion_class('Lecture','Course')"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [".schedule_div"], [],"")]);
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Create tutorials",true,
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Create tutorials",true,
     [ DisplayDiv.new("welcome_Course", "first_div_1", ["two_column_div"],["content_div"], [".create-cell",".suggest-cell",".dummy-cell"], [".create-email-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"]," set_action_class('Course','Person','create_tutorials_from_course');set_suggestion_class('Tutorial','Course')"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [".tutorial_schedule_div"], [],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".add_to_tutorial_title"], [".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_attendee_options", ".add_to_group_title",".add_to_lecture_title",".remove_from_group_title"],"set_double_scroll();")]);
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Add Willing Tutors",true,
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Add Willing Tutors",true,
     [ DisplayDiv.new("welcome_Course", "first_div_1", ["two_column_div"],["content_div"], [".select_options", ".select-cell"], [".create-cell",".create-email-cell",".dummy-cell",".suggest-cell",".update-cell", ".delete-cell"]," set_action_class('Course','Person','make_willing_tutor')"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".dummy-cell",".willing-cell",".add_to_willing_tutor_title"], [".select_options", ".select-cell",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".add_attendee_options", ".add_to_group_title",".add_to_lecture_title",".remove_from_group_title"],"set_double_scroll();")]);
-  DisplayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Add Willing Lecturers",true,
+  @displayPageCl.DisplayPages["Course"]<<  PageView.new("courses", "Course",  "Add Willing Lecturers",true,
     [ DisplayDiv.new("welcome_Course", "first_div_1", ["two_column_div"],["content_div"], [".select_options", ".select-cell"], [".dummy-cell",".create-cell",".create-email-cell",".suggest-cell",".update-cell", ".delete-cell"]," set_action_class('Course','Person','make_willing_lecturer')"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".dummy-cell",".add_to_willing_lecturer_title",".willing-cell"], [".select_options", ".select-cell",".add_to_willing_tutor_title",".add_to_tutorial_title",".create_emails_title",".add_attendee_options", ".add_to_group_title",".add_to_lecture_title",".remove_from_group_title"],"set_double_scroll();")]);
-  DisplayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course",  "Create group",true,
+  @displayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course",  "Create group",true,
     [ DisplayDiv.new("welcome_Course", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [".group_div"], [],"")]);
-  DisplayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Delete courses",true,
+  @displayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Delete courses",true,
     [ DisplayDiv.new("welcome_Course", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [".delete_div"], [],"")]);
-  DisplayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Add to groups",true,
+  @displayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Add to groups",true,
     [ DisplayDiv.new("welcome_Course", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('courses'); set_action_class('Course','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Course"]<< PageView.new("courses", "Course", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Course", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Course_action_div", "first_menu_div", [], [], [], [],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [".remove_from_group_title" ], [".add_to_group_title"],"set_double_scroll();group_restriction('courses'); set_action_class('Course','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("Course",["welcome_Course"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell", ".send-cell"]);
-  DisplayPageCl.RegisterClasses("Course",["Course_action_div"],[],[".tutorial_schedule_div", ".schedule_div", ".delete_div",".group_div"]);
-  DisplayPageCl.RegisterClasses("Course",["welcome_Group","welcome_Person"],[".select_options", ".select-cell",".help-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Course",["welcome_Course"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell", ".send-cell"]);
+  @displayPageCl.RegisterClasses("Course",["Course_action_div"],[],[".tutorial_schedule_div", ".schedule_div", ".delete_div",".group_div"]);
+  @displayPageCl.RegisterClasses("Course",["welcome_Group","welcome_Person"],[".select_options", ".select-cell",".help-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["Lecture"]=[];
-  DisplayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees","Lecture", "Select Action",true,
+  @displayPageCl.DisplayPages["Lecture"]=[];
+  @displayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees","Lecture", "Select Action",true,
      [ DisplayDiv.new("welcome_Lecture", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Edit",true,
+  @displayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Edit",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Add attendees",true,
+  @displayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Add attendees",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".add_attendee_options",".add_to_lecture_title",".toadd-cell",".select-cell",".exam-cell",".compulsory-cell"], [".select_options", ".add_to_group_title",".help-cell",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".remove_from_group_title"],"set_double_scroll();group_restriction('lectures'); set_action_class('Lecture','Person','add_to_lectures')")]);
-  DisplayPageCl.DisplayPages["Lecture"]<<  PageView.new("attendees", "Lecture",  "Create group",true,
+  @displayPageCl.DisplayPages["Lecture"]<<  PageView.new("attendees", "Lecture",  "Create group",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Lecture"]<<  PageView.new("attendees", "Lecture", "Delete lectures",true,
+  @displayPageCl.DisplayPages["Lecture"]<<  PageView.new("attendees", "Lecture", "Delete lectures",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Add to groups",true,
+  @displayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Add to groups",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('lectures'); set_action_class('Lecture','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Lecture"]<< PageView.new("attendees", "Lecture", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Lecture", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Lecture_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('lectures'); set_action_class('Lecture','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("Lecture",["welcome_Lecture"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Lecture",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Lecture",["welcome_Lecture"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Lecture",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["WillingLecturer"]=[];
-  DisplayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees","WillingLecturer", "Select Action",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]=[];
+  @displayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees","WillingLecturer", "Select Action",true,
      [ DisplayDiv.new("welcome_WillingLecturer", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Edit",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Edit",true,
     [ DisplayDiv.new("welcome_WillingLecturer", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingLecturer"]<<  PageView.new("attendees", "WillingLecturer",  "Create group",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]<<  PageView.new("attendees", "WillingLecturer",  "Create group",true,
     [ DisplayDiv.new("welcome_WillingLecturer", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingLecturer"]<<  PageView.new("attendees", "WillingLecturer", "Delete willing_lecturers",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]<<  PageView.new("attendees", "WillingLecturer", "Delete willing_lecturers",true,
     [ DisplayDiv.new("welcome_WillingLecturer", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Add to groups",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Add to groups",true,
     [ DisplayDiv.new("welcome_WillingLecturer", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_lecturers'); set_action_class('WillingLecturer','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Remove from groups",true,
+  @displayPageCl.DisplayPages["WillingLecturer"]<< PageView.new("attendees", "WillingLecturer", "Remove from groups",true,
     [ DisplayDiv.new("welcome_WillingLecturer", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("WillingLecturer_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_lecturers'); set_action_class('WillingLecturer','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("WillingLecturer",["welcome_WillingLecturer"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("WillingLecturer",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".tutorial_assign_title",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("WillingLecturer",["welcome_WillingLecturer"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("WillingLecturer",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".tutorial_assign_title",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-  DisplayPageCl.DisplayPages["Attendee"]=[];
-  DisplayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees","Attendee", "Select Action",true,
+  @displayPageCl.DisplayPages["Attendee"]=[];
+  @displayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees","Attendee", "Select Action",true,
      [ DisplayDiv.new("welcome_Attendee", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Edit",true,
+  @displayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Edit",true,
     [ DisplayDiv.new("welcome_Attendee", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Attendee"]<<  PageView.new("attendees", "Attendee",  "Create group",true,
+  @displayPageCl.DisplayPages["Attendee"]<<  PageView.new("attendees", "Attendee",  "Create group",true,
     [ DisplayDiv.new("welcome_Attendee", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Attendee"]<<  PageView.new("attendees", "Attendee", "Delete attendees",true,
+  @displayPageCl.DisplayPages["Attendee"]<<  PageView.new("attendees", "Attendee", "Delete attendees",true,
     [ DisplayDiv.new("welcome_Attendee", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Add to groups",true,
+  @displayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Add to groups",true,
     [ DisplayDiv.new("welcome_Attendee", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('attendees'); set_action_class('Attendee','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Attendee"]<< PageView.new("attendees", "Attendee", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Attendee", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Attendee_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('attendees'); set_action_class('Attendee','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("Attendee",["welcome_Attendee"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Attendee",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Attendee",["welcome_Attendee"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Attendee",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["TutorialSchedule"]=[];
-   DisplayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials","TutorialSchedule", "Select Action",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]=[];
+   @displayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials","TutorialSchedule", "Select Action",true,
      [ DisplayDiv.new("welcome_TutorialSchedule", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule",  "Edit",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule",  "Edit",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div", ["content_div","content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Assign tutor",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Assign tutor",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div_1", ["two_column_div"],["content_div"], [".select_options", ".select-cell"], [".willing-cell",".dummy-cell",".assign-cell",".remove-cell",".update-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
     DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".assign-cell", ".tutorial_assign_title",".dummy-cell"], [".select_options",".add_attendee_options",".default_class", ".add_to_group_title",".search_title",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".suggest-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".select-cell",".delete-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell",".update-cell"],"set_double_scroll();set_action_class('TutorialSchedule','Person','assign_tutor')")]);
 
 
-  DisplayPageCl.DisplayPages["TutorialSchedule"]<<  PageView.new("tutorials", "TutorialSchedule",  "Create group",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]<<  PageView.new("tutorials", "TutorialSchedule",  "Create group",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["TutorialSchedule"] <<  PageView.new("tutorials", "TutorialSchedule","Delete tutorial schedules",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"] <<  PageView.new("tutorials", "TutorialSchedule","Delete tutorial schedules",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Add to groups",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Add to groups",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorial_schedules'); set_action_class('TutorialSchedule','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Remove from groups",true,
+  @displayPageCl.DisplayPages["TutorialSchedule"]<< PageView.new("tutorials", "TutorialSchedule", "Remove from groups",true,
     [ DisplayDiv.new("welcome_TutorialSchedule", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("TutorialSchedule_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorial_schedules'); set_action_class('TutorialSchedule','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("TutorialSchedule",["welcome_TutorialSchedule"],[".search_title",  ".default_class"],[".create_new_entry",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell", ".send-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("TutorialSchedule",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("TutorialSchedule",["welcome_TutorialSchedule"],[".search_title",  ".default_class"],[".create_new_entry",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell", ".send-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("TutorialSchedule",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["Tutorial"]=[];
-   DisplayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials","Tutorial", "Select Action",true,
+  @displayPageCl.DisplayPages["Tutorial"]=[];
+   @displayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials","Tutorial", "Select Action",true,
      [ DisplayDiv.new("welcome_Tutorial", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial",  "Edit",true,
+  @displayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial",  "Edit",true,
     [ DisplayDiv.new("welcome_Tutorial", "first_div", ["content_div","content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Tutorial"]<<  PageView.new("tutorials", "Tutorial",  "Create group",true,
+  @displayPageCl.DisplayPages["Tutorial"]<<  PageView.new("tutorials", "Tutorial",  "Create group",true,
     [ DisplayDiv.new("welcome_Tutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Tutorial"] <<  PageView.new("tutorials", "Tutorial","Delete tutorials",true,
+  @displayPageCl.DisplayPages["Tutorial"] <<  PageView.new("tutorials", "Tutorial","Delete tutorials",true,
     [ DisplayDiv.new("welcome_Tutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial", "Add to groups",true,
+  @displayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial", "Add to groups",true,
     [ DisplayDiv.new("welcome_Tutorial", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorials'); set_action_class('Tutorial','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial", "Remove from groups",true,
+  @displayPageCl.DisplayPages["Tutorial"]<< PageView.new("tutorials", "Tutorial", "Remove from groups",true,
     [ DisplayDiv.new("welcome_Tutorial", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Tutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorials'); set_action_class('Tutorial','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("Tutorial",["welcome_Tutorial"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Tutorial",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Tutorial",["welcome_Tutorial"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Tutorial",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-    DisplayPageCl.DisplayPages["WillingTutor"]=[];
-  DisplayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials","WillingTutor", "Select Action",true,
+    @displayPageCl.DisplayPages["WillingTutor"]=[];
+  @displayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials","WillingTutor", "Select Action",true,
      [ DisplayDiv.new("welcome_WillingTutor", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Edit",true,
+  @displayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Edit",true,
     [ DisplayDiv.new("welcome_WillingTutor", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingTutor"]<<  PageView.new("tutorials", "WillingTutor",  "Create group",true,
+  @displayPageCl.DisplayPages["WillingTutor"]<<  PageView.new("tutorials", "WillingTutor",  "Create group",true,
     [ DisplayDiv.new("welcome_WillingTutor", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingTutor"]<<  PageView.new("tutorials", "WillingTutor", "Delete willing_tutors",true,
+  @displayPageCl.DisplayPages["WillingTutor"]<<  PageView.new("tutorials", "WillingTutor", "Delete willing_tutors",true,
     [ DisplayDiv.new("welcome_WillingTutor", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Add to groups",true,
+  @displayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Add to groups",true,
     [ DisplayDiv.new("welcome_WillingTutor", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_tutors'); set_action_class('WillingTutor','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Remove from groups",true,
+  @displayPageCl.DisplayPages["WillingTutor"]<< PageView.new("tutorials", "WillingTutor", "Remove from groups",true,
     [ DisplayDiv.new("welcome_WillingTutor", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("WillingTutor_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_tutors'); set_action_class('WillingTutor','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("WillingTutor",["welcome_WillingTutor"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("WillingTutor",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("WillingTutor",["welcome_WillingTutor"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("WillingTutor",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-  DisplayPageCl.DisplayPages["MaximumTutorial"]=[];
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials","MaximumTutorial", "Select Action",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]=[];
+  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials","MaximumTutorial", "Select Action",true,
      [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Edit",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Edit",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial",  "Create group",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial",  "Create group",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial", "Delete max tutorials",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial", "Delete max tutorials",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Add to groups",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Add to groups",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('maximum_tutorials'); set_action_class('MaximumTutorial','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Remove from groups",true,
+  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Remove from groups",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('maximum_tutorials'); set_action_class('MaximumTutorial','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("MaximumTutorial",["welcome_MaximumTutorial"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".send-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("MaximumTutorial",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("MaximumTutorial",["welcome_MaximumTutorial"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".send-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("MaximumTutorial",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-  DisplayPageCl.DisplayPages["Group"]=[];
-   DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups","Group",  "Select Action",true,
+  @displayPageCl.DisplayPages["Group"]=[];
+   @displayPageCl.DisplayPages["Group"]<< PageView.new("groups","Group",  "Select Action",true,
      [ DisplayDiv.new("welcome_Group", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".remove-cell",".remove_from_group_title",".add_to_group_title",".select_options", ".select-cell",".update-cell", ".delete-cell",".add-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Edit",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Edit",true,
     [ DisplayDiv.new("welcome_Group", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".remove-cell",".remove_from_group_title",".add_to_group_title",".select_options", ".select-cell", ".delete-cell",".add-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-   DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group",  "Delete groups",true,
+   @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group",  "Delete groups",true,
     [ DisplayDiv.new("welcome_Group", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".remove-cell",".update-cell",".dummy-cell", ".remove_from_group_title",".add_to_group_title",".add-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [ ], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add people",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add people",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [ ".add_to_group_title"], [".add_to_lecture_title",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".remove_from_group_title"],"set_double_scroll();group_restriction('people');set_action_class('Group','Person','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add institutions",true,
+  @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add institutions",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Institution", "first_div_2", [], ["Institution_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('institutions');set_action_class('Group','Institution','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add courses",true,
+  @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add courses",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Course", "first_div_2", [], ["Course_action_div"], [".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('courses');set_action_class('Group','Course','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add lectures",true,
+  @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add lectures",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Lecture", "first_div_2", [], ["Lecture_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('lectures');set_action_class('Group','Lecture','add_to_group')")]);
-    DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add attendees",true,
+    @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Add attendees",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Attendee", "first_div_2", [], ["Attendee_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('attendees');set_action_class('Group','Attendee','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add tutorials",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add tutorials",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Tutorial", "first_div_2", [], ["Tutorial_action_div"], [".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorials');set_action_class('Group','Tutorial','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add tutorial schedules",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Add tutorial schedules",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_TutorialSchedule", "first_div_2", [], ["TutorialSchedule_action_div"], [".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('tutorial_schedules');set_action_class('Group','TutorialSchedule','add_to_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group","Add users",false,
+  @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group","Add users",false,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".willing-cell",".assign-cell",".remove-cell",".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell", ".create-cell",".create-email-cell", ".suggest-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_User", "first_div_2", [], ["User_action_div"], [ ".add_to_group_title"], [".willing-cell",".assign-cell",".remove_from_group_title"],"set_double_scroll();group_restriction('users');set_action_class('Group','User','add_to_group')")]);
 
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove people",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove people",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".remove_from_group_title"], [".add_to_lecture_title",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_to_tutorial_title",".create_emails_title",".add_to_group_title"],"set_double_scroll();group_restriction('people');set_action_class('Group','Person','remove_from_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove institutions",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove institutions",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Institution", "first_div_2", [], ["Institution_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('institutions');set_action_class('Group','Institution','remove_from_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove courses",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove courses",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Course", "first_div_2", [], ["Course_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('courses');set_action_class('Group','Course','remove_from_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove lectures",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove lectures",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Lecture", "first_div_2", [], ["Lecture_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('lectures');set_action_class('Group','Lecture','remove_from_group')")]);
- DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove attendees",true,
+ @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group", "Remove attendees",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Attendee", "first_div_2", [], ["Attendee_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('attendees');set_action_class('Group','Attendee','remove_from_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove tutorials",true,
+  @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove tutorials",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".remove_from_group_title",".add_to_group_title",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Tutorial", "first_div_2", [], ["Tutorial_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('tutorials');set_action_class('Group','Tutorial','remove_from_group')")]);
- DisplayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove tutorial schedule",true,
+ @displayPageCl.DisplayPages["Group"]<<  PageView.new("groups", "Group","Remove tutorial schedule",true,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".remove_from_group_title",".add_to_group_title",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_TutorialSchedule", "first_div_2", [], ["TutorialSchedule_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('tutorial_schedules');set_action_class('Group','TutorialSchedule','remove_from_group')")]);
-  DisplayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Remove users",false,
+  @displayPageCl.DisplayPages["Group"]<< PageView.new("groups", "Group", "Remove users",false,
     [ DisplayDiv.new("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".add-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("Group_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_User", "first_div_2", [], ["User_action_div"], [".remove_from_group_title"], [".add_to_group_title"],"set_double_scroll();group_restriction('users');set_action_class('Group','User','remove_from_group')")]);
-  DisplayPageCl.RegisterClasses("Group",[ "welcome_Group"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title",".create_new_entry", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("Group",["welcome_Person", "welcome_Institution", "welcome_Course", "welcome_Lecture","welcome_Attendee",  "welcome_Tutorial","welcome_TutorialSchedule", "welcome_Attendee","welcome_User"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell", ".send-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Group",[ "welcome_Group"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title",".create_new_entry", ".create-cell",".create-email-cell", ".send-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("Group",["welcome_Person", "welcome_Institution", "welcome_Course", "welcome_Lecture","welcome_Attendee",  "welcome_Tutorial","welcome_TutorialSchedule", "welcome_Attendee","welcome_User"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell", ".send-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
-    DisplayPageCl.DisplayPages["User"]=[];
-   DisplayPageCl.DisplayPages["User"]<< PageView.new("people","User",  "Select Action",false,
+    @displayPageCl.DisplayPages["User"]=[];
+   @displayPageCl.DisplayPages["User"]<< PageView.new("people","User",  "Select Action",false,
      [ DisplayDiv.new("welcome_User", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("User_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["User"]<<  PageView.new("people", "User", "Create group",false,
+  @displayPageCl.DisplayPages["User"]<<  PageView.new("people", "User", "Create group",false,
     [ DisplayDiv.new("welcome_User", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("User_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Delete users",false,
+  @displayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Delete users",false,
     [ DisplayDiv.new("welcome_User", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".dummy-cell"],""),
       DisplayDiv.new("User_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  DisplayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Add to groups",true,
+  @displayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Add to groups",true,
     [ DisplayDiv.new("welcome_User", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("User_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('users'); set_action_class('User','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Remove from groups",true,
+  @displayPageCl.DisplayPages["User"]<< PageView.new("people", "User", "Remove from groups",true,
     [ DisplayDiv.new("welcome_User", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("User_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('users'); set_action_class('User','Group','remove_from_groups')")]);
-  DisplayPageCl.RegisterClasses("User",["welcome_User"],[".search_title",  ".default_class"],[".toadd-cell",".exam-cell",".compulsory-cell",".create_new_entry",".willing-cell",".assign-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("User",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("User",["welcome_User"],[".search_title",  ".default_class"],[".toadd-cell",".exam-cell",".compulsory-cell",".create_new_entry",".willing-cell",".assign-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".send-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("User",["welcome_Group"],[".select_options", ".select-cell"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-  DisplayPageCl.DisplayPages["EmailTemplate"]=[];
-  DisplayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails","EmailTemplate", "Select Action",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]=[];
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails","EmailTemplate", "Select Action",true,
      [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-    DisplayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create emails",true,
+    @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create emails",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div_1", ["two_column_div"],["content_div"], [".create-email-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"]," set_action_class('EmailTemplate','Person','create_email_from_template')"),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".email_template_div"], [".group_div", ".delete_div"],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".create_emails_title"], [".add_to_tutorial_title",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_attendee_options", ".add_to_group_title",".add_to_lecture_title",".remove_from_group_title"],"set_double_scroll();")]);
-  DisplayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Edit",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Edit",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".create-email-cell",".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".email_template_div",".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create group",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create group",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".group_div"], [".email_template_div",".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate", "Delete email_templates",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate", "Delete email_templates",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".create-email-cell",".update-cell",".dummy-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".delete_div"], [".email_template_div",".group_div"],"")]);
-  DisplayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Add to groups",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Add to groups",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".create-email-cell",".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".email_template_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('email_templates'); set_action_class('EmailTemplate','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Remove from groups",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Remove from groups",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".create-email-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".email_template_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('email_templates'); set_action_class('EmailTemplate','Group','remove_from_groups')")]);
 
-  DisplayPageCl.RegisterClasses("EmailTemplate",["welcome_EmailTemplate","EmailTemplate_action_div"],[".search_title",  ".default_class"],[".email_template_div",".send_div",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell", ".send-cell"]);
-  DisplayPageCl.RegisterClasses("EmailTemplate",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".email_template_div",".send_div",".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("EmailTemplate",["welcome_EmailTemplate","EmailTemplate_action_div"],[".search_title",  ".default_class"],[".email_template_div",".send_div",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell", ".send-cell"]);
+  @displayPageCl.RegisterClasses("EmailTemplate",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".email_template_div",".send_div",".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-    DisplayPageCl.DisplayPages["AgathaEmail"]=[];
-  DisplayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails","AgathaEmail", "Select Action",true,
+    @displayPageCl.DisplayPages["AgathaEmail"]=[];
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails","AgathaEmail", "Select Action",true,
      [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".group_div", ".delete_div"],"")]);
- DisplayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Send agatha_emails",true,
+ @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Send agatha_emails",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".send-cell"], [".delete-cell",".create-email-cell",".update-cell",".dummy-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".send_div"], [ ".delete_div",".agatha_email_div",".group_div"],"")]);
 
-  DisplayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Edit",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Edit",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".create-email-cell",".select_options", ".select-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".group_div", ".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail",  "Create group",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail",  "Create group",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".group_div"], [".send_div",".delete_div"],"")]);
-  DisplayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Delete agatha_emails",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Delete agatha_emails",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".delete_div"], [".send_div",".group_div"],"")]);
-  DisplayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Add to groups",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Add to groups",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".create-email-cell",".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell", ".send-cell"],"group_unrestriction()"),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('agatha_emails'); set_action_class('AgathaEmail','Group','add_to_groups')")]);
-  DisplayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Remove from groups",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Remove from groups",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".create-email-cell",".update-cell",".select_options", ".select-cell", ".delete-cell", ".send-cell"],"group_unrestriction()"),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".delete_div",".group_div"],""),
       DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('agatha_emails'); set_action_class('AgathaEmail','Group','remove_from_groups')")]);
 
-  DisplayPageCl.RegisterClasses("AgathaEmail",["welcome_AgathaEmail"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
-  DisplayPageCl.RegisterClasses("AgathaEmail",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[ ".send-cell",".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("AgathaEmail",["welcome_AgathaEmail"],[".search_title",  ".default_class"],[".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
+  @displayPageCl.RegisterClasses("AgathaEmail",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[ ".send-cell",".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
 
-  DisplayPageCl.DisplayPages["GroupFiltering"]=[];
-  DisplayPageCl.DisplayPages["GroupFiltering"][0]= PageView.new("options", "GroupFiltering", "Select Action",true,
+  @displayPageCl.DisplayPages["GroupFiltering"]=[];
+  @displayPageCl.DisplayPages["GroupFiltering"][0]= PageView.new("options", "GroupFiltering", "Select Action",true,
     [ DisplayDiv.new("welcome_GroupFiltering", "first_div", ["content_div"],["two_column_div"], ["update-cell", "delete-cell",".add-cell", ".send-cell"], [],"")]);
 
-  DisplayPageCl.DisplayPages["FieldDisplayFormat"]=[];
-  DisplayPageCl.DisplayPages["FieldDisplayFormat"][0]= PageView.new("options", "FieldDisplayFormat", "Select Action",true,
+  @displayPageCl.DisplayPages["FieldDisplayFormat"]=[];
+  @displayPageCl.DisplayPages["FieldDisplayFormat"][0]= PageView.new("options", "FieldDisplayFormat", "Select Action",true,
     [ DisplayDiv.new("welcome_FieldDisplayFormat", "first_div", ["content_div"],["two_column_div"], ["update-cell", "delete-cell",".add-cell", ".send-cell"], [],"")]);
 
-  DisplayPageCl.DisplayPages["Email"]=[];
+  @displayPageCl.DisplayPages["Email"]=[];
 
-  DisplayPageCl.DisplayPages["default"]=DisplayPageCl.DisplayPages["Person"];
-
+  @displayPageCl.DisplayPages["default"]=@displayPageCl.DisplayPages["Person"];
+  
+  end
 
 
   def string_update
@@ -496,7 +500,9 @@ class WelcomeController < ApplicationController
     unless session[:search_ctls]
       string_update
       InitializeSessionController()
+      
     end
+
     @search_ctls = session[:search_ctls];
     @attr_lists = session[:attr_lists];
 
@@ -525,6 +531,7 @@ class WelcomeController < ApplicationController
     
     old_page_name =  session[:current_page_name];
     old_option_id = session[:current_option_id];
+    @displayPageCl = session[:displayPageCl];
     page_name = params[:page_name];
     @user_id=session[:user_id];
     option_id = params[:option].to_i;
@@ -533,7 +540,7 @@ class WelcomeController < ApplicationController
       if user_page == nil
         user_page = UserPage.find(:first, :conditions =>{ :user_id => @user_id});
         if user_page ==nil
-        default_page = DisplayPageCl.DisplayPages["default"][0];
+        default_page = @displayPageCl.DisplayPages["default"][0];
         page_name =  default_page.page_name
         option_id = default_page.option_id
         else
@@ -547,7 +554,7 @@ class WelcomeController < ApplicationController
     elsif option_id == -1
       user_page= UserPage.find(:first, :conditions =>{:page_name => page_name, :user_id => @user_id});
       if user_page == nil
-        option_id = DisplayPageCl.DisplayPages[page_name][0].option_id;
+        option_id = @displayPageCl.DisplayPages[page_name][0].option_id;
       else
         option_id = user_page.option_id;
       end
@@ -560,7 +567,7 @@ class WelcomeController < ApplicationController
     if user_page == nil
       user_page = UserPage.new;
     end
-    user_display_page = DisplayPageCl.DisplayPages[page_name][option_id];
+    user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
     user_page.user_id = @user_id;
     user_page.page_name =  user_display_page.page_name;
     user_page.option_id =  user_display_page.option_id;
@@ -573,7 +580,7 @@ class WelcomeController < ApplicationController
       RAILS_DEFAULT_LOGGER.error("old_page_name = #{old_page_name}");
       RAILS_DEFAULT_LOGGER.error("old_option_id = #{old_option_id}");
       RAILS_DEFAULT_LOGGER.flush
-      old_display_page = DisplayPageCl.DisplayPages[old_page_name][old_option_id];
+      old_display_page = @displayPageCl.DisplayPages[old_page_name][old_option_id];
     else
       old_display_page = nil;
     end
@@ -657,16 +664,20 @@ class WelcomeController < ApplicationController
       @search_ctls[table_options[controller_index]] = search_controller;
       @attr_lists[table_options[controller_index]] = attribute_list;
     end
+    display_init();
     for controller_index in (0 .. @number_of_controllers -1)
-      @search_ctls[table_options[controller_index]].SetExtendedFilterControllers(@search_ctls);     
+      @search_ctls[table_options[controller_index]].SetExtendedFilterControllers(@search_ctls);
+      @search_ctls[table_options[controller_index]].displayPageCl = @displayPageCl;
     end
 
     
     session[:search_ctls] =  @search_ctls
+    session[:displayPageCl] = @displayPageCl;
     session[:attr_lists] = @attr_lists
 
   end
   def child_unload
+     @displayPageCl = session[:displayPageCl];
     edited_table_name = params[:table_name];
     id = params[:id];
     respond_to do |format|
@@ -688,7 +699,7 @@ class WelcomeController < ApplicationController
             page << "open_windows.unset('#{edited_table_name}_#{row.id}')"
                       page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
-            user_display_page = DisplayPageCl.DisplayPages[page_name][option_id];
+            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
             page << "show_div(\"#{display_div.div_id}\")"
@@ -715,7 +726,7 @@ class WelcomeController < ApplicationController
     id = params[:id];
     ids = [];
     ids << id;
-
+     @displayPageCl = session[:displayPageCl];
     edited_table_name = params[:table_name];
     attribute_name = params[:attribute_name];
     @search_ctls = session[:search_ctls];
@@ -740,7 +751,7 @@ class WelcomeController < ApplicationController
           end
             page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
-            user_display_page = DisplayPageCl.DisplayPages[page_name][option_id];
+            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
             page << "show_div(\"#{display_div.div_id}\")"
@@ -854,6 +865,7 @@ class WelcomeController < ApplicationController
     update_external_filters
     table_name =  params[:table_change_text];
     search_ctl = @search_ctls[table_name];
+    @displayPageCl = session[:displayPageCl];
     search_ctl.user_id = session[:user_id];
     
     eval_str = search_ctl.get_eval_string2;
@@ -873,7 +885,7 @@ class WelcomeController < ApplicationController
             page << "resizeX();"
             page_name =  session[:current_page_name];
             option_id = session[:current_option_id];
-            user_display_page = DisplayPageCl.DisplayPages[page_name][option_id];
+            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
             user_display_page.display_divs.each do |display_div|
 
             page << "show_div(\"#{display_div.div_id}\")"

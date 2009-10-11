@@ -632,6 +632,7 @@ class SearchController
   attr_accessor :user_id;
   attr_reader :filter_controller;
   attr_reader :search_ctls
+  attr_accessor :displayPageCl
   
   attr_reader :fixed_indices
 
