@@ -2348,31 +2348,10 @@ RAILS_DEFAULT_LOGGER.flush
   end
 
   def div_test
-    x = 1;
-        term = Term.find(20);
-    person = Person.find(32);
-    course = Course.find(112);
-   lecture_schedules = Lecture.find_by_sql("SELECT * FROM lectures WHERE course_id = #{course.id} AND term_id = #{term.id}");     if lecture_schedules.length >0 then       lecture_id = lecture_schedules[0].id;      exam_attendees = Attendee.find_by_sql("SELECT *, a1.first_name || ' ' || a1.second_name AS student_name FROM attendees a0 INNER JOIN people a1 ON a1.id=a0.person_id AND a0.lecture_id = #{lecture_id} AND a0.examined= true ORDER BY student_name");      non_exam_attendees =  Attendee.find_by_sql("SELECT *, a1.first_name || ' ' || a1.second_name AS student_name FROM attendees a0 INNER JOIN people a1 ON a1.id=a0.person_id AND a0.lecture_id = #{lecture_id} AND a0.examined= false ORDER BY student_name");    else      exam_attendees = [];      non_exam_attendees = [];    end;
-    
+  
 
 
 
-        EmailTemplate.create(:template_name =>"Class list and reminder of exam arrangements",
-      :from_email => "<%= me.email %>",
-      :subject => "Class and exam list for the coming Term at Blackfriars",
-      :ruby_header=> %q{<% lecture_schedules = Lecture.find_by_sql("SELECT * FROM lectures WHERE course_id = #{course.id} AND term_id = #{term.id}");     if lecture_schedules.length >0 then       lecture_id = lecture_schedules[0].id;      exam_attendees = Attendee.find_by_sql("SELECT *, a1.first_name || ' ' || a1.second_name AS student_name FROM attendees a0 INNER JOIN people a1 ON a1.id=a0.person_id AND a0.lecture_id = #{lecture_id} AND a0.examined= true ORDER BY student_name");      non_exam_attendees =  Attendee.find_by_sql("SELECT *, a1.first_name || ' ' || a1.second_name AS student_name FROM attendees a0 INNER JOIN people a1 ON a1.id=a0.person_id AND a0.lecture_id = #{lecture_id} AND a0.examined= false ORDER BY student_name");    else      exam_attendees = [];      non_exam_attendees = [];    end;%>},
-      :body=> %q{Dear <%= person.salutation %>,<br><br>This email concerns the lecture course on <%=course.name%> for the current Term.
-<% if (exam_attendees.length + non_exam_attendees.length) >0 %> As I understand it, the following students are supposed to attend the lecture course – there may well be others in the class,
-for whom it is optional.<br><% if exam_attendees.length >0 %> <br><b>Students needing an end-of-term examination</b>:<br><br>These students need a grade for the course,
-but are not taking tutorials in the subject. The lecturer normally determines the exam format (often a short viva-voce exam) and scope, and explains this to the students.
-Exams are usually held on the Monday or Tuesday of 9th Week, at a time to suit the lecturer and the students involved.<br><br><% exam_attendees.each do
-|attendee|%> <%=attendee.student_name%><br><%end%><br><%end%><% if non_exam_attendees.length >0 %> <b>Students not needing an end-of-term examination</b>:<br><br>
-<% non_exam_attendees.each do |attendee|%> <%=attendee.student_name%><br><%end%><br><%end%><% else%>No one needs to be examined in this course and no one is required
-to attend.<%end%>If anything seems odd, surprising, alarming, or even wrong with these arrangements, let me know.<br><br>With best wishes,<br><br>Richard.<br><br>(Richard Conrad, O.P., vice-regent)<br><br>},
-      :term_dependency=>true,
-      :course_dependency=>false,
-      :global_warnings=>"",
-      :personal_warnings=>"");
 
     respond_to do |format|
       format.js  do
