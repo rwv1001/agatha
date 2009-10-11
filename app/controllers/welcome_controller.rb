@@ -452,6 +452,8 @@ class WelcomeController < ApplicationController
   @displayPageCl.DisplayPages["Email"]=[];
 
   @displayPageCl.DisplayPages["default"]=@displayPageCl.DisplayPages["Person"];
+  session[:displayPageCl] = @displayPageCl;
+    RAILS_DEFAULT_LOGGER.error("inialization of display init complete");
   
   end
 
@@ -500,6 +502,9 @@ class WelcomeController < ApplicationController
     unless session[:search_ctls]
       string_update
       InitializeSessionController()
+      RAILS_DEFAULT_LOGGER.error("inialization index");
+    else
+      RAILS_DEFAULT_LOGGER.error("no need for initialization");
       
     end
 
@@ -532,6 +537,10 @@ class WelcomeController < ApplicationController
     old_page_name =  session[:current_page_name];
     old_option_id = session[:current_option_id];
     @displayPageCl = session[:displayPageCl];
+    if @displayPageCl == nil
+      RAILS_DEFAULT_LOGGER.error("I just do not understand how this can be nil");
+      RAILS_DEFAULT_LOGGER.flush
+    end
     page_name = params[:page_name];
     @user_id=session[:user_id];
     option_id = params[:option].to_i;
@@ -644,6 +653,7 @@ class WelcomeController < ApplicationController
   end
 
   def InitializeSessionController()
+
     table_options = ["Person","Attendee","GroupPerson","GroupLecture","GroupCourse","GroupAttendee", "GroupTutorial","GroupTutorialSchedule", "GroupInstitution", "GroupUser","GroupTerm","GroupDay","GroupLocation","GroupWillingLecturer","GroupWillingTutor","Lecture","TutorialSchedule","Tutorial","WillingTeacher","WillingLecturer","WillingTutor","EmailTemplate","AgathaEmail", "GroupEmailTemplate","GroupAgathaEmail","Course","Group","Location","Institution","Term","TermName","Day", "User", "MaximumTutorial"];
 
     @search_ctls = {}
@@ -674,6 +684,7 @@ class WelcomeController < ApplicationController
     session[:search_ctls] =  @search_ctls
     session[:displayPageCl] = @displayPageCl;
     session[:attr_lists] = @attr_lists
+    RAILS_DEFAULT_LOGGER.error("inialization of search controllers complete");
 
   end
   def child_unload
