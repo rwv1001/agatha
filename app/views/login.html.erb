@@ -188,7 +188,7 @@ td img {display: block;}
 
 
 <div id="first_div">
-<input type="button" value="test button" onclick="div_test();return false" />
+<input type="button" style= "display: none" value="test button" onclick="div_test();return false" />
 </div>
 
     <form action=<%=  "\"/welcome/div_test\"" %> id=<%="\"div_test\""%> method="post" onsubmit="new Ajax.Request('<%="/welcome/div_test"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
