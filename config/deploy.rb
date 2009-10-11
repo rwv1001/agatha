@@ -22,13 +22,14 @@ role :db,  domain, :primary => true
 
 # moves over server config files after deploying the code
 task :update_config, :roles => [:app] do
+  run "cp -Rf #{shared_path}/script/* #{release_path}/script/"
   run "cp -Rf #{shared_path}/config/* #{release_path}/config/"
 end
 
 namespace :passenger do
   desc "Restart Application"
   task :start, :roles => :app do
-    run "touch #{release_path}/tmp/restart.txt"
+    # Do nothing.
   end
  task :stop, :roles => :app do
     # Do nothing.

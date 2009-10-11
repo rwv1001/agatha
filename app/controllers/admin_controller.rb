@@ -1,5 +1,5 @@
 
-require 'ruby-debug'
+
 class AdminController < ApplicationController
 #  before_filter :valid_ip, :except => :accessdenied
   # just display the form and wait for user to
