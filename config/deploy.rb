@@ -1,11 +1,10 @@
-require 'mongrel_cluster/recipes'
 
 default_run_options[:pty] = true
 set :application, "agatha"
 set :repository,  "agathaapp@fido.bfriars.ox.ac.uk:/opt/repos/agatha.git"
 set :domain, "fido.bfriars.ox.ac.uk"
 
-set :mongrel_conf, "/opt/httpd/html/agatha/current/config/mongrel_cluster.yml"
+
 set :deploy_to, "/opt/httpd/html/#{application}"
 
 
@@ -25,5 +24,22 @@ role :db,  domain, :primary => true
 task :update_config, :roles => [:app] do
   run "cp -Rf #{shared_path}/config/* #{release_path}/config/"
 end
+
+namespace :passenger do
+  desc "Restart Application"
+  task :start, :roles => :app do
+    run "touch #{release_path}/tmp/restart.txt"
+  end
+ task :stop, :roles => :app do
+    # Do nothing.
+  end
+
+
+  task :restart do
+    run "touch #{release_path}/tmp/restart.txt"
+  end
+end
+
 after 'deploy:update_code', :update_config
+after :deploy, "passenger:restart"
 
