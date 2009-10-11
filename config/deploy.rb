@@ -22,7 +22,8 @@ role :db,  domain, :primary => true
 
 # moves over server config files after deploying the code
 task :update_config, :roles => [:app] do
-  run "cp -Rf #{shared_path}/script/* #{release_path}/script/"
+  run "cp -Ru #{shared_path}/script/* #{release_path}/script/"
+  run "cp -Ru #{shared_path}/tmp/* #{release_path}/tmp/"
   run "cp -Rf #{shared_path}/config/* #{release_path}/config/"
 end
 
