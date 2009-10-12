@@ -1137,7 +1137,7 @@ class SearchController
     @order_str = "";
     get_order_string;
     @sql_str << @order_str;
-    # @sql_str << " LIMIT #{@limit_length} OFFSET #{@limit_offset} "
+    @sql_str << " LIMIT 150 "
   end
 
   def get_sub_query_string
