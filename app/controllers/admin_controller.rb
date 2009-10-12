@@ -25,6 +25,7 @@ class AdminController < ApplicationController
       user = User.authenticate(params[:name], params[:password])
       if user
         session[:user_id] = user.id
+        session[:user] = user;
         admin_group = Group.find(:first, :conditions =>{:group_name => "Administrator", :table_name => "users"});
         if(admin_group == nil)
           Group.create(:group_name => 'Not Set', :table_name => '', :owner_id => User.find(:first, :conditions =>{:name => "agathaapp"}).id, :private => true, :readers_id => 0, :writers_id => 0)
