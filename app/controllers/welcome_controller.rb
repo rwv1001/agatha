@@ -1276,7 +1276,9 @@ class WelcomeController < ApplicationController
           else
             to_email =  email_address
           end
-          RAILS_DEFAULT_LOGGER.error("email address is #{to_email}");
+          RAILS_DEFAULT_LOGGER.error("email to address is #{to_email}");
+          RAILS_DEFAULT_LOGGER.error("email from address is #{agatha_email.from_email}");
+          RAILS_DEFAULT_LOGGER.error("email subject is #{agatha_email.subject}");
           AgathaMailer.deliver_email(agatha_email, to_email)
           agatha_email.sent = true;
         else
