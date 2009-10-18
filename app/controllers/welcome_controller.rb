@@ -1270,6 +1270,7 @@ class WelcomeController < ApplicationController
         email_addresses = agatha_email.to_email.split(';');
         email_addresses.each do |email_address|
         if email_address =~ /@/
+          email_address = email_address.gsub(/\s+/,'');
           has_emails = has_emails +1;
           if(test_flag ==1)
             to_email =  me.email;
