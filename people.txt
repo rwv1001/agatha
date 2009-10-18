@@ -1,5 +1,6 @@
 
-
+root@fido# apachectl graceful
+root@fido# cd tmp; touch restart.txt
 CREATE TABLE people_csv (did integer PRIMARY KEY, old_name varchar, title varchar, first_name varchar, second_name varchar, postnominals varchar, salutation varchar,  term_address varchar, term_city varchar, term_postcode varchar, term_home_phone varchar, term_work_phone varchar, mobile varchar, email varchar, other_address varchar, other_city varchar, other_postcode varchar, other_home_phone varchar, Fax varchar, Notes text, supervisor integer, entry_year integer, matriculated boolean, senior_status boolean, programme integer, religious_house integer, next_of_kin  varchar, home_institution integer, conventual_name varchar);
 
 COPY people_csv FROM '/home/agathaapp/AgathaJPG/people.csv' DELIMITERS ',' CSV;

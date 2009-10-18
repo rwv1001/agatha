@@ -14,12 +14,22 @@ document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
 
 
     <% if session[:administrator] %>
-    <%  @user = session[:user];%>
+      <% user = User.find_by_sql("SELECT * FROM users WHERE person_id = #{@edit_object.current_object.id} LIMIT 1") %>
+      <% if user.length >0 %>
+        <% user = user[0] %>
+        <% else %>
+      <% user = User.new %>
+      <% user.name = "" %>
+      <% user.person_id =  @edit_object.current_object.id %>
+      
+   <% end %>
+   
       <div id ="user">
-      <%= render(:partial => "shared/create_user", :object => @user) %>
+      <%= render(:partial => "shared/create_user", :object => user ) %>
       </div>
 
-      <% elsif @user %>
+      <% else%>
+       <%  @user = session[:user];%>
       <div id ="user">
       <%= render(:partial => "shared/user", :object => @user ) %>
       </div>
