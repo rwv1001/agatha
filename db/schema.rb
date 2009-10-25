@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090930163149) do
+ActiveRecord::Schema.define(:version => 20091025011439) do
 
   create_table "agatha_emails", :force => true do |t|
     t.string   "from_email",     :default => ""
@@ -26,6 +26,9 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "agatha_emails", ["person_id"], :name => "index_agatha_emails_on_person_id"
+  add_index "agatha_emails", ["term_id"], :name => "index_agatha_emails_on_term_id"
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -48,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
   end
 
   add_index "attendees", ["lecture_id", "person_id"], :name => "unique_attendees", :unique => true
+  add_index "attendees", ["lecture_id"], :name => "index_attendees_on_lecture_id"
+  add_index "attendees", ["person_id"], :name => "index_attendees_on_person_id"
 
   create_table "course_csvs", :force => true do |t|
     t.string  "course_name"
@@ -89,6 +94,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.boolean "in_use"
   end
 
+  add_index "display_filters", ["user_id"], :name => "index_display_filters_on_user_id"
+
   create_table "email_templates", :force => true do |t|
     t.string   "template_name",        :default => ""
     t.string   "from_email",           :default => ""
@@ -116,6 +123,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "updated_at"
   end
 
+  add_index "external_filter_values", ["user_id"], :name => "index_external_filter_values_on_user_id"
+
   create_table "format_elements", :force => true do |t|
     t.integer "user_id",       :default => 1
     t.string  "table_name"
@@ -124,6 +133,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.integer "element_order"
     t.boolean "in_use"
   end
+
+  add_index "format_elements", ["user_id"], :name => "index_format_elements_on_user_id"
 
   create_table "group_agatha_emails", :force => true do |t|
     t.integer  "group_id"
@@ -174,6 +185,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "group_filters", ["user_id"], :name => "index_group_filters_on_user_id"
 
   create_table "group_institutions", :force => true do |t|
     t.integer  "group_id",       :default => 1
@@ -336,6 +349,11 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.text     "notes"
   end
 
+  add_index "lectures", ["course_id"], :name => "index_lectures_on_course_id"
+  add_index "lectures", ["day_id"], :name => "index_lectures_on_day_id"
+  add_index "lectures", ["person_id"], :name => "index_lectures_on_person_id"
+  add_index "lectures", ["term_id"], :name => "index_lectures_on_term_id"
+
   create_table "locations", :force => true do |t|
     t.string  "name"
     t.integer "max_people"
@@ -349,6 +367,9 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "updated_at"
   end
 
+  add_index "maximum_tutorials", ["person_id"], :name => "index_maximum_tutorials_on_person_id"
+  add_index "maximum_tutorials", ["term_id"], :name => "index_maximum_tutorials_on_term_id"
+
   create_table "open_records", :force => true do |t|
     t.integer  "user_id",    :default => 1
     t.string   "table_name"
@@ -357,6 +378,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "open_records", ["user_id"], :name => "index_open_records_on_user_id"
 
   create_table "people", :force => true do |t|
     t.string   "title"
@@ -388,6 +411,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.text     "interests"
     t.boolean  "html_email",         :default => true
   end
+
+  add_index "people", ["first_name", "second_name"], :name => "index_people_on_first_name_and_second_name"
 
   create_table "person_csvs", :force => true do |t|
     t.string  "old_name"
@@ -461,6 +486,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "updated_at"
   end
 
+  add_index "terms", ["term_name_id"], :name => "index_terms_on_term_name_id"
+
   create_table "tutorial_csvs", :force => true do |t|
     t.integer "student"
     t.integer "term"
@@ -483,6 +510,10 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.integer  "number_of_tutorial_hours", :default => 0
   end
 
+  add_index "tutorial_schedules", ["course_id"], :name => "index_tutorial_schedules_on_course_id"
+  add_index "tutorial_schedules", ["person_id"], :name => "index_tutorial_schedules_on_person_id"
+  add_index "tutorial_schedules", ["term_id"], :name => "index_tutorial_schedules_on_term_id"
+
   create_table "tutorials", :force => true do |t|
     t.integer  "person_id",            :default => 1
     t.integer  "tutorial_schedule_id", :default => 1
@@ -495,6 +526,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
   end
 
   add_index "tutorials", ["person_id", "tutorial_schedule_id"], :name => "unique_tutorials", :unique => true
+  add_index "tutorials", ["person_id"], :name => "index_tutorials_on_person_id"
+  add_index "tutorials", ["tutorial_schedule_id"], :name => "index_tutorials_on_tutorial_schedule_id"
 
   create_table "user_pages", :force => true do |t|
     t.integer  "user_id",    :default => 1
@@ -506,6 +539,7 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
   end
 
   add_index "user_pages", ["page_name", "user_id"], :name => "unique_page_names", :unique => true
+  add_index "user_pages", ["user_id"], :name => "index_user_pages_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -525,6 +559,9 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "willing_lecturers", ["course_id"], :name => "index_willing_lecturers_on_course_id"
+  add_index "willing_lecturers", ["person_id"], :name => "index_willing_lecturers_on_person_id"
 
   create_table "willing_teacher_csvs", :force => true do |t|
     t.integer "tutor"
@@ -550,5 +587,8 @@ ActiveRecord::Schema.define(:version => 20090930163149) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "willing_tutors", ["course_id"], :name => "index_willing_tutors_on_course_id"
+  add_index "willing_tutors", ["person_id"], :name => "index_willing_tutors_on_person_id"
 
 end
