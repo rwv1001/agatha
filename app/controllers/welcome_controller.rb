@@ -1183,6 +1183,7 @@ class WelcomeController < ApplicationController
 
   end
   def create_email_from_template(ids)
+    string_update
     if(ids == nil || ids.length==0)
       error_str = "You have not selected any tutorial schedules"
     else
