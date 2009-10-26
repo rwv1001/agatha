@@ -680,7 +680,7 @@ module ActionMailer #:nodoc:
         smtp.enable_starttls_auto if smtp_settings[:enable_starttls_auto] && smtp.respond_to?(:enable_starttls_auto)
         smtp.start(smtp_settings[:domain], smtp_settings[:user_name], smtp_settings[:password],
                    smtp_settings[:authentication]) do |smtp|
-          smtp.sendmail(mail.encoded, sender, destinations)
+          smtp.sendmail(mail.encoded, sender.first, destinations)
         end
       end
 

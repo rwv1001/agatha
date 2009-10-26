@@ -126,7 +126,7 @@
         <div style="padding-left: 7px" id=<%="#{table_name}_action_div"%>  >
       
        <% if  search_controller.displayPageCl.DisplayPages.has_key?(table_name) %>
-        <select id= <%=  "\"action_select_#{table_name}\"" %> onchange= <%="\"action_select('#{table_name}');return false;\""%> >
+        <select id= <%=  "\"action_select_#{table_name}\"" %> onchange= <%="\"action_select2('#{table_name}');return false;\""%> >
             <% search_controller.displayPageCl.DisplayPages[table_name].each do | display_page| %>
               <% if display_page.unrestricted || session[:administrator] %>
               

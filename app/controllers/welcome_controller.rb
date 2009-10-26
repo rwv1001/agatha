@@ -262,21 +262,10 @@ class WelcomeController < ApplicationController
       DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
   @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Edit",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".select_options", ".select-cell", ".delete-cell"],""),
-      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-  @displayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial",  "Create group",true,
-    [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".update-cell",".dummy-cell", ".delete-cell"],""),
-      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [".group_div"], [".delete_div"],"")]);
+      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);  
   @displayPageCl.DisplayPages["MaximumTutorial"]<<  PageView.new("tutorials", "MaximumTutorial", "Delete max tutorials",true,
     [ DisplayDiv.new("welcome_MaximumTutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".update-cell",".dummy-cell"],""),
-      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);
-  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Add to groups",true,
-    [ DisplayDiv.new("welcome_MaximumTutorial", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], [".remove-cell",".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
-      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
-      DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('maximum_tutorials'); set_action_class('MaximumTutorial','Group','add_to_groups')")]);
-  @displayPageCl.DisplayPages["MaximumTutorial"]<< PageView.new("tutorials", "MaximumTutorial", "Remove from groups",true,
-    [ DisplayDiv.new("welcome_MaximumTutorial", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
-      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [], [".delete_div",".group_div"],""),
-      DisplayDiv.new("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], [".remove_from_group_title"],"set_double_scroll();group_restriction('maximum_tutorials'); set_action_class('MaximumTutorial','Group','remove_from_groups')")]);
+      DisplayDiv.new("MaximumTutorial_action_div", "first_menu_div", [], [], [".delete_div"], [".group_div"],"")]);  
   @displayPageCl.RegisterClasses("MaximumTutorial",["welcome_MaximumTutorial"],[".search_title",  ".default_class"],[".create_new_entry",".willing-cell",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".remove_from_group_title",".add_to_group_title", ".add-cell", ".send-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
   @displayPageCl.RegisterClasses("MaximumTutorial",["welcome_Group","welcome_Person"],[".select_options", ".select-cell"],[".willing-cell",".tutorial_assign_title",".assign-cell",".toadd-cell",".exam-cell",".compulsory-cell",".default_class",".group_div", ".delete_div", ".search_title",".update-cell",".dummy-cell", ".delete-cell", ".send-cell",".add-cell", ".remove-cell", ".create-cell",".create-email-cell", ".suggest-cell"]);
 
@@ -385,17 +374,17 @@ class WelcomeController < ApplicationController
   @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails","EmailTemplate", "Select Action",true,
      [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".group_div", ".delete_div"],"")]);
-    @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create emails",true,
+    @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate",  "Create emails",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div_1", ["two_column_div"],["content_div"], [".create-email-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"]," set_action_class('EmailTemplate','Person','create_email_from_template')"),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".email_template_div"], [".group_div", ".delete_div"],""),
       DisplayDiv.new("welcome_Person", "first_div_2", [], ["Person_action_div"], [".create_emails_title"], [".add_to_tutorial_title",".add_to_willing_tutor_title",".add_to_willing_lecturer_title",".add_attendee_options", ".add_to_group_title",".add_to_lecture_title",".remove_from_group_title"],"set_double_scroll();")]);
   @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Edit",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".create-email-cell",".select_options", ".select-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [], [".email_template_div",".group_div", ".delete_div"],"")]);
-  @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate",  "Create group",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate",  "Create group",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".delete-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".group_div"], [".email_template_div",".delete_div"],"")]);
-  @displayPageCl.DisplayPages["EmailTemplate"]<<  PageView.new("agatha_emails", "EmailTemplate", "Delete email_templates",true,
+  @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Delete email_templates",true,
     [ DisplayDiv.new("welcome_EmailTemplate", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".create-email-cell",".update-cell",".dummy-cell"],""),
       DisplayDiv.new("EmailTemplate_action_div", "first_menu_div", [], [], [".delete_div"], [".email_template_div",".group_div"],"")]);
   @displayPageCl.DisplayPages["EmailTemplate"]<< PageView.new("agatha_emails", "EmailTemplate", "Add to groups",true,
@@ -415,17 +404,17 @@ class WelcomeController < ApplicationController
   @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails","AgathaEmail", "Select Action",true,
      [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".dummy-cell"], [".select_options", ".select-cell",".update-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".group_div", ".delete_div"],"")]);
- @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Send agatha_emails",true,
+ @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Send agatha_emails",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".send-cell"], [".delete-cell",".create-email-cell",".update-cell",".dummy-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".send_div"], [ ".delete_div",".agatha_email_div",".group_div"],"")]);
 
   @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Edit",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".update-cell",".dummy-cell"], [".create-email-cell",".select_options", ".select-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [], [".send_div",".group_div", ".delete_div"],"")]);
-  @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail",  "Create group",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail",  "Create group",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".delete-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".group_div"], [".send_div",".delete_div"],"")]);
-  @displayPageCl.DisplayPages["AgathaEmail"]<<  PageView.new("agatha_emails", "AgathaEmail", "Delete agatha_emails",true,
+  @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Delete agatha_emails",true,
     [ DisplayDiv.new("welcome_AgathaEmail", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], [".create-email-cell",".update-cell",".dummy-cell", ".send-cell"],""),
       DisplayDiv.new("AgathaEmail_action_div", "first_menu_div", [], [], [".delete_div"], [".send_div",".group_div"],"")]);
   @displayPageCl.DisplayPages["AgathaEmail"]<< PageView.new("agatha_emails", "AgathaEmail", "Add to groups",true,
@@ -492,7 +481,7 @@ class WelcomeController < ApplicationController
       import_csv
     end
     session[:current_page_name] = "";
-    session[:current_option_id] = -1;
+ 
     session[:suggest_course_id] = 0;
     user_id=session[:user_id];
     @format_controller = FormatController.new(user_id);
@@ -534,132 +523,10 @@ class WelcomeController < ApplicationController
   end
 
   def display_page
-    RAILS_DEFAULT_LOGGER.error("display_page");
-    
-    old_page_name =  session[:current_page_name];
-    old_option_id = session[:current_option_id];
-    @displayPageCl = session[:displayPageCl];
-    if @displayPageCl == nil
-      RAILS_DEFAULT_LOGGER.error("I just do not understand how this can be nil");
-      RAILS_DEFAULT_LOGGER.flush
-    elsif @displayPageCl.DisplayPages == nil || @displayPageCl.DisplayPages.length == 0
-      RAILS_DEFAULT_LOGGER.error("I am rather mystified");
-      RAILS_DEFAULT_LOGGER.flush
-      display_init();
-    end
-    page_name = params[:page_name];
-    @user_id=session[:user_id];
-    option_id = params[:option].to_i;
-    if page_name.length == 0
-      user_page = UserPage.find(:first, :conditions =>{:is_active => true, :user_id => @user_id});
-      if user_page == nil
-        user_page = UserPage.find(:first, :conditions =>{ :user_id => @user_id});
-        if user_page ==nil
-        default_page = @displayPageCl.DisplayPages["default"][0];
-        page_name =  default_page.page_name
-        option_id = default_page.option_id
-        else
-           page_name = user_page.page_name
-           option_id = user_page.option_id
-        end
-      else
-        page_name = user_page.page_name;
-        option_id = user_page.option_id;
-      end
-    elsif option_id == -1
-      user_page= UserPage.find(:first, :conditions =>{:page_name => page_name, :user_id => @user_id});
-      if user_page == nil
-        option_id = @displayPageCl.DisplayPages[page_name][0].option_id;
-      else
-        option_id = user_page.option_id;
-      end
-    else
-      user_page= UserPage.find(:first, :conditions =>{:page_name => page_name, :user_id => @user_id});
-    end
-
-    inactive_user_pages(page_name);
-
-    if user_page == nil
-      user_page = UserPage.new;
-    end
-    RAILS_DEFAULT_LOGGER.error("page name is #{page_name}, option_id is #{option_id}");
-    if(option_id >=  @displayPageCl.DisplayPages[page_name].length)
-      option_id  = 0;      
-    end
-    RAILS_DEFAULT_LOGGER.error("2 page name is #{page_name}, option_id is #{option_id}");
-    user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
-    user_page.user_id = @user_id;
-    user_page.page_name =  user_display_page.page_name;
-    user_page.option_id =  user_display_page.option_id;
-    user_page.is_active = true;
-    user_page.save;
-
-
-
-    if old_page_name.length !=0 && old_option_id !=-1
-      RAILS_DEFAULT_LOGGER.error("old_page_name = #{old_page_name}");
-      RAILS_DEFAULT_LOGGER.error("old_option_id = #{old_option_id}");
-      RAILS_DEFAULT_LOGGER.flush
-            if old_option_id > @displayPageCl.DisplayPages[old_page_name].length
-              old_option_id  = 0;
-            end
-
-      old_display_page = @displayPageCl.DisplayPages[old_page_name][old_option_id];
-    else
-      old_display_page = nil;
-    end
-    RAILS_DEFAULT_LOGGER.error("page_name = #{page_name}");
-    RAILS_DEFAULT_LOGGER.error("option_id = #{option_id}");
-    
-    session[:current_page_name] = user_display_page.page_name;
-    session[:current_option_id] =  user_display_page.option_id;
-    visible_divs = [];
-    invisible_divs = [];
-    user_display_page.display_divs.each do |display_div|
-      visible_divs << display_div.div_id;
-    end
-
-    if old_display_page !=nil
-      old_display_page.display_divs.each do |old_display_div|
-        if visible_divs.index(old_display_div.div_id)== nil
-          invisible_divs << old_display_div.div_id;
-        end
-      end
-    end
-
     respond_to do |format|
       format.js  do
         render :update do |page|
-          invisible_divs.each do |invisible_div|
-            page << "hide_div(\"#{invisible_div}\")"
-          end
-          page << "set_body_id(\"#{user_display_page.body_id}\")"
-          page << "set_option(\"#{user_display_page.page_name}\",\"#{user_display_page.option_id}\")"
-
-
-          user_display_page.display_divs.each do |display_div|
-            display_div.invisible_ids.each do |invisible_id|
-              page << "hide_div(\"#{invisible_id}\")";
-            end
-            display_div.visible_ids.each do |visible_id|
-              page << "show_div(\"#{visible_id}\")";
-            end
-            page << "insert_div(\"#{display_div.div_id}\", \"#{display_div.insert_id}\")";
-              
-            page << "show_div(\"#{display_div.div_id}\")"
-
-            display_div.invisible_classes.each do |invisible_class|
-              page << "hide_class(\"#{display_div.div_id}\",\"#{invisible_class}\")";
-            end
-            display_div.visible_classes.each do |visible_class|
-              page << "show_class(\"#{display_div.div_id}\",\"#{visible_class}\")";
-            end
-            if display_div.post_javascript.length >0
-              page << display_div.post_javascript;
-            end
-          end
           page << "unwait();";
-
         end
       end
     end
@@ -726,19 +593,9 @@ class WelcomeController < ApplicationController
                 
             page << "open_windows.unset('#{edited_table_name}_#{row.id}')"
                       page_name =  session[:current_page_name];
-            option_id = session[:current_option_id];
-            if option_id > @displayPageCl.DisplayPages[page_name].length
-              option_id  = 0;
-            end
-            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
-            user_display_page.display_divs.each do |display_div|
-
-            page << "show_div(\"#{display_div.div_id}\")"
-
-            display_div.invisible_classes.each do |invisible_class|
-              page << "hide_class(\"#{display_div.div_id}\",\"#{invisible_class}\")";
-            end
-            end
+  
+            page << "action_select_no_js();";
+            
           end
         end
       end
@@ -780,21 +637,8 @@ class WelcomeController < ApplicationController
 
             end
           end
-            page_name =  session[:current_page_name];
-            option_id = session[:current_option_id];
-            if option_id > @displayPageCl.DisplayPages[page_name].length
-              option_id  = 0;
-            end
 
-            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
-            user_display_page.display_divs.each do |display_div|
-
-            page << "show_div(\"#{display_div.div_id}\")"
-
-            display_div.invisible_classes.each do |invisible_class|
-              page << "hide_class(\"#{display_div.div_id}\",\"#{invisible_class}\")";
-            end
-            end
+            page << "action_select_no_js();";
         end
       end
     end
@@ -918,26 +762,8 @@ class WelcomeController < ApplicationController
             page.replace_html("search_results_" + table_name, :partial => "shared/search_results" , :object => search_results);
             
             page << "resizeX();"
-            page_name =  session[:current_page_name];
-            option_id = session[:current_option_id];
-            if option_id > @displayPageCl.DisplayPages[page_name].length
-              option_id  = 0;
-            end
-            user_display_page = @displayPageCl.DisplayPages[page_name][option_id];
-            user_display_page.display_divs.each do |display_div|
-
-            page << "show_div(\"#{display_div.div_id}\")"
-
-            display_div.visible_classes.each do |visible_class|
-              page << "show_class(\"#{display_div.div_id}\",\"#{visible_class}\")";
-            end
-
-            display_div.invisible_classes.each do |invisible_class|
-              page << "hide_class(\"#{display_div.div_id}\",\"#{invisible_class}\")";
-            end
-
-          end
-            
+            page << "action_select_no_js();"
+          end            
 
             #   page <<  "var new_height = parseInt($('#{id_str}').clientHeight)*2";
             #  page << "style_str = 'background: #AAAAAA;  border-left: 1px solid; border-color: #000000;  float: right; height: 60px' "
@@ -948,7 +774,7 @@ class WelcomeController < ApplicationController
                     
             #   elt.setAttribute('style',style_str)
             
-          end
+          
           page << "resizeFilters();"
           page << "unwait();"
         end
@@ -1361,10 +1187,10 @@ class WelcomeController < ApplicationController
       error_str = "You have not selected any tutorial schedules"
     else
       error_str = ""
-      template_id = params[:template_id].to_i;
+      email_template_id = params[:email_template_id].to_i;
       term_id = params[:term_id].to_i;
       course_id = params[:course_id].to_i;
-      template = EmailTemplate.find(template_id);
+      template = EmailTemplate.find(email_template_id);
       if(template.course_dependency && course_id == SearchController::NOT_SET)
         error_str = "This template depends on a course, but you have not selected one. "
       elsif(template.term_dependency && term_id == SearchController::NOT_SET)
@@ -1405,7 +1231,7 @@ class WelcomeController < ApplicationController
           agatha_email.subject = render_to_string( :inline => template.subject , :locals => { :person => person, :term => term, :course => course })
           agatha_email.body = render_to_string( :inline => body_str , :locals => { :person => person, :term => term, :course => course })
           agatha_email.sent = false
-          agatha_email.template_id = template_id
+          agatha_email.email_template_id = email_template_id
           agatha_email.person_id = id;
           agatha_email.term_id = term_id;
           agatha_email.course_id = course_id;
@@ -1433,7 +1259,7 @@ class WelcomeController < ApplicationController
   end
   def max_tutorials(ids)
     if(ids == nil || ids.length==0)
-      error_str = "You have not selected any people  to email"
+      error_str = "You have not selected any people"
     else
       error_str = ""
       term_id = params[:term_id];
@@ -1464,12 +1290,12 @@ class WelcomeController < ApplicationController
       new_num = ids.length;
       success_str  ="";
       if present_num ==1
-        success_str = "1 maximum tutorial entry was updated in the database. "
+        success_str = "1 maximum maximum tutorial entry was updated in the database. "
       elsif present_num >1
        success_str = "#{present_num} maximum tutorial entries were updated in the database. "
       end
       if new_num == 1
-        success_str << "1 new maximum tutorial entry was added to the database. "
+        success_str << "1 new maximum maximum tutorial entry was added to the database. "
       elsif new_num >1
         success_str << "#{present_num} new maximum tutorial entries were added to the database. "
       end

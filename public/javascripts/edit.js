@@ -312,7 +312,7 @@ function on_create(id)
             term_id = term_elt.value;
             course_elt = $("email_template_course");
             course_id = course_elt.value;
-            sent_template = new Element('input',{ type: 'text', name: 'template_id',  value: id  })
+            sent_template = new Element('input',{ type: 'text', name: 'email_template_id',  value: id  })
             sent_term = new Element('input',{ type: 'text',  name: 'term_id', value: term_id });
             sent_course = new Element('input',{ type: 'text',  name: 'course_id', value: course_id });
             specific_div.insert({  'bottom': sent_template});

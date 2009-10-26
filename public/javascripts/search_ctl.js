@@ -533,10 +533,11 @@ function group_restriction(table_name)
         });
 
         AddFilter('Group');       
-      
         do_update = true;
+        
 
     }
+    
     group_restriction_timeout(table_name, do_update)
 }
 

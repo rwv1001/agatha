@@ -60,62 +60,60 @@ td img {display: block;}
  </script>
  
  <div id ="main_div">
-   <script language="javascript">
- menu_begin();
-   </script>
+   <div id="menu_div" style="position: fixed; top: 187px; left:0px; bottom: 7px; width:150px; ">
  <div >
 <ul id="menu">
 
 
-    <li> <a class="people" href="#" onclick="display_page('Person','-1');return false">People </a>
+    <li> <a class="people" href="#" onclick="display_page1('Person');return false">People </a>
     <ul id="people2">
-  	<li> <a  href="#" onclick="display_page('Person','-1');return false">People </a></li>
-    <li> <a  href="#" onclick="display_page('Institution','-1');return false">Institutions</a></li>
+  	<li> <a  href="#" onclick="display_page2('Person','Person');return false">People </a></li>
+    <li> <a  href="#" onclick="display_page2('Person','Institution');return false">Institutions</a></li>
         <%  if session[:administrator] %>
-    <li> <a href="#" onclick="display_page('User','-1');return false">Users </a> </li>
+    <li> <a href="#" onclick="display_page2('Person','User');return false">Users </a> </li>
     <% end %>
     </ul>
     </li>
 
-  	<li> <a class="courses"  href="#" onclick="display_page('Course','-1');return false">Courses </a></li>
+  	<li> <a class="courses"  href="#" onclick="display_page1('Course');return false">Courses </a></li>
 
   	
     
-    <li> <a class="attendees"  href="#" onclick="display_page('Attendee','-1');return false">Lectures </a>
+    <li> <a class="attendees"  href="#" onclick="display_page1('Lecture');return false">Lectures </a>
       <ul id="lectures2">
-        <li> <a href="#" onclick="display_page('Attendee','-1');return false">Attendees </a> </li>
-		<li> <a href="#" onclick="display_page('Lecture','-1');return false">Lecture Schedules </a> </li>
-		<li> <a href="#" onclick="display_page('WillingLecturer','-1');return false">Willing Lecturers </a> </li>
+        <li> <a href="#" onclick="display_page2('Lecture','Attendee');return false">Attendees </a> </li>
+		<li> <a href="#" onclick="display_page2('Lecture','Lecture');return false">Lecture Schedules </a> </li>
+		<li> <a href="#" onclick="display_page2('Lecture','WillingLecturer');return false">Willing Lecturers </a> </li>
       </ul>
     </li>
-      <li> <a class="tutorials"  href="#" onclick="display_page('Tutorial','-1');return false">Tutorials </a>
+      <li> <a class="tutorials"  href="#" onclick="display_page1('Tutorial');return false">Tutorials </a>
        <ul id="tutorials2">
-          <li> <a href="#" onclick="display_page('Tutorial','-1');return false">Tutorials </a></li>
-          <li> <a href="#" onclick="display_page('TutorialSchedule','-1');return false">Tutorial Schedules </a> </li>
-          <li> <a href="#" onclick="display_page('WillingTutor','-1');return false">Willing Tutors </a> </li>
-          <li> <a href="#" onclick="display_page('MaximumTutorial','-1');return false">Maximum Tutorials</a> </li>
+          <li> <a href="#" onclick="display_page2('Tutorial','Tutorial');return false">Tutorials </a></li>
+          <li> <a href="#" onclick="display_page2('Tutorial','TutorialSchedule');return false">Tutorial Schedules </a> </li>
+          <li> <a href="#" onclick="display_page2('Tutorial','WillingTutor');return false">Willing Tutors </a> </li>
+          <li> <a href="#" onclick="display_page2('Tutorial','MaximumTutorial');return false">Maximum Tutorials</a> </li>
        </ul>
       </li>
       <%  if session[:administrator] %>
-     <li> <a class="agatha_emails" href="#" onclick="display_page('AgathaEmail','-1');return false">Emails </a>
+     <li> <a class="agatha_emails" href="#" onclick="display_page1('Email');return false">Emails </a>
      <ul id="emails2">
-  	<li> <a  href="#" onclick="display_page('AgathaEmail','-1');return false">Emails </a> </li>
-    <li> <a  href="#" onclick="display_page('EmailTemplate','-1');return false">Email Templates </a> </li>
+  	<li> <a  href="#" onclick="display_page2('Email','AgathaEmail');return false">Emails </a> </li>
+    <li> <a  href="#" onclick="display_page2('Email','EmailTemplate');return false">Email Templates </a> </li>
      </ul>
      </li>
      <%  end %>
   
     
-    <li> <a class="groups"  href="#" onclick="display_page('Group','-1');return false">Groups </a> </li>
+    <li> <a class="groups"  href="#" onclick="display_page1('Group');return false">Groups </a> </li>
 
 
 
     
 
-    <li> <a class="options"  href="#"  onclick="display_page('GroupFiltering','-1');return false">Options </a>
+    <li> <a class="options"  href="#"  onclick="display_page1('Option');return false">Options </a>
     <ul id="options2">
-    <li> <a href="#"  onclick="display_page('GroupFiltering','-1');return false">Group Filtering </a> </li>
-    <li> <a   href="#"  onclick="display_page('FieldDisplayFormat','-1');return false">Field Formatting </a> </li>
+    <li> <a href="#"  onclick="display_page2('Option','GroupFiltering');return false">Group Filtering </a> </li>
+    <li> <a   href="#"  onclick="display_page2('Option','FieldDisplayFormat');return false">Field Formatting </a> </li>
     </ul>
     </li>
 </ul>
@@ -127,11 +125,15 @@ td img {display: block;}
 </p></div>
   <div id="first_menu_div"> </div>
 
+ <div style ="width: 150px; position:  absolute;bottom:0;"><p style="text-align: center; font-size: 25%;"> </p>
+
+
 
    <script language="javascript">
-   menu_end();
-
+    copyright();
   </script>
+  </div></div>
+
     <div style="position: absolute; left: -1000px">
     <table>
       <tr><th>
@@ -174,9 +176,7 @@ td img {display: block;}
     </div>
 
 
-  <script language="javascript">
-  content_begin()
-  </script>
+  <div id="content_div" class="content_div" style="position: fixed;  top: 187px; left: 166px; right:0px; bottom:7px; overflow: auto;">
 
   <script language="javascript">
     on_load();
@@ -456,15 +456,9 @@ td img {display: block;}
   <div class ="separator_class">&nbsp</div>
   <div class ="content_class" style="width: 100%"><br>d<br>d<br</div>
   </div>
+  </div>
   <script language="javascript">
-  content_end()
-  $("content_div").hide();
-  window.onload = function() {
-        display_page('','');
-        }
-   
- 
- 
+  content_end() 
   </script>
   <div id="two_column_div">
  <div id="content_div_1" class="content_div" style="position: fixed;  top: 187px; left: 166px; right:0px; bottom:7px; overflow: auto;">
@@ -481,16 +475,21 @@ td img {display: block;}
 
   </div>
 
-  <div id="disable_id" style ="position:absolute; top:0; right:0; width:100%; height: 100%; background-color: #ffffff;  opacity:0.0">
+  <div id="disable_id" style ="position:absolute; top:0; right:0; width:100%; height: 100%; background-color: #ff0000;  opacity:0.0">
+</div>
 </div>
 
    <script language="javascript">
 
 
-
+      $("content_div").hide();
      $("two_column_div").hide();
-     $("disable_id").hide;
+    
 
+
+       Event.observe( window, 'load', function() {
+        load_pages();
+       $("disable_id").hide;});
 
 
 

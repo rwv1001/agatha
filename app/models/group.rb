@@ -19,6 +19,8 @@ class Group < ActiveRecord::Base
         WHEN 'users' THEN (SELECT COUNT(*) FROM group_users x1 WHERE x1.group_id = a0.id)
         WHEN 'agatha_emails' THEN (SELECT COUNT(*) FROM group_agatha_emails x1 WHERE x1.group_id = a0.id)
         WHEN 'email_templates' THEN (SELECT COUNT(*) FROM group_email_templates x1 WHERE x1.group_id = a0.id)
+        WHEN 'willing_tutors' THEN (SELECT COUNT(*) FROM group_willing_tutors x1 WHERE x1.group_id = a0.id)
+        WHEN 'willing_lecturers' THEN (SELECT COUNT(*) FROM group_willing_lecturers x1 WHERE x1.group_id = a0.id)
         ELSE 0 END)", "")),
       ExtendedFilter.new(:external_filter, ExternalFilter.new("Group", #class_name
       "Groups of type", #header
@@ -32,6 +34,8 @@ class Group < ActiveRecord::Base
        GroupMember.new(\"Attendees\",\"attendees\"),
        GroupMember.new(\"Tutorials\",\"tutorials\"),
        GroupMember.new(\"Tutorial Schedules\",\"tutorial_schedules\"),
+       GroupMember.new(\"Willing Lecturers\",\"willing_lecturers\"),
+       GroupMember.new(\"Willing Tutors\",\"willing_tutors\"),
        GroupMember.new(\"Users\",\"users\"),
        GroupMember.new(\"Emails\",\"agatha_emails\"),
        GroupMember.new(\"Email Templates\",\"email_templates\")]", #argument_selector_str_

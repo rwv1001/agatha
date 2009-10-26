@@ -9,19 +9,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091025011439) do
+ActiveRecord::Schema.define(:version => 20091026172919) do
 
   create_table "agatha_emails", :force => true do |t|
-    t.string   "from_email",     :default => ""
-    t.string   "to_email",       :default => ""
-    t.string   "subject",        :default => ""
-    t.text     "body",           :default => ""
-    t.string   "attachments",    :default => ""
-    t.boolean  "sent",           :default => false
-    t.integer  "template_id",    :default => 1
-    t.integer  "person_id",      :default => 1
-    t.integer  "term_id",        :default => 1
-    t.integer  "course_id",      :default => 1
+    t.string   "from_email",        :default => ""
+    t.string   "to_email",          :default => ""
+    t.string   "subject",           :default => ""
+    t.text     "body",              :default => ""
+    t.string   "attachments",       :default => ""
+    t.boolean  "sent",              :default => false
+    t.integer  "email_template_id", :default => 1
+    t.integer  "person_id",         :default => 1
+    t.integer  "term_id",           :default => 1
+    t.integer  "course_id",         :default => 1
     t.string   "attached_files"
     t.datetime "created_at"
     t.datetime "updated_at"

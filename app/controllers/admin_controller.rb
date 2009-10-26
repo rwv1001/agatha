@@ -95,18 +95,7 @@ class AdminController < ApplicationController
         term_name_id = 3;
       end
       session[:current_term] = Term.find(:first, :conditions =>{:term_name_id => term_name_id, :year => year}).id;
-     
-
   end
-
-
-
-
-
-    
-
-  
-
   
   def logout
     session[:user_id] = nil
