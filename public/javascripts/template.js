@@ -377,7 +377,7 @@ function load_pages()
     person_page_views.push(new PageView("people", "Person", "Remove from groups", true,
       [new DisplayDiv("welcome_Person", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
        new DisplayDiv("Person_action_div", "first_menu_div", [], [], [],""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('people'); set_action_class('Person','Group','remove_from_groups')")]));
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('people'); set_action_class('Person','Group','remove_from_groups')")]));
     person_page_views.push(new PageView("people", "Person", "Set Max Tutorials", true,
       [new DisplayDiv("welcome_Person", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], ""),
        new DisplayDiv("Person_action_div", "first_menu_div", [], [], [".max_tutorials_div"],"")]));
@@ -411,7 +411,7 @@ function load_pages()
     institution_page_views.push(new PageView("people", "Institution", "Remove from groups", true,
       [new DisplayDiv("welcome_Institution", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
        new DisplayDiv("Institution_action_div", "first_menu_div", [], [], [], ""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('institutions'); set_action_class('Institution','Group','remove_from_groups')")]));
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('institutions'); set_action_class('Institution','Group','remove_from_groups')")]));
     institution_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_Institution"],[".create_new_entry",".help-cell",".search_title",  ".default_class"]);
@@ -494,7 +494,7 @@ function load_pages()
     lecture_page_views.push(new PageView("attendees", "Lecture", "Remove from groups",true,
       [new DisplayDiv("welcome_Lecture", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"],"group_unrestriction()"),
        new DisplayDiv("Lecture_action_div", "first_menu_div", [], [], [],""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('lectures'); set_action_class('Lecture','Group','remove_from_groups')")]));
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('lectures'); set_action_class('Lecture','Group','remove_from_groups')")]));
     lecture_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_Lecture"],[".help-cell",".search_title",  ".default_class"]);
@@ -525,7 +525,7 @@ function load_pages()
     willing_lecturer_page_views.push(new PageView("attendees", "WillingLecturer", "Remove from groups",true,
       [new DisplayDiv("welcome_WillingLecturer", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
        new DisplayDiv("WillingLecturer_action_div", "first_menu_div", [], [], [], ""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('willing_lecturers'); set_action_class('WillingLecturer','Group','remove_from_groups')")]));    
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('willing_lecturers'); set_action_class('WillingLecturer','Group','remove_from_groups')")]));
     willing_lecturer_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_WillingLecturer"],[".help-cell",".search_title",  ".default_class"]);
@@ -556,7 +556,7 @@ function load_pages()
     attendee_page_views.push(new PageView("attendees", "Attendee", "Remove from groups",true,
       [new DisplayDiv("welcome_Attendee", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
        new DisplayDiv("Attendee_action_div", "first_menu_div", [], [], [], ""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('attendees'); set_action_class('Attendee','Group','remove_from_groups')")]));    
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('attendees'); set_action_class('Attendee','Group','remove_from_groups')")]));
     attendee_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_Attendee"],[".help-cell",".search_title",  ".default_class"]);
@@ -653,7 +653,7 @@ function load_pages()
     willing_tutor_page_views.push(new PageView("tutorials", "WillingTutor", "Remove from groups",true,
       [new DisplayDiv("welcome_WillingTutor", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], [".update-cell",".select_options", ".select-cell", ".delete-cell"],"group_unrestriction()"),
        new DisplayDiv("WillingTutor_action_div", "first_menu_div", [], [], [], ""),
-       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"], "set_double_scroll();group_restriction('willing_tutors'); set_action_class('WillingTutor','Group','remove_from_groups')")]));    
+       new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"], "set_double_scroll();group_restriction('willing_tutors'); set_action_class('WillingTutor','Group','remove_from_groups')")]));
     willing_tutor_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_WillingTutor"],[".help-cell",".search_title",  ".default_class"]);
@@ -815,7 +815,7 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
   user_page_views.push(new PageView("people", "User", "Remove from groups",true,
     [ new DisplayDiv("welcome_User", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("User_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".add_to_group_title"],"set_double_scroll();group_restriction('users'); set_action_class('User','Group','remove_from_groups')")]));
+      new DisplayDiv("welcome_Group", "first_div_2", [], ["Group_action_div"], [ ".remove_from_group_title"],"set_double_scroll();group_restriction('users'); set_action_class('User','Group','remove_from_groups')")]));
     user_page_views.each(function(page_view)
     {
        page_view.RegisterClasses(["welcome_User"],[".help-cell",".search_title",  ".default_class"]);
