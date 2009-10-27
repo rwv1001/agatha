@@ -387,6 +387,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('Person', person_page_views);
+    add_action_items(person_page_views);
     option_hash.set('Person',0);
 
     next_option_id = 0;
@@ -417,6 +418,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('Institution', institution_page_views);
+    add_action_items(institution_page_views);
     option_hash.set('Institution',0);
 
 
@@ -464,6 +466,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Person"],[".help-cell"]);
     });
     displayPageCl.set('Course', course_page_views);
+    add_action_items(course_page_views);
     option_hash.set('Course',0);
 
     next_option_id = 0;
@@ -498,6 +501,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".help-cell",".select_options", ".select-cell"]);
     });  
     displayPageCl.set('Lecture', lecture_page_views);
+    add_action_items(lecture_page_views);
     option_hash.set('Lecture',0);
 
     next_option_id = 0;
@@ -528,6 +532,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".help-cell",".select_options", ".select-cell"]);
     });
     displayPageCl.set('WillingLecturer', willing_lecturer_page_views);
+    add_action_items(willing_lecturer_page_views);
     option_hash.set('WillingLecturer',0);
 
     next_option_id = 0;
@@ -558,6 +563,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('Attendee', attendee_page_views);
+    add_action_items(attendee_page_views);
     option_hash.set('Attendee',0);
 
     next_option_id = 0;
@@ -592,6 +598,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]) ;
     }); 
     displayPageCl.set('TutorialSchedule', tutorial_schedule_page_views);
+    add_action_items(tutorial_schedule_page_views);
     option_hash.set('TutorialSchedule',0);
 
     next_option_id = 0;
@@ -622,6 +629,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('Tutorial', tutorial_page_views);
+    add_action_items(tutorial_page_views);
     option_hash.set('Tutorial',0);
 
     next_option_id = 0;
@@ -652,6 +660,7 @@ function load_pages()
        page_view.RegisterClasses(["welcome_Group","welcome_Person"],[".select_options", ".select-cell"]);
     }); 
     displayPageCl.set('WillingTutor', willing_tutor_page_views);
+    add_action_items(willing_tutor_page_views);
     option_hash.set('WillingTutor',0);
 
     next_option_id = 0;
@@ -672,6 +681,7 @@ function load_pages()
        
     });
     displayPageCl.set('MaximumTutorial', maximum_tutorial_page_views);
+    add_action_items(maximum_tutorial_page_views);
     option_hash.set('MaximumTutorial',0);
 
     next_option_id = 0;
@@ -716,15 +726,15 @@ function load_pages()
  group_page_views.push(new PageView("groups", "Group","Add email templates",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_EmailTemplate", "first_div_2", [], ["EmailTemplate_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('email_template_schedules');set_action_class('Group','EmailTemplate','add_to_group')")]));
+      new DisplayDiv("welcome_EmailTemplate", "first_div_2", [], ["EmailTemplate_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('email_templates');set_action_class('Group','EmailTemplate','add_to_group')")]));
  group_page_views.push(new PageView("groups", "Group","Add willing lecturers",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_WillingLecturer", "first_div_2", [], ["WillingLecturer_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('willing_lecturer_schedules');set_action_class('Group','WillingLecturer','add_to_group')")]));
+      new DisplayDiv("welcome_WillingLecturer", "first_div_2", [], ["WillingLecturer_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('willing_lecturers');set_action_class('Group','WillingLecturer','add_to_group')")]));
  group_page_views.push(new PageView("groups", "Group","Add willing tutors",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_WillingTutor", "first_div_2", [], ["WillingTutor_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('willing_tutor_schedules');set_action_class('Group','WillingTutor','add_to_group')")]));
+      new DisplayDiv("welcome_WillingTutor", "first_div_2", [], ["WillingTutor_action_div"], [".add_to_group_title"],"set_double_scroll();group_restriction('willing_tutors');set_action_class('Group','WillingTutor','add_to_group')")]));
   group_page_views.push(new PageView("groups", "Group","Add users",false,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
@@ -760,19 +770,19 @@ function load_pages()
  group_page_views.push(new PageView("groups", "Group","Remove agatha emails",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_AgathaEmail", "first_div_2", [], ["AgathaEmail_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('agatha_email_schedules');set_action_class('Group','AgathaEmail','remove_from_group')")]));
+      new DisplayDiv("welcome_AgathaEmail", "first_div_2", [], ["AgathaEmail_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('agatha_emails');set_action_class('Group','AgathaEmail','remove_from_group')")]));
  group_page_views.push(new PageView("groups", "Group","Remove email templates",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_EmailTemplate", "first_div_2", [], ["EmailTemplate_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('email_template_schedules');set_action_class('Group','EmailTemplate','remove_from_group')")]));
+      new DisplayDiv("welcome_EmailTemplate", "first_div_2", [], ["EmailTemplate_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('email_templates');set_action_class('Group','EmailTemplate','remove_from_group')")]));
  group_page_views.push(new PageView("groups", "Group","Remove willing lecturers",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_WillingLecturer", "first_div_2", [], ["WillingLecturer_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_lecturer_schedules');set_action_class('Group','WillingLecturer','remove_from_group')")]));
+      new DisplayDiv("welcome_WillingLecturer", "first_div_2", [], ["WillingLecturer_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_lecturers');set_action_class('Group','WillingLecturer','remove_from_group')")]));
  group_page_views.push(new PageView("groups", "Group","Remove willing tutors",true,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"], "group_unrestriction()"),
       new DisplayDiv("Group_action_div", "first_menu_div", [], [], [], ""),
-      new DisplayDiv("welcome_WillingTutor", "first_div_2", [], ["WillingTutor_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_tutor_schedules');set_action_class('Group','WillingTutor','remove_from_group')")]));
+      new DisplayDiv("welcome_WillingTutor", "first_div_2", [], ["WillingTutor_action_div"], [".remove_from_group_title"],"set_double_scroll();group_restriction('willing_tutors');set_action_class('Group','WillingTutor','remove_from_group')")]));
 
 group_page_views.push(new PageView("groups", "Group", "Remove users",false,
     [ new DisplayDiv("welcome_Group", "first_div_1", ["two_column_div"],["content_div"], [".remove-cell",".dummy-cell"],"group_unrestriction()"),
@@ -781,9 +791,10 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
     group_page_views.each(function(page_view)
     {
        page_view.RegisterClasses([ "welcome_Group"],[".help-cell",".search_title",  ".default_class"]);
-       page_view.RegisterClasses(["welcome_Person", "welcome_Institution", "welcome_Course", "welcome_Lecture","welcome_Attendee",  "welcome_Tutorial","welcome_TutorialSchedule", "welcome_Attendee","welcome_User"],[".select_options", ".select-cell"]);
+       page_view.RegisterClasses(["welcome_Person", "welcome_Institution", "welcome_Course", "welcome_Lecture","welcome_Attendee",  "welcome_Tutorial","welcome_TutorialSchedule", "welcome_Attendee","welcome_AgathaEmail","welcome_EmailTemplate","welcome_WillingLecturer","welcome_WillingTutor","welcome_User"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('Group', group_page_views);
+    add_action_items(group_page_views);
     option_hash.set('Group',0);
 
     next_option_id = 0;
@@ -811,6 +822,7 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
        page_view.RegisterClasses(["welcome_Group"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('User', user_page_views);
+    add_action_items(user_page_views);
     option_hash.set('User',0);
 
     next_option_id = 0;
@@ -845,6 +857,7 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
        page_view.RegisterClasses(["welcome_Group","welcome_Person"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('EmailTemplate', email_template_page_views);
+    add_action_items(email_template_page_views);
     option_hash.set('EmailTemplate',0);
 
     next_option_id = 0;
@@ -879,6 +892,7 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
        page_view.RegisterClasses(["welcome_Group","welcome_Person"],[".select_options", ".select-cell"]);
     });
     displayPageCl.set('AgathaEmail', agatha_email_page_views);
+    add_action_items(agatha_email_page_views);
     option_hash.set('AgathaEmail',0);
 
     next_option_id = 0;
@@ -886,6 +900,7 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
     group_filtering_page_views.push(new PageView("options", "GroupFiltering", "Select Action",true,
       [new DisplayDiv("welcome_GroupFiltering", "first_div", ["content_div"],["two_column_div"], ["update-cell", "delete-cell",".add-cell", ".send-cell"], "")]));
     displayPageCl.set('GroupFiltering', group_filtering_page_views);
+    add_action_items(group_filtering_page_views);
     option_hash.set('GroupFiltering',0);
 
     next_option_id = 0;
@@ -893,8 +908,10 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
     field_display_format_page_views.push(new PageView("options", "FieldDisplayFormat", "Select Action",true,
       [new DisplayDiv("welcome_FieldDisplayFormat", "first_div", ["content_div"],["two_column_div"], ["update-cell", "delete-cell",".add-cell", ".send-cell"], "")]));
     displayPageCl.set('FieldDisplayFormat', field_display_format_page_views);
+    add_action_items(field_display_format_page_views);
     option_hash.set('FieldDisplayFormat',0);
 
+    
     action_select0();
 
 
@@ -902,6 +919,28 @@ group_page_views.push(new PageView("groups", "Group", "Remove users",false,
     form_elt = $(form_id);
     form_elt.onsubmit();
 
+}
+function add_action_items(page_views)
+{
+    administrator_div = $("administrator_div");
+    table_name = page_views[0].page_name;
+    select_id = "action_select_" + table_name;
+    select_obj = $(select_id);
+
+    if(page_views.length > 1 && typeof(select_obj) != "undefined")
+    {
+        page_views.each(function(page_view)
+        {
+            if(page_view.unrestricted || typeof(administrator_div) != "undefined")
+            {
+                id_str = "action_select_"+table_name+"_"+page_view.option_id;
+                value_str = "" + page_view.option_id;
+                var new_option = new Element('option', {'id':  id_str, 'value': value_str})
+                new_option.innerHTML = page_view.page_option_str;
+                select_obj.insert({'bottom':new_option});
+            }
+        });
+    }
 }
 
 var old_page_name = "Person";

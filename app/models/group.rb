@@ -37,7 +37,7 @@ class Group < ActiveRecord::Base
        GroupMember.new(\"Willing Lecturers\",\"willing_lecturers\"),
        GroupMember.new(\"Willing Tutors\",\"willing_tutors\"),
        GroupMember.new(\"Users\",\"users\"),
-       GroupMember.new(\"Emails\",\"agatha_emails\"),
+       GroupMember.new(\"AgathaEmails\",\"agatha_emails\"),
        GroupMember.new(\"Email Templates\",\"email_templates\")]", #argument_selector_str_
       false,#allow_multiple_arguments
       false#group_selector_
@@ -118,6 +118,20 @@ class Group < ActiveRecord::Base
 has_many :group_people, :class_name => "GroupPerson", :dependent => :destroy
 has_many :group_lectures, :class_name => "GroupLecture", :dependent => :destroy
 has_many :group_users, :class_name =>"GroupUser", :dependent => :destroy
+has_many :group_agatha_emails, :class_name =>"GroupAgathaEmail", :dependent => :destroy
+has_many :group_attendees, :class_name =>"GroupAttendees", :dependent => :destroy
+has_many :group_courses, :class_name =>"GroupCourse", :dependent => :destroy
+has_many :group_days, :class_name =>"GroupDay", :dependent => :destroy
+has_many :group_email_templates, :class_name =>"GroupEmailTemplate", :dependent => :destroy
+has_many :group_institutions, :class_name =>"GroupInstitution", :dependent => :destroy
+has_many :group_locations, :class_name =>"GroupLocation", :dependent => :destroy
+has_many :group_term, :class_name =>"GroupTerm", :dependent => :destroy
+has_many :group_term_names, :class_name =>"GroupTermName", :dependent => :destroy
+has_many :group_tutorials, :class_name =>"GroupTutorial", :dependent => :destroy
+has_many :group_tutorial_schedules, :class_name =>"GroupTutorialSchedule", :dependent => :destroy
+has_many :group_willing_lecturers, :class_name =>"GroupWillingLecturer", :dependent => :destroy
+has_many :group_willing_tutors, :class_name =>"GroupWillingTutor", :dependent => :destroy
+
 
 has_many :group_filters, :class_name => "GroupFilter", :dependent => :destroy
 

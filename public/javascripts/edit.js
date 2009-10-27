@@ -141,6 +141,7 @@ function on_select_check_click(row_id)
 }
 function on_assign(id)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
         elt.remove()
@@ -162,6 +163,7 @@ function on_assign(id)
 
 function on_willing(id)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
         elt.remove()
@@ -183,6 +185,7 @@ function on_willing(id)
 
 function on_agatha_send(id,test_flag)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
         elt.remove()
@@ -199,6 +202,7 @@ function on_agatha_send(id,test_flag)
 
 function on_sends(test_flag)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
         elt.remove()
@@ -221,6 +225,7 @@ function on_sends(test_flag)
 
 function on_create(id)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
         elt.remove()
@@ -340,6 +345,7 @@ function on_add_attendees(lecture_id)
 
 function on_action( id)
 {
+    wait();
     action_type = $("action_type").value;
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){
@@ -422,6 +428,7 @@ function on_add(class_name, id)
 }
 function on_suggest(course_id)
 {
+    wait();
     action_type = $("action_type").value;
     suggest_div = $("specific_suggest_variables");
     suggest_div.remove();
@@ -509,6 +516,7 @@ function on_suggest(course_id)
 
 function SetMaxTutorials()
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){elt.remove()});
     term_elt = $("max_tutorials_term")
@@ -539,6 +547,7 @@ function SetMaxTutorials()
 
 function CreateGroup(class_name)
 {
+    wait();
     specific_div = $("specific_action_variables");
     specific_div.descendants().each(function(elt){elt.remove()});
     group_name_id = "new_group_name_" + class_name;
@@ -619,16 +628,19 @@ function any_selected(class_name)
 
 function DeleteMembers(class_name)
 {
+
     if(!any_selected(class_name))
         {
             alert('You have not selected any items for deletion!');
             return;
         }
+        wait();
 
         confirm_str = "Are you sure you want to delete selected members from " + class_name + " table?";
     var answer = confirm (confirm_str)
 if (!answer)
     {
+        unwait();
 
  return;
     }
@@ -653,8 +665,10 @@ function on_delete(table_name,id)
 {
     confirm_str = "Are you sure you want to delete " + table_name + " with id = " + id +"?";
     var answer = confirm (confirm_str)
+    wait();
 if (!answer)
     {
+        unwait();
 
  return;
     }

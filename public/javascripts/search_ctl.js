@@ -133,6 +133,7 @@ function Search(table_name)
 }
 function AddField(table_name)
 {
+    wait();
     text_element_id = "add_filter_value_" +table_name
     select_id = "possible_filters_"+table_name
     selected_val =  $(select_id).value;
@@ -151,6 +152,7 @@ function AddField(table_name)
 }
 function AddFilter(table_name)
 {
+    wait();
     select_elt_str = "possible_external_filters_"+table_name;
     select_elt = $(select_elt_str);
     selected_val= select_elt.value;

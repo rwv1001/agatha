@@ -1,6 +1,7 @@
 function UpdateGroupFilter(table_name, foreign_key)
 {
 
+    wait();
     group_id_str = "group_filters_option_" + table_name +"_" +foreign_key;
     group_id_obj = $(group_id_str);
     group_id = group_id_obj.value;
