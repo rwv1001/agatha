@@ -1,4 +1,5 @@
 require 'paperclip'
+## File.join(File.dirname(__FILE__),'../../vendor/rails/paperclip/lib/paperclip')
 class AgathaFile < ActiveRecord::Base
     @@class_name ||= "AgathaFile"
 def class_name

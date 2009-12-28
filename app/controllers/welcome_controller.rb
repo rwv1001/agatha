@@ -1,5 +1,5 @@
 # coding: utf-8
-  require 'ruby-prof'
+
 include FilterHelper
 class WelcomeController < ApplicationController
  
