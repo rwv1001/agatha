@@ -5,9 +5,9 @@ class TutorialSchedulesController < ApplicationController
     @table_name = params[:table_name];
     @id = params[:id];
 
-    @short_name = session[:search_ctls][@table_name].GetShortField(@id );
+    @short_name = session[:search_ctls][@table_name].GetShortField(@id);
 
-    edit_helper();
+    edit_helper([]);
   end
 
 
@@ -25,7 +25,7 @@ class TutorialSchedulesController < ApplicationController
 
   end
 
-  def update
+  def updater
     update_helper();
 
   end

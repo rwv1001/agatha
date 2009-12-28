@@ -8,6 +8,7 @@ function div_test()
 }
 
 
+
 function on_load()
 {
     win_load_obj = $("win_load")
@@ -15,6 +16,32 @@ function on_load()
     win_load_obj.onsubmit();
 }
 
+function file_change()
+{
+
+    disable_div = new Element('div', {style: "position:absolute; top:0; right:0; width:100%; height: 100%; background-color: #ff0000;  opacity:0.0" });
+    main_div = $("main_div");
+    main_div.insert( {
+            'after':disable_div
+        } );
+     disable_div.style.cursor = "wait";
+    submit_upload_obj = $("file_upload");
+    submit_upload_obj.submit();
+ 
+}
+
+function file_change2()
+{
+    submit_upload_obj = $("edit_agatha_file");
+    submit_upload_obj.submit();
+    x = 1;
+}
+function myBlur()
+{
+ x =1;
+ y = 2;
+ z = x+y;
+}
 
 
 
@@ -114,27 +141,33 @@ function OnChangeNewGroup(class_name)
             }
 }
 
-function on_checkbox_click(row_id, class_name)
+function setcheck(check_id, value)
 {
-    check_str = class_name + row_id
+    check_obj = $(check_id);
+    check_obj.checked = value;
+}
+
+function on_checkbox_click(row_id, type_name, class_name)
+{
+    check_str = class_name +'_'+ type_name +'_'+  row_id
      check_obj = $(check_str)
     if( check_obj != null && check_obj.checked)
         {
-            select_box = $("check_"+row_id);
+            select_box = $(class_name + "_check_"+row_id);
             select_box.checked = true;
         }
         return check_obj.checked
 }
 
-function on_select_check_click(row_id)
+function on_select_check_click(row_id, class_name)
 {
-    select_box = $("check_"+row_id);
+    select_box = $(class_name +"_check_"+row_id);
     
     if(select_box && !select_box.checked)
         {
-            compulosry_box =  $("compulsorycheck_"+row_id);
+            compulosry_box =  $(class_name + "_compulsorycheck_"+row_id);
             compulosry_box.checked = false;
-            exam_box =  $("examcheck_"+row_id);
+            exam_box =  $(class_name + "_examcheck_"+row_id);
             exam_box.checked = false;
         }
         return select_box.checked
@@ -362,7 +395,7 @@ function on_action( id)
     });
     switch (action_type)
     {
-        case 'add_to_group': case 'remove_from_group': case 'add_to_groups': case 'remove_from_groups':
+        case 'add_to_group': case 'remove_from_group': case 'add_to_groups': case 'remove_from_groups': case 'attach_files': case 'attach_to_emails':
             class_name2 = $("action_class2").value;
             search_results_div_str = "search_results_" + class_name2;
             search_results_div = $(search_results_div_str)
@@ -375,7 +408,9 @@ function on_action( id)
             break;
 
         case 'add_to_lectures':
-            search_results_div = $("search_results_Person")
+            class_name2 = $("action_class2").value;
+            search_results_div_str = "search_results_" + class_name2;
+            search_results_div = $(search_results_div_str)
             search_results_div.select('.check').each(function(elt){
                 new_elt = elt.cloneNode(true); new_elt.removeAttribute('id'); specific_div.insert({
                     'bottom': new_elt
@@ -688,6 +723,28 @@ if (!answer)
    form_obj.onsubmit();
 }
 var row_count = 0;
+
+function recolour(table_name)
+{
+    row_objs_str = ".row_" + table_name
+    row_count = 0;
+    $$(row_objs_str).each(function(row){
+        if( row_count  % 2 == 0)
+        {
+            row.setStyle({
+                background:'#CCCCCC'
+            });
+        }
+        else
+        {
+            row.setStyle({
+                background:'#EEEEEE'
+            });
+        }
+        row_count  = row_count +1;
+    });
+
+}
 function on_del(table_name, ids)
 {
     ids.each(function(id){
@@ -702,25 +759,26 @@ function on_del(table_name, ids)
         row_obj = $(row_obj_str);
         row_obj.remove();
     });
-
-
     row_objs_str = ".row_" + table_name
     row_count = 0;
-    $$(row_objs_str).each(function(row){ 
+    $$(row_objs_str).each(function(row){
         if( row_count  % 2 == 0)
         {
-            row.setStyle({ 
+            row.setStyle({
                 background:'#CCCCCC'
             });
         }
         else
         {
-            row.setStyle({ 
+            row.setStyle({
                 background:'#EEEEEE'
             });
         }
         row_count  = row_count +1;
     });
+
+
+
   //  action_obj_str = "action_" + table_name
   //  action_obj = $(action_obj_str)
   //  action_obj.value = "delete"

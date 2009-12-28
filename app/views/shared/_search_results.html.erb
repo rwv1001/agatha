@@ -1,24 +1,16 @@
 <% search_controller = search_results.search_controller %>
 <% table_type = search_results.table_type %>
 <% table = search_results.table %>
-<% foreign_key = search_results.foreign_key %>
-<% default_id = search_results.default_id %>
+
 <% table_name = search_controller.table_name %>
 
 
 <table>
      <% search_controller_header =  SearchControllerHeader.new(table_type, search_controller) %>
      <%= render(:partial => "shared/search_controller_header", :object => search_controller_header) %>
-     <% for row in table %>
-       
-     <tr id= <%="\"#{row.id}_#{table_name}\"" %> class=<%="\"row_#{table_name}\"" %>  style ="<%= cycle('background: #CCCCCC','background: #EEEEEE')%> ">
-        <% search_results_row = SearchResultsRow.new(row, search_controller) %>
-        <%  search_results_buttons = SearchResultsButtons.new(row, table_type, foreign_key,  default_id, table_name) %>
-        <% search_results_row_button = SearchResultsRowButton.new(search_results_row,  search_results_buttons) %>
-        <%= render(:partial => "shared/search_results_row_button", :object => search_results_row_button ) %>
-     </tr>
-       
-     <% end %>
+     <%= render(:partial => "shared/search_results_row_button", :collection => table ) %>
+           
+    
 </table>
   
   

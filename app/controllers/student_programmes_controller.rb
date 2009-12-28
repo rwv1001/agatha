@@ -56,7 +56,7 @@ class StudentProgrammesController < ApplicationController
 
   # PUT /student_programmes/1
   # PUT /student_programmes/1.xml
-  def update
+  def updater
     @student_programme = StudentProgramme.find(params[:id])
 
     respond_to do |format|

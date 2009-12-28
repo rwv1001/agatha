@@ -89,7 +89,7 @@ class AdminController < ApplicationController
       elsif today.month == 12 || today.month < 3
         term_name_id = 2;
         if today.month == 12
-          year = today.year+1;s
+          year = today.year+1;
         end
       else
         term_name_id = 3;

@@ -2,6 +2,11 @@
 <%  attribute = edit_cell.attribute %>
 <%  filter_controller =  edit_cell.filter_controller %>
 <%  table_name =  edit_cell.table_name %>
+<%  if edit_cell.readonly_flag %>
+  <% readonly_str = "readonly" %>
+  <% else %>
+    <% readonly_str = "" %>
+<% end %>
 <% if edit_cell.update_parent %>
   <script type="text/javascript">
     update_parent('<%= table_name %>', '<%= attribute.name  %>' ,'<%= current_object.id %>')
@@ -26,11 +31,11 @@
   <% when :boolean %>
     <% if eval(eval_str) %>
 
-      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> checked  value= true id=<%="\"edit_#{attribute.name}_1\""%> class="edit_text" ><label>True</label><br>
-      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> type="radio"  name =<%="\"edit_#{attribute.name}\""%> value= false  id=<%="\"edit_#{attribute.name}_0\""%> class="edit_text"  ><label>False</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> checked  value= true id=<%="\"edit_#{attribute.name}_1\""%> class="edit_text" <%= readonly_str%> ><label>True</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> type="radio"  name =<%="\"edit_#{attribute.name}\""%> value= false  id=<%="\"edit_#{attribute.name}_0\""%> class="edit_text" <%= readonly_str%>  ><label>False</label><br>
     <% else %>
-      <input onblur= <%="\"#{onblur_str}\""%>  onfocus= <%="\"#{onfocus_str}\""%> type="radio" name =<%="\"edit_#{attribute.name}\""%> value= true id=<%="\"edit_#{attribute.name}_1\""%> class="edit_text" ><label>True</label><br>
-      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> checked value= false id=<%="\"edit_#{attribute.name}_0\""%> class="edit_text"><label>False</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%>  onfocus= <%="\"#{onfocus_str}\""%> type="radio" name =<%="\"edit_#{attribute.name}\""%> value= true id=<%="\"edit_#{attribute.name}_1\""%> class="edit_text" <%= readonly_str%> ><label>True</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> checked value= false id=<%="\"edit_#{attribute.name}_0\""%> class="edit_text" <%= readonly_str%> ><label>False</label><br>
     <% end %>
   <% when :integer %>
     <% if attribute.name == "id" %>
@@ -38,7 +43,7 @@
      
     <% else %>
       <% if attribute.foreign_key.length == 0 %>
-        <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" name =<%="\"edit_#{attribute.name}\""%> value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%> >
+        <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" name =<%="\"edit_#{attribute.name}\""%> value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
 
         
       <% elsif attribute.foreign_key.length != 0 %>
@@ -46,7 +51,7 @@
         <% foreign_class = attribute.foreign_class %>
         <% current_id = eval("current_object.#{attribute.name}")  %>
         <%  possible_options = filter_controller.GetOptions(foreign_key,foreign_class, current_id, false, false) %>
-        <select onchange = <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> name =<%="\"edit_#{attribute.name}\""%>  id=<%="\"edit_#{attribute.name}\""%> class="edit_text"  >
+        <select onchange = <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> name =<%="\"edit_#{attribute.name}\""%>  id=<%="\"edit_#{attribute.name}\""%> class="edit_text"  <%= readonly_str %> >
           <% for p in  possible_options -%>
             <% if p.id == current_id %>
               <option selected value = "<%=p.id %>"><%= p.name %></option>
@@ -59,17 +64,17 @@
     <% end %>
   <% when :datetime %>
     <% if  attribute.name == "created_at" ||  attribute.name == "updated_at"  %>
-      <input  type="text" value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" readonly size =<%="\"#{column_width}\""%> >
+      <input  type="text" value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" readonly size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
     <% else %>
-      <input  onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%> >
+      <input  onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
     <% end %>
   <% when :time %>
   <% hour_str = eval("current_object.#{attribute.name}.hour") %>
   <% min_str = "%02d" % eval("current_object.#{attribute.name}.min") %>
   <% val_str = "#{hour_str}:#{min_str}" %>
-  <input  onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" value="<%= val_str %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%> >
+  <input  onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" value="<%= val_str %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
   <% else %>
-  <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> name =<%="\"edit_#{attribute.name}\""%>  type="text" value="<%= eval(eval_str)  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%> >
+  <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%> name =<%="\"edit_#{attribute.name}\""%>  type="text" value="<%= eval(eval_str)  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
 
   <% end %>
 </div>

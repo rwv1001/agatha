@@ -2,21 +2,21 @@ class SearchResults
   attr_reader :table
   attr_accessor :table_type
   attr_reader :search_controller
-  attr_reader :foreign_key
-  attr_reader :default_id
 
-  def initialize(table_, table_type_, search_controller_, foreign_key_, default_id_)
+
+  def initialize(table_, table_type_, search_controller_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchResults" );
     @table = table_
     @table_type = table_type_
     @search_controller = search_controller_
-    @foreign_key = foreign_key_
-    @default_id = default_id_
+
   end
 end
 class SearchResultsRow
   attr_reader :row
   attr_reader :search_controller
   def initialize(row_, search_controller_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchResultsRow" );
     @row = row_
     @search_controller = search_controller_
   end
@@ -24,31 +24,32 @@ end
 
 class SearchResultsButtons
   attr_reader :row
-  attr_reader :table_type
-  attr_reader :foreign_key
-  attr_reader :default_id
+ 
+
   attr_reader :table_name
 
-  def initialize(row_, table_type_, foreign_key_, default_id_, table_name_)
+  def initialize(row_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchResultsButtons" );
     @row = row_
-    @table_type = table_type_
-    @foreign_key = foreign_key_
-    @default_id = default_id_
-    @table_name = table_name_
+   
+
+    @table_name = @row.class_name;
   end
 end
 class SearchResultsRowButton
   attr_reader :search_results_row
   attr_reader :search_results_button
-  def initialize(search_results_row_, search_results_button_)
+  def initialize(search_results_row_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchResultsRowButton" );
     @search_results_row = search_results_row_;
-    @search_results_button = search_results_button_;
+    @search_results_button =   SearchResultsButtons.new(@search_results_row.row);
   end
 end
 class  TableSelection
   attr_reader :table_index
   attr_reader :search_controller
   def initialize(search_controller_, table_index_)
+    RAILS_DEFAULT_LOGGER.error( "new TableSelection" );
     @search_controller = search_controller_
     @table_index = table_index_
   end
@@ -58,6 +59,7 @@ class SearchControllerHeader
   attr_reader :table_type
   attr_reader :search_controller
   def initialize(table_type_, search_controller_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchControllerHeader" );
     @table_type = table_type_
     @search_controller = search_controller_
   end
@@ -70,6 +72,7 @@ class SearchFilterHeader
   attr_reader :table_name
   attr_reader :num_filters
   def initialize(table_type_, row_type_, extended_filter_, table_name_, num_filters_)
+    RAILS_DEFAULT_LOGGER.error( "new SearchFilterHeader" );
     @table_type = table_type_
     @row_type = row_type_
     @extended_filter = extended_filter_
@@ -100,6 +103,7 @@ class FieldNode
 
   
   def initialize(parent_, name_, available_fields_index_, key_)
+    RAILS_DEFAULT_LOGGER.error( "new FieldNode" );
     @parent = parent_
     @all_children = []
     @current_children = []
@@ -136,6 +140,7 @@ class SearchField
   attr_accessor :foreign_search_str
   attr_accessor :primary
   def initialize(field_string, qualifer_string,  eval_string, include_index_val, data_type_symbol, tag_symbol, id_val, table_name_str, attribute_name, field_node, foreign_class, primary)
+    RAILS_DEFAULT_LOGGER.error( "new SearchField" );
     @header =field_string
     @qualifier =  qualifer_string
     @full_name = "#{qualifer_string}/#{field_string}"
@@ -616,7 +621,7 @@ class SearchField
     
 end
 
-class SearchController
+class SearchController 
   NOT_SET = 1;
   NOT_SET_STR = "Not Set";
   attr_reader :table_name
@@ -631,18 +636,19 @@ class SearchController
   attr_reader :external_filters;
   attr_accessor :user_id;
   attr_reader :filter_controller;
+
   attr_reader :search_ctls
   
   
   attr_reader :fixed_indices
 
 
-  def initialize(table_name, user_id_, administrator_) #eg GroupPerson
+  def initialize(table_name, user_id_, administrator_, session) #eg GroupPerson
 
     @user_id = user_id_
     @administrator = administrator_
     @active = false;
-   
+    @compulsory_indices = [];
 
     
 
@@ -654,7 +660,7 @@ class SearchController
     @limit_offset = 0;
     @limit_length = 250;
     @fixed_indices = [];
-    @default_id = "";
+
     @current_attribute_flag = 0;
     @foreign_key_tree_hash = {};
     @user_where_str="";
@@ -701,9 +707,10 @@ class SearchController
         @foreign_filters << ExtendedFilter.new(:attribute,  field);
       end
     end
-
-    table_filters_str = "#{table_name}::ExtendedFilters"
-    table_filters =  eval(table_filters_str);
+    extended_filters = session[:extended_filters];
+    table_filters = extended_filters[table_name];
+   # table_filters_str = "#{table_name}::ExtendedFilters"
+   # table_filters =  eval(table_filters_str);
     for filter in table_filters
       filter_object = filter.filter_object;
       if filter_object.class == SubQuery
@@ -725,11 +732,11 @@ class SearchController
     number_available_fields = @extended_filters.length
 
     sql_str = "DisplayFilter.find_by_sql(\"SELECT table_name, filter_index, element_order FROM display_filters WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "' AND in_use = true) ORDER BY element_order asc\")"
-    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #   RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
     results = eval(sql_str);
     if(results.length == 0)
       sql_str = "DisplayFilter.find_by_sql(\"SELECT table_name, filter_index, element_order FROM display_filters WHERE (user_id = 0 AND table_name = '" + @tables_name + "' AND in_use = true) ORDER BY element_order asc\")"
-      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #     RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
       results = eval(sql_str);
     end
     if(results.length == 0)
@@ -765,6 +772,10 @@ class SearchController
 
   end
 
+  def SetCompulsoryIndices(compulsory_indices_)
+    @compulsory_indices = compulsory_indices_;
+  end
+
   def FindForeignFilter(foreign_filter_)
     ret_val = nil;
     @foreign_filters.each do |filter|
@@ -776,20 +787,14 @@ class SearchController
     return ret_val;
 
   end
-  #     session[:search_table] = "People"
-  #  session[:search_table] = "Attendee" #join of lecture_id and person_id
-  #   seesion[:search_table] = "GroupPersons" # join of group_id and perons_id
-  #   seesion[:search_table] = "Lecture" #join of course_id and person_id
-  #   session[:search_table] = "TutorialSchedule" #join of course_id and person_id
-  #   session[:search_table] = "Tutorial" #join of tutorial_id and person_id
-  #   session[:search_table] = "WillingTeacher" #join course_id and person_id
+
 
 
   #this fuction finds all the possible fields names for a table and puts them in @available_fields.
   #It traces through the associations, and it uses recursion to do this.
   #to prevent call stack overflows, @max_level puts a limit on the number of recursive calls.
 
-  def construct_current_field_tree
+  def construct_current_field_tree()
     
     @processed_nodes = [];
     @processed_child_nodes = [];
@@ -800,6 +805,22 @@ class SearchController
       process_node(field_node)
     end
     @current_attribute_flag = @current_attribute_flag+1;
+
+    @compulsory_indices.each  do |complusory_index|
+      if(@current_filter_indices.index(complusory_index) == nil)
+        field = @available_fields[complusory_index]; #complusory_index must be retrieved
+        field_node = field.field_node;
+        field_node.current_flag = @current_attribute_flag;
+        @foreign_fields = [];
+        @f_f_level = 0;
+        find_foreign_fields(field)
+        for foreign_field in @foreign_fields
+          process_node(foreign_field.field_node)
+        end
+        process_node(field_node)
+      end
+    end
+
     
     for index in @current_filter_indices
       filter_object = @extended_filters[index].filter_object;
@@ -844,7 +865,7 @@ class SearchController
     end
     @f_f_level = @f_f_level - 1;
   end
-  def construct_short_field_tree
+  def construct_short_field_tree()
     @processed_nodes = [];
     @processed_child_nodes = [];
     @alias_id = 0;
@@ -897,12 +918,12 @@ class SearchController
     return ret_val;
   end
   def GetAllShortFieldsWhere(order_by_id, order_direction, have_not_set, id_str_, where_str_)
-    construct_short_field_tree;
+    construct_short_field_tree();
     @sql_str = "SELECT a0.id, "
     if id_str_.length>0
       @sql_str << "a0." + id_str_ + ", "
     end
-    get_short_select_string
+    get_short_select_string()
 
     @sql_str << " FROM #{@tables_name} a#{@field_tree.id} "
     @join_str = ""
@@ -953,9 +974,9 @@ class SearchController
   end
 
   def GetShortField(id_)
-    construct_short_field_tree;
+    construct_short_field_tree();
     @sql_str = "SELECT a0.id, "
-    get_short_select_string
+    get_short_select_string()
     @sql_str << " FROM #{@tables_name} a#{@field_tree.id} "
     @join_str = ""
     get_join_string(@field_tree)
@@ -1012,7 +1033,7 @@ class SearchController
     end
     return child_field;
   end
-  def get_short_select_string
+  def get_short_select_string()
     
     @gfss_level =0;
     @foreign_str = "";
@@ -1121,10 +1142,10 @@ class SearchController
 
     #end
   end
-  def get_sql_string
-    construct_current_field_tree
+  def get_sql_string()
+    construct_current_field_tree()
     @sql_str = "SELECT "
-    get_select_string(@field_tree)    
+    get_select_string(@field_tree )
     @sql_str[@sql_str.length - 1] = ' '
     get_sub_query_string()
     @sql_str << "FROM #{@tables_name} a#{@field_tree.id} "
@@ -1189,31 +1210,7 @@ class SearchController
     end
   end
 
-  def get_foreign_select_string(filter)
-    @gfss_level = @gfss_level +1;
-    if @gfss_level > @max_level
-      @gfss_level = @gfss_level -1;
-      return;
-    end
 
-    format_elts = FormatController.FormatElements(filter.foreign_class.tableize, @user_id).format_elements_array;
-    for format_elt in format_elts
-      child_name = format_elt.field_name;
-      child_field = GetChildNode(filter,child_name);
-      if child_field != nil
-        child_node = child_field.field_node;
-        if(child_field.foreign_class.length == 0)
-          @foreign_str << " || " if(@foreign_str.length >0)
-          @foreign_str << "a#{child_node.parent.id}.#{child_node.name}"
-        else
-          get_foreign_select_string(child_field);
-        end
-      end
-      @foreign_str << " || " if(@foreign_str.length >0)
-      @foreign_str << "'#{format_elt.insert_string}'"
-    end
-    @gfss_level = @gfss_level -1;
-  end
 
   def get_join_string(field_node)
     if field_node.parent == nil
@@ -1270,9 +1267,9 @@ class SearchController
       @where_str << " AND " + external_where_str;
       end
      
-      @where_str = @where_str + " OR (a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id})" if @default_id.length != 0
+     
     else
-      @where_str = " OR a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
+      
     end
     
     if  @where_str.length >0
@@ -1322,8 +1319,8 @@ class SearchController
     @order_str[(@order_str.length) -1] = ' ';
 
   end
-  def get_eval_string2
-    get_sql_string
+  def get_eval_string2()
+    get_sql_string()
     ret_str = "#{@table_name}.find_by_sql(\"#{@sql_str}\")"
     return ret_str;
   end
@@ -1338,7 +1335,7 @@ class SearchController
     if !@active
       return [];
     end
-    construct_current_field_tree
+    construct_current_field_tree()
     @update_nodes = [];
     @sn_level = 0;
     @edit_table = edit_table_name_;
@@ -1391,9 +1388,9 @@ class SearchController
       
         @where_str = @where_str + ")"
 
-        @where_str = @where_str + " OR a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
+        
       else
-        @where_str = "a#{@id_field_node.parent.id}.#{@attribute_name} = #{@default_id} " if @default_id.length != 0
+       
       end
     end
     if  @where_str.length >0
@@ -1402,7 +1399,7 @@ class SearchController
   end
 
   def get_update_sql_string(ids_)
-    construct_current_field_tree
+    construct_current_field_tree()
     @sql_str = "SELECT "
     get_select_string(@field_tree)
     @sql_str[@sql_str.length - 1] = ' '
@@ -1472,7 +1469,7 @@ class SearchController
 
     if update_display_
       sql_str = "DisplayFilter.find_by_sql(\"SELECT id, table_name, filter_index, element_order, in_use FROM display_filters WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "') ORDER BY element_order asc\")"
-      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+   #   RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
       old_fields = eval(sql_str);
       old_fields_count  = old_fields.length;
       new_fields_count = @current_filter_indices.length;
@@ -1548,9 +1545,7 @@ class SearchController
       end
     end
   end
-  def setDefaultId(default_id_)
-    @default_id = default_id_;
-  end
+
   def UpdateOrder2(order_index)
     if(order_index == @search_order[0])
       if @search_direction[0] == :asc
@@ -1625,7 +1620,7 @@ class SearchController
   def save_external_filters_to_db
     
     sql_str = "ExternalFilterValue.find_by_sql(\"SELECT id, table_name, filter_id, member_id, group_id, in_use FROM external_filter_values WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + @tables_name + "') ORDER BY id asc\")"
-    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #   RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
     old_external_filter_elts = eval(sql_str);
     old_external_filter_elt_count  = old_external_filter_elts.length;
     filter_count = 0;
@@ -1720,8 +1715,14 @@ class SearchController
   #This is a helper function for ProcessTable. It does a local field extraction for the table_name_str
   def ExtractFields(qualifier, qualifier_str, qualifiers_str, table_name_str, include_index_val, parent_tree)
     #attribute_eval_str = " AttributeList.new(#{table_name_str}).attribute_elements"
-    attribute_eval_str = " AttributeList.new(#{table_name_str})"
-    attribute_list = eval(attribute_eval_str)
+    attribute_eval_str = "AttributeList.new(#{table_name_str})"
+#    unless session[attribute_eval_str]
+      attribute_list = eval(attribute_eval_str)
+ #     session[attribute_eval_str] = attribute_list;
+ #   else
+ #     attribute_list = session[attribute_eval_str];
+ #   end
+   
     reflection_hash = attribute_list.reflections;
     attributes = attribute_list.attribute_elements
     for attribute in attributes

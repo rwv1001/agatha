@@ -105,8 +105,12 @@ label {
 
     }
 
+.attachment_links {
+    text-decoration: underline
+}
+
 .select-cell, .help-cell,.toadd-cell, .exam-cell,.compulsory-cell, .dummy-cell,.update-cell, .create-cell,.create-email-cell,
-.suggest-cell, .copy-cell, .delete-cell,.send-cell, .add-cell, .assign-cell, .remove-cell, .supplementary-cell, .willing-cell {
+.suggest-cell, .copy-cell, .delete-cell,.send-cell, .add-cell, .assign-cell, .remove-cell, .supplementary-cell, .willing-cell, .attach_to-cell, .attach-cell, .download-cell {
      background: #DDDDDD;
 
 }
@@ -197,6 +201,12 @@ span.add_external_filter_element a {
     position: static;
     
 }
+#black_bar_separator_div {
+
+    cursor: move;
+}
+
+.drag {position: relative; }
 
 
 #search_results a:hover {
@@ -205,180 +215,189 @@ span.add_external_filter_element a {
 
 }
 
-#menu, #menu ul,
-#person_menu, #person_menu ul ,
-#course_menu, #course_menu ul,
-#programme_menu, #programme_menu ul,
-#schedule_menu, #schedule_menu ul,
-#template_menu, #template_menu ul,
-#option_menu, #option_menu ul {
+#menu, #menu ul{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 
 	}
-#menu a, #person_menu a,
-#course_menu a,
-#programme_menu a,
-#schedule_menu a,
-#template_menu a,
-#option_menu a
-{
+#menu a{
     position:relative;
 	display: block;
 	text-indent: 10px;
 	left: 0px;
 	font-weight: bolder;
 }
-#person_menu a, #course_menu a,
-#programme_menu a, #schedule_menu a,
-#template_menu a, #option_menu a
-{
-	color:#000000;
-}
+
 #menu a
 {
 	color:#FFFFFF;
 }
 
-#menu li , #person_menu li, #course_menu li, #programme_menu li, #schedule_menu li,
-#template_menu li, #option_menu li{
+#menu li {
 display: inline;
 float:left;
 width: 150px;
 }
 
-#menu li ul , #person_menu li ul, #course_menu li ul, #programme_menu li ul, #schedule_menu li ul,
-#template_menu li ul, #option_menu li ul{
+#menu li ul {
 	position: absolute;
 	width: 150px;
 	left: -999em;
 }
 body#people #menu li ul#people2,
+body#institutions #menu li ul#people2,
+body#users #menu li ul#people2,
 body#attendees #menu li ul#lectures2,
+body#lectures #menu li ul#lectures2,
+body#willing_lecturers #menu li ul#lectures2,
 body#tutorials #menu li ul#tutorials2,
+body#tutorial_schedules #menu li ul#tutorials2,
+body#willing_tutors #menu li ul#tutorials2,
+body#maximum_tutorials #menu li ul#tutorials2,
 body#agatha_emails #menu li ul#emails2,
-body#options #menu li ul#options2,
+body#email_templates #menu li ul#emails2,
+body#agatha_files #menu li ul#emails2,
+body#email_attachments #menu li ul#emails2,
+body#groups #menu li ul#groups2,
+body#group_people #menu li ul#groups2,
+body#group_institutions #menu li ul#groups2,
+body#group_courses #menu li ul#groups2,
+body#group_lectures #menu li ul#groups2,
+body#group_attendees #menu li ul#groups2,
+body#group_tutorials #menu li ul#groups2,
+body#group_tutorial_schedules #menu li ul#groups2,
+body#group_agatha_emails #menu li ul#groups2,
+body#group_email_templates #menu li ul#groups2,
+body#group_willing_lecturers #menu li ul#groups2,
+body#group_willing_tutors #menu li ul#groups2,
+body#group_users #menu li ul#groups2,
+body#group_filterings #menu li ul#options2,
+body#field_display_formats #menu li ul#options2,
 body#courses #menu li ul#courses2,
-body#programmes #menu li ul#programmes2,
 body#schedules #menu li ul#schedules2,
-body#email #menu li ul#email2,
-body#study #person_menu li ul#study2,  body#teaching #person_menu li ul#teaching2,
-body#personal_email #person_menu li ul#personal_email2,
-body#course_description #course_menu li ul#course_description2,
-body#course_teaching #course_menu li ul#course_teaching2,
-body#course_students #course_menu li ul#course_students2,
-body#schedule_planned #schedule_menu li ul#schedule_planned2,
-body#schedule_students #schedule_menu li ul#schedule_students2,
-body#schedule_restrictions #schedule_menu li ul#schedule_restrictions2,
-body#schedule_emails #schedule_menu li ul#schedule_emails2,
-body#template_email #template_menu li ul#template_email2,
-body#options #option_menu li ul#option_menu2
+body#email #menu li ul#email2
 {
     position:relative;
 	left: 0px;
 }
-#menu li a:hover,  #menu li ul li a:hover,
-#person_menu li a:hover, #person_menu li ul li a:hover,
-#course_menu li a:hover, #course_menu li ul li a:hover,
-#programme_menu li a:hover, #programme_menu li ul li a:hover,
-#schedule_menu li a:hover, #schedule_menu li ul li a:hover,
-#template_menu li a:hover, #template_menu li ul li a:hover,
-#option_menu li a:hover, #option_menu li ul li a:hover{
+#menu li a:hover,  #menu li ul li a:hover{
 	background-color:#33CC00;
 	color:#FFFFFF;
 	font-weight: bolder;
 }
 
-#person_menu li ul li a {
-background-color:#FFCC00;
-}
+
 #menu li ul li a {
 background-color:#333344;
 }
-#course_menu li ul li a {
-background-color:#546CDE;
-}
-#schedule_menu li ul li a {
-background-color:#546CDE;
-}
-#template_menu li ul li a {
-background-color:#C51B3D
-}
-#option_menu li ul li a {
-background-color:#C51B3D
-}
+
 
 body#people #menu li ul#people2 li a,
+body#institutions #menu li ul#people2 li a,
+body#users #menu li ul#people2 li a,
 body#attendees #menu li ul#lectures2 li a,
+body#lectures #menu li ul#lectures2 li a,
+body#willing_lecturers #menu li ul#lectures2 li a,
 body#tutorials #menu li ul#tutorials2 li a,
+body#tutorial_schedules #menu li ul#tutorials2 li a,
+body#willing_tutors #menu li ul#tutorials2 li a,
+body#maximum_tutorials #menu li ul#tutorials2 li a,
 body#agatha_emails #menu li ul#emails2 li a,
-body#options #menu li ul#options2 li a,
-body#programmes #menu li ul#programmes2 li a,
-body#schedules #menu li ul#schedules2 li a, body#email #menu li ul#email2 li a,
-body#study #person_menu li ul#study2 li a,  body#teaching #person_menu li ul#teaching2 li a,
-body#personal_email #person_menu li ul#personal_email2 li a,
-body#course_description #course_menu li ul#course_description2 li a,
-body#course_teaching #course_menu li ul#course_teaching2 li a,
-body#course_students #course_menu li ul#course_students2 li a,
-body#schedule_planned #schedule_menu li ul#schedule_planned2 li a,
-body#schedule_students #schedule_menu li ul#schedule_students2 li a,
-body#schedule_restrictions #schedule_menu li ul#schedule_restrictions2 li a,
-body#schedule_emails #schedule_menu li ul#schedule_emails2 li a,
-body#template_email #template_menu li ul#template_email2 li a
-#body#options #menu li ul#menu2 li a{
+body#email_templates #menu li ul#emails2 li a,
+body#agatha_files #menu li ul#emails2 li a,
+body#email_attachments #menu li ul#emails2 li a,
+body#groups #menu li ul#groups2 li a,
+body#group_people #menu li ul#groups2 li a,
+body#group_institutions #menu li ul#groups2 li a,
+body#group_courses #menu li ul#groups2 li a,
+body#group_lectures #menu li ul#groups2 li a,
+body#group_attendees #menu li ul#groups2 li a,
+body#group_tutorials #menu li ul#groups2 li a,
+body#group_tutorial_schedules #menu li ul#groups2 li a,
+body#group_agatha_emails  #menu li ul#groups2 li a,
+body#group_email_templates #menu li ul#groups2 li a,
+body#group_willing_lecturers #menu li ul#groups2 li a,
+body#group_willing_tutors #menu li ul#groups2 li a,
+body#group_users #menu li ul#groups2 li a,
+body#group_filterings #menu li ul#options2 li a,
+body#field_display_formats #menu li ul#options2 li a{
 text-indent: 10px;
 width: 150px;
 font-size:smaller;
 font-weight:normal;
 }
-body#template_email #template_menu li ul#template_email2 li a  {
-color:#FFFFFF;
-}
-
-
-
-
-
-
 
 body#people ul#menu li a.people,
-body#institutions ul#menu li a.institutions,
+body#institutions ul#menu li a.people,
+body#users ul#menu li a.people,
 body#groups ul#menu li a.groups,
+body#group_people  ul#menu li a.groups,
+body#group_institutions  ul#menu li a.groups,
+body#group_courses  ul#menu li a.groups,
+body#group_lectures  ul#menu li a.groups,
+body#group_attendees  ul#menu li a.groups,
+body#group_tutorials  ul#menu li a.groups,
+body#group_tutorial_schedules  ul#menu li a.groups,
+body#group_agatha_emails  ul#menu li a.groups,
+body#group_email_templates  ul#menu li a.groups,
+body#group_willing_lecturers  ul#menu li a.groups,
+body#group_willing_tutors  ul#menu li a.groups,
+body#group_users  ul#menu li a.groups,
 body#courses ul#menu li a.courses,
-body#lectures ul#menu li a.lectures,
-body#willing_lecturers ul#menu li a.willing_lecturers,
+body#lectures ul#menu li a.attendees,
+body#willing_lecturers ul#menu li a.attendees,
 body#attendees ul#menu li a.attendees,
 body#tutorials ul#menu li a.tutorials,
-body#tutorial_schedules ul#menu li a.tutorial_schedules,
-body#willing_tutors ul#menu li a.willing_tutors,
-body#maximum_tutorials ul#menu li a.maximum_tutorials,
-body#users ul#menu li a.users,
-body#options ul#menu li a.options,
-body#programmes ul#menu li a.programmes,
+body#tutorial_schedules ul#menu li a.tutorials,
+body#willing_tutors ul#menu li a.tutorials,
+body#maximum_tutorials ul#menu li a.tutorials,
+body#group_filterings ul#menu li a.options,
+body#field_display_formats ul#menu li a.options,
 body#agatha_emails ul#menu li a.agatha_emails,
-body#email_templates ul#menu li a.email_templates,
-body#details ul#person_menu li a.details,
-body#teaching ul#person_menu li a.teaching,
-body#study ul#person_menu li a.study,
-body#personal_email ul#person_menu li a.personal_email,
-body#course_description ul#course_menu li a.course_description,
-body#course_teaching ul#course_menu li a.course_teaching,
-body#course_students ul#course_menu li a.course_students,
-body#programme_description ul#programme_menu li a.programme_description,
-body#programme_students ul#programme_menu li a.programme_students,
-body#programme_courses ul#programme_menu li a.programme_courses,
-body#schedule_planned ul#schedule_menu li a.schedule_planned,
-body#schedule_students ul#schedule_menu li a.schedule_students,
-body#schedule_restrictions ul#schedule_menu li a.schedule_restrictions,
-body#schedule_emails ul#schedule_menu li a.schedule_emails,
-body#template_email ul#template_menu li a.template_email,
-body#options ul#menu li a.menu
+body#email_templates ul#menu li a.agatha_emails,
+body#agatha_files ul#menu li a.agatha_emails,
+body#email_attachments ul#menu li a.agatha_emails
  {
 	background-color:#FF0000;
 	color:#FFFFFF;
 	font-weight: bolder;
  }
+
+body#people ul#menu li ul li a.people2,
+body#institutions ul#menu li ul li a.institutions,
+body#users ul#menu li ul li a.users,
+body#attendees ul#menu li ul li a.attendees2,
+body#lectures ul#menu li ul li a.lectures,
+body#willing_lecturers ul#menu li ul li a.willing_lecturers,
+body#tutorials ul#menu li ul li a.tutorials2,
+body#tutorial_schedules ul#menu li ul li a.tutorial_schedules,
+body#willing_tutors ul#menu li ul li a.willing_tutors,
+body#maximum_tutorials ul#menu li ul li a.maximum_tutorials,
+body#agatha_emails ul#menu li ul li a.agatha_emails2,
+body#email_templates ul#menu li ul li a.email_templates,
+body#agatha_files ul#menu li ul li a.agatha_files,
+body#email_attachments ul#menu li ul li a.email_attachments,
+body#groups ul#menu li ul li a.groups2,
+body#group_people ul#menu li ul li a.group_people,
+body#group_institutions ul#menu li ul li a.group_institutions,
+body#group_courses ul#menu li ul li a.group_courses,
+body#group_lectures ul#menu li ul li a.group_lectures,
+body#group_attendees ul#menu li ul li a.group_attendees,
+body#group_tutorials ul#menu li ul li a.group_tutorials,
+body#group_tutorial_schedules ul#menu li ul li a.group_tutorial_schedules,
+body#group_agatha_emails ul#menu li ul li a.group_agatha_emails,
+body#group_email_templates ul#menu li ul li a.group_email_templates,
+body#group_willing_lecturers ul#menu li ul li a.group_willing_lecturers,
+body#group_willing_tutors ul#menu li ul li a.group_willing_tutors,
+body#group_users ul#menu li ul li a.group_users,
+body#group_filterings ul#menu li ul li a.group_filterings,
+body#field_display_formats ul#menu li ul li a.field_display_formats
+{
+	background-color:#FFAA00;
+	color:#000000;
+	
+}
 
 
 

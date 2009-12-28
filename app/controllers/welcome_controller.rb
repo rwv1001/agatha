@@ -1,4 +1,6 @@
 # coding: utf-8
+  require 'ruby-prof'
+include FilterHelper
 class WelcomeController < ApplicationController
  
 
@@ -38,7 +40,7 @@ class WelcomeController < ApplicationController
     if session[:user_id]==1 && Person.find(:first) == nil
       import_csv
     end
-    session[:current_page_name] = "";
+   
  
     session[:suggest_course_id] = 0;
     user_id=session[:user_id];
@@ -48,6 +50,7 @@ class WelcomeController < ApplicationController
     session[:format_controller] = @format_controller
     string_update
     unless session[:search_ctls]
+      create_external_filters(session);
       
       InitializeSessionController()
       RAILS_DEFAULT_LOGGER.error("inialization index");
@@ -63,11 +66,14 @@ class WelcomeController < ApplicationController
       
       search_ctl.UpdateFiltersFromDB
     end
-    x = 1;
+    RAILS_DEFAULT_LOGGER.flush
+  
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @people }
     end
+    RAILS_DEFAULT_LOGGER.flush
+      x = 1;
   end
   
   def inactive_user_pages(except_page_name)
@@ -94,7 +100,7 @@ class WelcomeController < ApplicationController
 
   def InitializeSessionController()
 
-    table_options = ["Person","Attendee","GroupPerson","GroupLecture","GroupCourse","GroupAttendee", "GroupTutorial","GroupTutorialSchedule", "GroupInstitution", "GroupUser","GroupTerm","GroupDay","GroupLocation","GroupWillingLecturer","GroupWillingTutor","Lecture","TutorialSchedule","Tutorial","WillingTeacher","WillingLecturer","WillingTutor","EmailTemplate","AgathaEmail", "GroupEmailTemplate","GroupAgathaEmail","Course","Group","Location","Institution","Term","TermName","Day", "User", "MaximumTutorial"];
+    table_options = ["Person","Attendee","GroupPerson","GroupLecture","GroupCourse","GroupAttendee", "GroupTutorial","GroupTutorialSchedule", "GroupInstitution", "GroupUser","GroupTerm","GroupDay","GroupLocation","GroupWillingLecturer","GroupWillingTutor","Lecture","TutorialSchedule","Tutorial","WillingTeacher","WillingLecturer","WillingTutor","EmailTemplate","AgathaEmail", "GroupEmailTemplate","GroupAgathaEmail","Course","Group","Location","Institution","Term","TermName","Day", "User", "MaximumTutorial", "AgathaFile", "EmailAttachment"];
 
     @search_ctls = {}
     @attr_lists = {}
@@ -108,8 +114,15 @@ class WelcomeController < ApplicationController
     administrator = session[:administrator];
     for controller_index in (0 .. @number_of_controllers -1)
 
-      search_controller = SearchController.new(table_options[controller_index], user_id, administrator);
-      attribute_list = AttributeList.new(table_options[controller_index]);
+      search_controller = SearchController.new(table_options[controller_index], user_id, administrator, session);
+      attribute_eval_str = "AttributeList.new(#{table_options[controller_index]})"
+     # unless session[attribute_eval_str]
+        attribute_list = AttributeList.new(table_options[controller_index]);
+    #    session[attribute_eval_str] = attribute_list;
+   #   else
+   #     attribute_list = session[attribute_eval_str];
+    #  end
+      #attribute_list = AttributeList.new(table_options[controller_index]);
       
       @search_ctls[table_options[controller_index]] = search_controller;
       @attr_lists[table_options[controller_index]] = attribute_list;
@@ -117,12 +130,14 @@ class WelcomeController < ApplicationController
     
     for controller_index in (0 .. @number_of_controllers -1)
       @search_ctls[table_options[controller_index]].SetExtendedFilterControllers(@search_ctls);
-    
+
     end
+
+    @search_ctls["AgathaFile"].SetCompulsoryIndices([6]);
 
     
     session[:search_ctls] =  @search_ctls
-   
+
     session[:attr_lists] = @attr_lists
     RAILS_DEFAULT_LOGGER.error("inialization of search controllers complete");
 
@@ -137,20 +152,20 @@ class WelcomeController < ApplicationController
       format.js  do
         render :update do |page|
           search_ctl = @search_ctls = session[:search_ctls][edited_table_name];
+          eval("#{edited_table_name}.set_controller(search_ctl)");
           updated_objects = search_ctl.GetUpdateObjects(edited_table_name, "id", ids);
           if updated_objects.length>0
             row = updated_objects[0];
-            search_results_row = SearchResultsRow.new(row, search_ctl)
+            
 
-            search_results_buttons = SearchResultsButtons.new(row, :search_results, nil,  nil, edited_table_name)
-            search_results_row_button =  SearchResultsRowButton.new(search_results_row, search_results_buttons);
+
                
             page << "if ($('#{row.id}_#{ edited_table_name}')) {"
-            page["#{row.id}_#{ edited_table_name}"].replace_html( :partial => "shared/search_results_row_button", :object =>search_results_row_button );
+            page["#{row.id}_#{ edited_table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
             page << "}"
                 
             page << "open_windows.unset('#{edited_table_name}_#{row.id}')"
-                      page_name =  session[:current_page_name];
+            page << "recolour('#{edited_table_name}');";
   
             page << "action_select_no_js();";
             
@@ -181,20 +196,18 @@ class WelcomeController < ApplicationController
       format.js  do
         render :update do |page|
           @search_ctls.each do |table_name, search_ctl|
+            eval("#{table_name}.set_controller(search_ctl)");
             updated_objects = search_ctl.GetUpdateObjects(edited_table_name, attribute_name, ids);
             for row in updated_objects
-              search_results_row = SearchResultsRow.new(row, search_ctl)
-              search_results_buttons = SearchResultsButtons.new(row, :search_results, nil,  nil, table_name)
-              search_results_button_row =  SearchResultsRowButton.new(search_results_row, search_results_buttons);
-
 
               page << "if ($('#{row.id}_#{table_name}')) {"
-              page["#{row.id}_#{table_name}"].replace_html( :partial => "shared/search_results_row_button", :object =>search_results_button_row );
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
               page << "}"
 
-
             end
+            page << "recolour('#{table_name}');";
           end
+
 
             page << "action_select_no_js();";
         end
@@ -295,6 +308,8 @@ class WelcomeController < ApplicationController
 
 
   def table_search
+#      RubyProf.start
+
     unless session[:search_ctls]
       InitializeSessionController
     end
@@ -304,13 +319,16 @@ class WelcomeController < ApplicationController
     search_ctl = @search_ctls[table_name];
     
     search_ctl.user_id = session[:user_id];
-    
-    eval_str = search_ctl.get_eval_string2;
-    RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: before eval(#{eval_str})" );
-    @table = eval(eval_str);
-    RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: after eval(eval_str)" );
-    search_results = SearchResults.new(@table, :search_results, search_ctl, nil, nil);
-    search_results.table_type = :search_results;
+    if(params.has_key?("do_search"))
+      eval_str = search_ctl.get_eval_string2();
+      RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: before eval(#{eval_str})" );
+      @table = eval(eval_str);
+      eval("#{table_name}.set_controller(search_ctl)");
+
+      RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: after eval(eval_str)" );
+      search_results = SearchResults.new(@table, :search_results, search_ctl);
+      search_results.table_type = :search_results;
+    end
     respond_to do |format|
       format.js  do
         render :update do |page|
@@ -320,19 +338,11 @@ class WelcomeController < ApplicationController
             page.replace_html("search_results_" + table_name, :partial => "shared/search_results" , :object => search_results);
             
             page << "resizeX();"
-            page << "action_select_no_js();"
+            
           end            
 
-            #   page <<  "var new_height = parseInt($('#{id_str}').clientHeight)*2";
-            #  page << "style_str = 'background: #AAAAAA;  border-left: 1px solid; border-color: #000000;  float: right; height: 60px' "
-            
-            #  page << "$$('.remove_column').each(function(elt){elt.setAttribute('style',style_str)});"
-            #  page << "$$('.remove_column').each(function(elt){elt.setStyle('height',new_height)});"
-            #  page.select('.remove_column').each do |elt|
-                    
-            #   elt.setAttribute('style',style_str)
-            
-          
+        
+          page << "action_select_no_js();"
           page << "resizeFilters();"
           page << "unwait();"
         end
@@ -340,6 +350,10 @@ class WelcomeController < ApplicationController
     end
     RAILS_DEFAULT_LOGGER.error("table_search_end");
     RAILS_DEFAULT_LOGGER.flush;
+
+
+
+
   end
 
   def add_external_filter
@@ -617,15 +631,177 @@ class WelcomeController < ApplicationController
     when "make_willing_tutor"
       make_willing_tutor(ids)
     when "add_to_lectures"
-      add_to_lectures(ids)
+      if class_name == "Lecture"
+        add_to_lectures(ids)
+      else
+        make_attendee(ids)
+      end
     when "assign_tutor"
       assign_tutor(ids)
     when "max_tutorials"
       max_tutorials(ids)
+    when "attach_files"
+      attach_files(ids)
+    when "attach_to_emails"
+      attach_to_emails(ids)
     else
       x = 1;     
     end
      RAILS_DEFAULT_LOGGER.flush
+  end
+  def attach_to_emails(ids)
+    error_str = "";
+    success_str = "";
+    if(ids == nil || ids.length==0)
+      error_str = "You have not selected any emails to attach file to. "
+    else
+
+      id_str = "";
+      ids.each do |id|
+        if(id_str.length >0 )
+          id_str << ", ";
+        end
+        id_str << id.to_s;
+      end
+      agatha_file_id = params[:id];
+      agatha_file = AgathaFile.find(agatha_file_id);
+      
+      already_present =EmailAttachment.find_by_sql("SELECT  a0.agatha_email_id FROM email_attachments a0  WHERE a0.agatha_file_id = #{agatha_file_id} AND a0.agatha_email_id IN (#{id_str})");
+      if  already_present.length >0
+        @pluralize_num = already_present.length;
+        success_str = "The " + pl("email") + " with " + pl("id") + " = ";
+        attach_id_str = "";
+        already_present.each do |email|
+          if attach_id_str.length >0
+            attach_id_str << ", ";
+          end
+          attach_id_str << email.agatha_email_id.to_s;
+          ids.delete(email.agatha_email_id.to_s);
+        end
+        success_str << attach_id_str + " "        
+
+        success_str << " already had the file #{agatha_file.agatha_data_file_name} attached. "
+      end
+
+
+      ids.each do |agatha_email_id|
+        email_attachment = EmailAttachment.new;
+        email_attachment.agatha_email_id = agatha_email_id;
+        email_attachment.agatha_file_id = agatha_file_id;
+        email_attachment.save;
+      end
+      @pluralize_num = ids.length;
+      success_str << "You have attached file #{agatha_file.agatha_data_file_name} to #{@pluralize_num} " + pl("email");
+
+    end
+
+    respond_to do |format|
+      format.js  do
+        render :update do |page|
+          if error_str.length >0
+            page << "alert('#{error_str}')";
+          else
+            @search_ctls = session[:search_ctls];
+            if ids.length > 0
+              table_name = "AgathaEmail"
+              search_ctl = @search_ctls[table_name];
+              eval("#{table_name}.set_controller(search_ctl)");
+              updated_objects = search_ctl.GetUpdateObjects(table_name, "id", ids);
+              updated_objects.each do |row|
+                page << "if ($('#{row.id}_#{ table_name}')) {"
+                page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+                page << "setcheck('#{table_name}_check_#{row.id.to_s}',true)"
+                page << "}"
+              end
+              page << "recolour('AgathaEmail');";
+              page << "action_select_no_js();";
+            end
+            page << "alert('#{success_str}')";
+          end
+          page << "unwait();"
+        end
+      end
+
+    end
+  end
+
+  def attach_files(ids)
+     error_str = "";
+     success_str = "";
+    if(ids == nil || ids.length==0)
+      error_str = "You have not selected any files to attach to email. "
+    else
+      id_str = "";
+      ids.each do |id|
+        if(id_str.length >0 )
+          id_str << ", ";
+        end
+        id_str << id.to_s;
+      end
+    
+      
+      agatha_email_id = params[:id];
+
+      already_present =EmailAttachment.find_by_sql("SELECT  a0.agatha_file_id, a1.agatha_data_file_name FROM email_attachments a0 INNER JOIN agatha_files a1 ON a0.agatha_file_id = a1.id  WHERE a0.agatha_email_id = #{agatha_email_id} AND a0.agatha_file_id IN (#{id_str})");
+      if  already_present.length >0
+        @pluralize_num = already_present.length;
+        success_str = "The " + pl("file") + " ";
+        attach_file_str = "";
+        already_present.each do |attachment|
+          if attach_file_str.length >0
+            attach_file_str << ", ";
+          end
+          attach_file_str  << attachment.agatha_data_file_name;
+          ids.delete(attachment.agatha_file_id.to_s);
+        end
+        success_str << attach_file_str + " "
+        success_str << pl("was") + " already attached. "
+
+
+      end
+      ids.each do |agatha_file_id|
+        email_attachment = EmailAttachment.new;
+        email_attachment.agatha_email_id = agatha_email_id;
+        email_attachment.agatha_file_id = agatha_file_id;
+        email_attachment.save;
+      end
+
+       @pluralize_num = ids.length;
+       success_str << "You have attached #{@pluralize_num} " + pl("file") + " to the selected email";
+
+    end
+
+    x = 1;
+    respond_to do |format|
+      format.js  do
+        render :update do |page|
+          if error_str.length >0
+            page << "alert('#{error_str}')";
+          else
+            @search_ctls = session[:search_ctls];
+            table_name = "AgathaEmail"
+            search_ctl = @search_ctls[table_name];
+            id_array = [];
+            id_array << agatha_email_id.to_i;
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", id_array);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );  
+              page << "}"              
+            end
+    
+
+                                   
+            page << "recolour('AgathaEmail');";
+            page << "action_select_no_js();";
+            page << "alert('#{success_str}')";
+          end
+          page << "unwait();"
+        end
+      end
+
+    end
   end
 
   def send_email()
@@ -1040,14 +1216,33 @@ class WelcomeController < ApplicationController
       end
       alert_str = "Tutorial/Tutorial Schedules created";
     else
+      ids = [];
       alert_str = "You did not select any students. "
     end
     respond_to do |format|
       format.js  do
         render :update do |page|
-          page << "alert('#{alert_str}')"
-          page << "unwait();"
-        end
+
+            if ids.length >0
+            @search_ctls = session[:search_ctls];
+            table_name = "Person"
+            search_ctl = @search_ctls[table_name];
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", ids);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              page << "setcheck('#{table_name}_check_#{row.id.to_s}',true)"
+              page << "}"
+            end
+
+            page << "recolour('Person');";
+            page << "action_select_no_js();";
+            end
+            page << "alert('#{alert_str}')"
+            page << "unwait();"
+          end
+          
       end
     end
   end
@@ -1087,6 +1282,143 @@ class WelcomeController < ApplicationController
       end
     end
   end
+  def make_attendee(lecture_ids)
+    error_str = "";
+    success_str="";
+    person_id = params[:id];
+    if lecture_ids == nil || lecture_ids.length == 0
+      error_str = "Add/Update attendee failed: you have not selected any lectures. "
+    else
+      lecture_list = ""
+      lecture_ids.each do |lecture_id|
+      if lecture_list.length >0
+        lecture_list << ", "
+      end
+        lecture_list << lecture_id.to_s
+      end
+      lectures_where_str = "(#{lecture_list})"
+      non_present_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.id IN #{lectures_where_str} AND (SELECT COUNT(*) FROM attendees a1 WHERE a1.person_id = #{person_id} AND a1.lecture_id = a0.id)=0");
+      non_present_lectures.each do |lecture|
+        attendee = Attendee.new;
+        attendee.lecture_id = lecture.id;
+        attendee.person_id = person_id;
+        attendee.save;
+      end
+       exam_ids = params[:exam_in_list];
+       exam_list = "";
+      if exam_ids == nil || exam_ids.length == 0
+         exam_ids = [];
+         non_exam_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN #{lectures_where_str} AND a0.person_id = #{person_id}");
+         exam_attendees = []
+      else
+        exam_ids.each do |exam_id|
+          if exam_list.length >0
+            exam_list << ", "
+          end
+            exam_list << exam_id.to_s
+        end
+        exam_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN (#{exam_list}) AND a0.person_id = #{person_id}");
+        non_exam_attendees =  Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN (#{lecture_list}) AND a0.lecture_id NOT IN (#{exam_list}) AND a0.person_id = #{person_id}");
+      end
+      exam_attendees.each do |attendee|
+        attendee.examined = true;
+        attendee.save;
+      end
+      non_exam_attendees.each do |attendee|
+        attendee.examined = false;
+        attendee.save;
+      end
+      compulsory_ids = params[:compulsory_in_list];
+      compulsory_list = "";
+      if compulsory_ids == nil || compulsory_ids.length == 0
+         compulsory_ids = [];
+         non_compulsory_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN #{lectures_where_str} AND a0.person_id = #{person_id}");
+         compulsory_attendees = []
+      else
+        compulsory_ids.each do |compulsory_id|
+          if compulsory_list.length >0
+            compulsory_list << ", "
+          end
+            compulsory_list << compulsory_id.to_s
+        end
+        compulsory_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN (#{compulsory_list}) AND a0.person_id = #{person_id}");
+        non_compulsory_attendees =  Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.lecture_id IN (#{lecture_list}) AND a0.lecture_id NOT IN (#{compulsory_list}) AND a0.person_id = #{person_id}");
+      end
+      compulsory_attendees.each do |attendee|
+        attendee.compulsory = true;
+        attendee.save;
+      end
+      non_compulsory_attendees.each do |attendee|
+        attendee.compulsory = false;
+        attendee.save;
+      end
+      non_present_num = non_present_lectures.length;
+      if non_present_num == 0
+        success_str = "Attendees were updated, although no new lecture was attended because lecture in the selected list was already attended the person. "
+      elsif non_present_num ==1
+        success_str = "The person was added to one lecture attendee list. "
+      else
+        success_str = "The person was added to #{non_present_num} lecture attendee lists. "
+      end
+      if non_present_num != 0
+        present_num = lecture_ids.length - non_present_num
+        if present_num ==1
+          success_str << "The person was already attending the selected lecture. "
+        elsif present_num > 1
+          success_str << "The person was already on the lecture attendee list of #{present_num} of the lectures. "
+        end
+      end
+    end
+
+
+        respond_to do |format|
+      format.js  do
+        render :update do |page|
+          if error_str.length >0
+            page << "alert('#{error_str}')";
+          else
+
+            @search_ctls = session[:search_ctls];
+            table_name = "Person"
+            search_ctl = @search_ctls[table_name];
+            id_array = [];
+            id_array << person_id.to_i;
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", id_array);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              page << "}"
+            end
+            table_name = "Lecture"
+            search_ctl = @search_ctls[table_name];
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", lecture_ids);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              if compulsory_ids.index(row.id.to_s);
+                page << "setcheck('#{table_name}_compulsorycheck_#{row.id.to_s}',true)"
+              end
+              if exam_ids.index(row.id.to_s);
+                page << "setcheck('#{table_name}_examcheck_#{row.id.to_s}',true)"
+              end
+              page << "setcheck('#{table_name}_check_#{row.id.to_s}',true)"
+              page << "}"
+            end
+
+
+            page << "recolour('Lecture');";
+            page << "recolour('Person');";
+            page << "action_select_no_js();";
+            page << "alert('#{success_str}')";
+          end
+          page << "unwait();"
+        end
+      end
+    end
+  end
+
 
   def add_to_lectures(people_ids)
     lecture_id = params[:id];
@@ -1114,7 +1446,7 @@ class WelcomeController < ApplicationController
       
       exam_list = "";
       if exam_ids == nil || exam_ids.length == 0
-
+         exam_ids = [];
          non_exam_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.person_id IN #{people_where_str} AND a0.lecture_id = #{lecture_id}");
          exam_attendees = []
       else
@@ -1138,7 +1470,7 @@ class WelcomeController < ApplicationController
       compulsory_ids = params[:compulsory_in_list];
       compulsory_list = "";
       if compulsory_ids == nil || compulsory_ids.length == 0
-
+         compulsory_ids = [];
          non_compulsory_attendees = Attendee.find_by_sql("SELECT * FROM attendees a0 WHERE a0.person_id IN #{people_where_str} AND a0.lecture_id = #{lecture_id}");
          compulsory_attendees = []
       else
@@ -1161,7 +1493,7 @@ class WelcomeController < ApplicationController
       end
       non_present_num = non_present_people.length;
       if non_present_num == 0
-        success_str = "Everyone in the selected list is already attending the lecture course. "
+        success_str = "Attendees were updated, although no one was added because everyone in the selected list was already attending the lecture course. "
       elsif non_present_num ==1
         success_str = "One person was added to the lecture attendee list. "
       else
@@ -1186,7 +1518,41 @@ class WelcomeController < ApplicationController
           if error_str.length >0
             page << "alert('#{error_str}')";
           else
-             page << "alert('#{success_str}')";
+            
+            @search_ctls = session[:search_ctls];
+            table_name = "Lecture"
+            search_ctl = @search_ctls[table_name];
+            id_array = [];
+            id_array << lecture_id.to_i;
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", id_array);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              page << "}"
+            end
+            table_name = "Person"
+            search_ctl = @search_ctls[table_name];
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", people_ids);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              if compulsory_ids.index(row.id.to_s);
+                page << "setcheck('#{table_name}_compulsorycheck_#{row.id.to_s}',true)"
+              end
+              if exam_ids.index(row.id.to_s);
+                page << "setcheck('#{table_name}_examcheck_#{row.id.to_s}',true)"
+              end
+              page << "setcheck('#{table_name}_check_#{row.id.to_s}',true)"
+              page << "}"
+            end
+
+
+            page << "recolour('Lecture');";
+            page << "recolour('Person');";
+            page << "action_select_no_js();";
+            page << "alert('#{success_str}')";
           end
           page << "unwait();"
         end
@@ -1687,7 +2053,7 @@ RAILS_DEFAULT_LOGGER.flush
     @format_controller =  FormatController.new(user_id);
     for table_object in @format_controller.table_objects
       sql_str = "FormatElement.find_by_sql(\"SELECT id, field_name, insert_string, element_order, in_use FROM format_elements WHERE (user_id = " + user_id.to_s +  " AND table_name = '" + table_object.table + "') ORDER BY element_order asc\")"
-      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #     RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
       old_fields = eval(sql_str);
       old_fields_count  = old_fields.length;
       new_fields_count = params["display_format_count_#{table_object.table}"].to_i;
@@ -1756,7 +2122,7 @@ RAILS_DEFAULT_LOGGER.flush
     group_id = params[:group_id];
     @user_id = session[:user_id];
     sql_str = "GroupFilter.find_by_sql(\"SELECT id, table_name, group_id, foreign_key, user_id  FROM group_filters WHERE (user_id = " + @user_id.to_s +  " AND table_name = '" + table_name + "' AND foreign_key = '" +foreign_key + "') \")"
-    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+#    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
     group_filters = eval(sql_str);
     if group_filters.length == 0
       group_filter = GroupFilter.new;
@@ -1803,7 +2169,7 @@ RAILS_DEFAULT_LOGGER.flush
         field_name = reflection.options[:foreign_key]
 
         eval_str = "not_set_obj.#{field_name} = @not_set_value"
-        RAILS_DEFAULT_LOGGER.error( "DEBUG: before SetNotClass(#{class_name}) eval(#{eval_str})" );
+  #      RAILS_DEFAULT_LOGGER.error( "DEBUG: before SetNotClass(#{class_name}) eval(#{eval_str})" );
         eval(eval_str);
       end
       not_set_obj.save;
@@ -2328,7 +2694,29 @@ RAILS_DEFAULT_LOGGER.flush
     FormatElement.create(:user_id => 0, :table_name => 'terms', :field_name => 'year', :insert_string => ' ', :element_order => 2, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'days', :field_name => 'short_name', :insert_string => ' ', :element_order => 1, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'locations', :field_name => 'name', :insert_string => ' ', :element_order => 1, :in_use => true)
-    FormatElement.create(:user_id => 0, :table_name => 'tutorial_schedules', :field_name => 'course_id', :insert_string => ' ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'attendees', :field_name => 'lecture_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'attendees', :field_name => 'person_id', :insert_string => '', :element_order => 2, :in_use => true)
+
+
+    FormatElement.create(:user_id => 0, :table_name => 'tutorials', :field_name => 'tutorial_schedule_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'tutorials', :field_name => 'person_id', :insert_string => '', :element_order => 2, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'tutorial_schedules', :field_name => 'course_id', :insert_string => '', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'email_templates', :field_name => 'template_name', :insert_string => '', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'agatha_emails', :field_name => 'term_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'agatha_emails', :field_name => 'person_id', :insert_string => ', ', :element_order => 2, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'agatha_emails', :field_name => 'subject', :insert_string => '', :element_order => 3, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'agatha_files', :field_name => 'agatha_data_file_name', :insert_string => '', :element_order => 1, :in_use => true)
+
+
+    FormatElement.create(:user_id => 0, :table_name => 'willing_lecturers', :field_name => 'course_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'willing_lecturers', :field_name => 'person_id', :insert_string => '', :element_order => 2, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'willing_tutors', :field_name => 'course_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'willing_tutors', :field_name => 'person_id', :insert_string => '', :element_order => 2, :in_use => true)
+
+
+    FormatElement.create(:user_id => 0, :table_name => 'group_agatha_emails', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
+    FormatElement.create(:user_id => 0, :table_name => 'group_agatha_emails', :field_name => 'agatha_email_id', :insert_string => ', ', :element_order => 2, :in_use => true)
+
     FormatElement.create(:user_id => 0, :table_name => 'group_people', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'group_people', :field_name => 'person_id', :insert_string => '', :element_order => 2, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'group_institutions', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
@@ -2343,6 +2731,8 @@ RAILS_DEFAULT_LOGGER.flush
     FormatElement.create(:user_id => 0, :table_name => 'group_tutorial_schedules', :field_name => 'tutorial_schedule_id', :insert_string => '', :element_order => 2, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'group_tutorials', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'group_tutorials', :field_name => 'tutorial_id', :insert_string => '', :element_order => 2, :in_use => true)
+
+
     FormatElement.create(:user_id => 0, :table_name => 'group_users', :field_name => 'group_id', :insert_string => ', ', :element_order => 1, :in_use => true)
     FormatElement.create(:user_id => 0, :table_name => 'group_users', :field_name => 'user_id', :insert_string => '', :element_order => 2, :in_use => true)
 
@@ -2376,6 +2766,10 @@ RAILS_DEFAULT_LOGGER.flush
     DisplayFilter.create(:user_id => 0, :table_name => 'groups', :filter_index => 0, :element_order => 0, :in_use => true)
     DisplayFilter.create(:user_id => 0, :table_name => 'groups', :filter_index => 1, :element_order => 1, :in_use => true)
     DisplayFilter.create(:user_id => 0, :table_name => 'groups', :filter_index => 4, :element_order => 2, :in_use => true)
+
+    DisplayFilter.create(:user_id => 0, :table_name => 'group_people', :filter_index => 0, :element_order => 0, :in_use => true)
+    DisplayFilter.create(:user_id => 0, :table_name => 'group_people', :filter_index => 1, :element_order => 1, :in_use => true)
+    DisplayFilter.create(:user_id => 0, :table_name => 'group_people', :filter_index => 2, :element_order => 2, :in_use => true)
 
     DisplayFilter.create(:user_id => 0, :table_name => 'users', :filter_index => 0, :element_order => 0, :in_use => true)
     DisplayFilter.create(:user_id => 0, :table_name => 'users', :filter_index => 1, :element_order => 1, :in_use => true)

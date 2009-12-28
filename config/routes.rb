@@ -40,6 +40,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :willing_lecturers
   map.resources :email_templates
   map.resources :agatha_emails
+  map.resources :agatha_files
   map.resources :maximum_tutorials
 
   # The priority is based upon order of creation: first created -> highest priority.

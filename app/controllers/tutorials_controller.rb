@@ -7,7 +7,7 @@ class TutorialsController < ApplicationController
 
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
 
-    edit_helper();
+    edit_helper([]);
   end
 
 
@@ -25,7 +25,7 @@ class TutorialsController < ApplicationController
 
   end
 
-  def update
+  def updater
     update_helper();
 
   end

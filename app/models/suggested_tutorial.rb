@@ -3,6 +3,7 @@ class SuggestedTutorial
   attr_reader :tutorial_schedule
   attr_accessor :previous_suggestions;
   def initialize(search_ctl_, tutorial_schedule_)
+    RAILS_DEFAULT_LOGGER.error( "new SuggestedTutorial" );
     @search_ctl = search_ctl_;
     @tutorial_schedule = tutorial_schedule_;
     @previous_suggestions=""

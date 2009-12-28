@@ -7,6 +7,7 @@ class AttributeElement
   attr_reader :foreign_class
 
   def initialize(name_, data_type_, table_name_, foreign_key_, foreign_class_, primary_)
+ #   RAILS_DEFAULT_LOGGER.error( "new AttributeElement" );
     @name = name_
     @data_type = data_type_
     @table_name = table_name_
@@ -19,6 +20,7 @@ class ReflectionElement
   attr_reader :name
   attr_reader :foreign_key
   def initialize(name_, foreign_key_)
+    RAILS_DEFAULT_LOGGER.error( "new ReflectionElement" );
     @name = name_
     @foreign_key =foreign_key_
   end
@@ -29,6 +31,7 @@ class AttributeList
   attr_reader :attribute_hash
 
   def initialize(table_name_)
+#    RAILS_DEFAULT_LOGGER.error( "new AttributeList" );
     string_to_evaluate = "#{table_name_}.reflect_on_all_associations(:belongs_to)"
     reflections = eval(string_to_evaluate);
     reflection_keys = [];

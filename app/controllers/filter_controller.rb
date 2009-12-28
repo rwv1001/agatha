@@ -9,7 +9,7 @@ class GroupFilterElt
   
 
   def initialize(foreign_key, group_id, class_name)
- 
+    RAILS_DEFAULT_LOGGER.error( "new GroupFilterElt" );
     @foreign_key = foreign_key
     @group_id = group_id
     @class_name = class_name
@@ -17,7 +17,7 @@ class GroupFilterElt
   end
   def UpdatePossibleGroups()
     sql_str = "Group.find_by_sql(\"SELECT id, group_name FROM groups WHERE id != 1 AND table_name = '" + @class_name.tableize + "' \")"
-    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #   RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
     @possible_groups =   eval(sql_str);
      
   end
@@ -30,12 +30,14 @@ class GroupFilterElts
   attr_reader :possible_char_length
  
   def initialize(table_name,  user_id, group_filter_elts)
+    RAILS_DEFAULT_LOGGER.error( "new GroupFilterElts" );
     @table_name = table_name
     @group_filter_elts = group_filter_elts
     @user_id = user_id
     UpdatePossibleLength()
   end
   def UpdatePossibleGroups()
+
     for group_filter_elt in group_filter_elts
       group_filter_elt.UpdatePossibleGroups();
     end
@@ -54,6 +56,7 @@ end
 class FilterController
 
   def initialize(search_ctls_, class_name_, user_id_)
+    RAILS_DEFAULT_LOGGER.error( "new FilterController" );
     @search_ctls = search_ctls_;
     @class_name = class_name_;
     @user_id = user_id_;
@@ -84,7 +87,7 @@ class FilterController
           present_str =  "#{group_table}.find_by_sql(\"SELECT id, #{foreign_class.underscore}_id FROM group_#{foreign_class.tableize} WHERE group_id = #{group_id} AND #{foreign_id} = #{current_id}\")";
           present = eval(present_str);
           if(present.length == 0)
-            group_members << GroupMember.new(class_search_controller.GetShortField(current_id ), current_id);
+            group_members << GroupMember.new(class_search_controller.GetShortField(current_id), current_id);
           end
         end
         id_str = "#{group_table}.find_by_sql(\"SELECT id, #{foreign_class.underscore}_id FROM group_#{foreign_class.tableize} WHERE group_id = #{group_id}\")";
@@ -116,11 +119,11 @@ class FilterController
   def self.GroupID(table_name, foreign_key, user_id)
     
     sql_str = "GroupFilter.find_by_sql(\"SELECT id, group_id FROM group_filters WHERE (user_id = #{user_id}  AND table_name = '#{table_name}' AND foreign_key = '#{foreign_key}') \")"
-    RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+ #   RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
     results = eval(sql_str);
     if(results.length == 0)
       sql_str = "GroupFilter.find_by_sql(\"SELECT id, group_id FROM group_filters WHERE (user_id = 0 AND table_name = '#{table_name}' AND foreign_key = '#{foreign_key}') \")"
-      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
+#      RAILS_DEFAULT_LOGGER.error( "DEBUG: before eval(#{sql_str})" );
       results = eval(sql_str);
     end
     if(results.length == 0)
@@ -133,6 +136,7 @@ class FilterController
   end
 
   def self.GetGroupFilters(table_name, user_id)
+    RAILS_DEFAULT_LOGGER.error("DEBUG: GetGroupFilters");
     group_filter_elts = [];
     eval_str = table_name.classify + ".reflect_on_all_associations(:belongs_to)";
     begin

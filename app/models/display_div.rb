@@ -7,6 +7,7 @@ class DisplayDiv
   attr_accessor :invisible_classes
   attr_reader :post_javascript
   def initialize(div_id_, insert_id_, visible_ids_, invisible_ids_, visible_classes_, invisible_classes_, post_javascript_)
+    RAILS_DEFAULT_LOGGER.error( "new DisplayDiv" );
     @div_id = div_id_;
     @insert_id = insert_id_;
     @visible_ids = visible_ids_;

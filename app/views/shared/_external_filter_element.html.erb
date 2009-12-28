@@ -3,7 +3,7 @@
 <% external_filter =  external_filter_element.external_filter %>
 <% filter_id =  external_filter_element.external_filter.id %>
 <% element_id =  external_filter_element.element_id %>
-<% argument_selection =  external_filter_element.MemberSelection %>
+<% argument_selection =  external_filter_element.MemberSelection() %>
 <% member_id = external_filter_element.member_id %>
 <% on_delete_string = "deleteExternalFilterElement('#{class_name}','#{filter_id}','#{element_id }');return false" %>
 

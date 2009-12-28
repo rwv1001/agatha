@@ -56,7 +56,7 @@ class PcoursesController < ApplicationController
 
   # PUT /pcourses/1
   # PUT /pcourses/1.xml
-  def update
+  def updater
     @pcourse = Pcourse.find(params[:id])
 
     respond_to do |format|

@@ -12,8 +12,10 @@ function unwait()
 
 }
 
+
 function deleteColumn(field_name, table_name)  
 {
+    wait();
     table_text_element_str = "table_selector_text_" + table_name 
     table_text_element = $(table_text_element_str );
     if(table_text_element != null)
@@ -48,6 +50,11 @@ function deleteColumn(field_name, table_name)
             x_elements_current.remove();
         }
     }
+
+    do_search_str = "do_search_" + table_name;
+    do_search_element = $(do_search_str);
+    do_search_element.setAttribute("name", "do_not_search");
+
     form_id = "search_form_" + table_name
     $(form_id).onsubmit();
 }
@@ -60,6 +67,11 @@ function searchOrder(field_name, table_name)
     order_element.setAttribute("name", "order_text");
     order_element.setAttribute("value", field_name);
     disableSubmitters();
+
+    do_search_str = "do_search_" + table_name;
+    do_search_element = $(do_search_str);
+    do_search_element.setAttribute("name", "do_search");
+
     search_form_str = "search_form_" + table_name;
     my_form = $(search_form_str);
     my_form.onsubmit();
@@ -142,7 +154,21 @@ function AddField(table_name)
     {
         return;
     }
-       
+
+    current_filter_str = "current_filters_" +table_name;
+    current_filter_element =$(current_filter_str);
+    no_results = current_filter_element.visible();
+    do_search_str = "do_search_" + table_name;
+    do_search_element = $(do_search_str);
+    if(no_results)
+    {
+        do_search_element.setAttribute("name", "do_not_search");
+    }
+    else
+    {
+        do_search_element.setAttribute("name", "do_search");
+    }
+
     text_element = $(text_element_id);
     text_element.setAttribute("name", selected_val);
     text_element.setAttribute("value", "%" );

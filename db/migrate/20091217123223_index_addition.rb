@@ -27,6 +27,7 @@ class IndexAddition < ActiveRecord::Migration
     add_index :willing_lecturers, :course_id,  :unique => false
     add_index :willing_tutors, :person_id,  :unique => false
     add_index :willing_tutors, :course_id,  :unique => false
+    add_index :email_attachments, [:agatha_email_id, :agatha_file_id], :unique => false
   end
 
   def self.down

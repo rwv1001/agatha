@@ -11,7 +11,7 @@ class EmailTemplatesController < ApplicationController
 
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
 
-    edit_helper();
+    edit_helper([]);
   end
 
 
@@ -29,7 +29,7 @@ class EmailTemplatesController < ApplicationController
 
   end
 
-  def update
+  def updater
     email_update();
   end
 

@@ -26,6 +26,12 @@
    <div class = "search_title" >
     <h2>Search <%=  search_controller.tables_name.humanize.titleize %> Database</h2>
    </div>
+   <% if table_name == "Lecture" %>
+    <div class= "add_to_lecture_title" >
+       <h2>Select lecture schedules to attend/update </h2>
+       <p></p>
+    </div>
+   <% end %>
    <% if table_name == "Person" %>
     <div class= "add_to_lecture_title" >
        <h2>Select attendees to add/update </h2>
@@ -39,6 +45,8 @@
     </div>
 
 
+
+
         <div class= "add_to_willing_tutor_title" >
        <h2>Click on 'Make Willing' to make person willing tutor for selected courses </h2>
     </div>
@@ -49,6 +57,16 @@
       <h2>Choose person to assign as tutor</h2>
     </div>
    <% end %>
+      <% if table_name == "AgathaFile" %>
+       <div class ="attach_title">
+       <h2>Select files to attach to email</h2>
+    </div>
+    <% end %>
+       <% if table_name == "AgathaEmail" %>
+     <div class ="attach_to_title">
+       <h2>Select emails to attach file to</h2>
+    </div>
+    <% end %>
    <% if table_name != "Group" %>
    <div class= "add_to_group_title" >
      <h2>Select <%=  search_controller.tables_name.humanize.titleize %> to add to groups </h2>
@@ -66,7 +84,7 @@
    <% end %>
     <%= render(:partial => "shared/search_controller", :object => search_controller) %>
 
-  <div  >
+  <div>
         
         <div id = <%="\"search_results_#{table_name}\""  %> >
 
@@ -88,7 +106,7 @@
               onClick="$$(<%=check_box_str%>).each(function(box){box.checked=!box.checked})">
         </div>
 
-      <% if table_name == "Person" %>
+      <% if table_name == "Person" || table_name == "Lecture" %>
         <div class= "add_attendee_options" >
           <h3> Select options</h3>
           <% check_box_str = "'\#search_results_#{table_name} input.check'"   %>

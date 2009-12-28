@@ -138,7 +138,7 @@ class UsersController < ApplicationController
 
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
 
-    edit_helper();
+    edit_helper([]);
   end
 
   # POST /users
@@ -173,7 +173,7 @@ class UsersController < ApplicationController
   end
   # PUT /users/1
   # PUT /users/1.xml
-  def update
+  def updater
     @user = User.find(params[:id])
 
     user = User.authenticate(@user.name, params[:user][:old_password])

@@ -3,6 +3,7 @@ class SuggestedLecture
   attr_reader :lecture
   attr_accessor :previous_suggestions;
   def initialize(search_ctl_, lecture_)
+    RAILS_DEFAULT_LOGGER.error( "new SuggestedLecture" );
     @search_ctl = search_ctl_;
     @lecture = lecture_;
     @previous_suggestions=""

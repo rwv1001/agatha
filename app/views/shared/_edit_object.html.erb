@@ -3,8 +3,9 @@
     <%  attribute_list = edit_object.attribute_list %>
     <%  filter_controller =  edit_object.filter_controller %>
     <%  table_name =  edit_object.table_name %>
+    <%  readonly_fields =  edit_object.readonly_fields %>
     
-    <form action=<%="\"/#{table_name.tableize}/update\""%> id="update_form" method="post" onsubmit="new Ajax.Request('<%="/#{table_name.tableize}/update"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;">
+    <form action=<%="\"/#{table_name.tableize}/updater\""%> id="update_form" method="post" onsubmit="new Ajax.Request('<%="/#{table_name.tableize}/updater"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;">
     <div style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
     <div  style="display:none">
         <input name="table_name"  type="text" value=<%="\"#{table_name}\"" %> />
@@ -46,13 +47,19 @@
           <th>Field</th>
           <th>Value</th>
         </tr>
-        <%  for attribute in attribute_list.attribute_elements  %>         
+        <%  for attribute in attribute_list.attribute_elements  %>
+
+          <% if readonly_fields.index(attribute.name) == nil %>
+            <% readonly_flag = false %>
+            <%  else %>
+            <% readonly_flag = true %>
+            <% end %>
 
           <tr class="<%= cycle('row-even', 'row-odd') %>">
 
             <td><%= attribute.name %> </td>
             <% update_parent = false %>
-            <%  edit_cell = EditCell.new(attribute, current_object, table_name, filter_controller,  update_parent); %>
+            <%  edit_cell = EditCell.new(attribute, current_object, table_name, filter_controller,  update_parent, readonly_flag ); %>
             <td class ="edit_column" >
             <%= render(:partial => "shared/edit_cell", :object => edit_cell) %>
             </td>

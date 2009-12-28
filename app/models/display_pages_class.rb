@@ -1,6 +1,7 @@
 class DisplayPagesClass
   attr_accessor :DisplayPages
   def initialize()
+    RAILS_DEFAULT_LOGGER.error( "new DisplayPagesClass" );
     @DisplayPages = {}
   end
   def RegisterClasses(page_name_, div_ids_, visible_classes_, invisible_classes_)

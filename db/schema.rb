@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091026172919) do
+ActiveRecord::Schema.define(:version => 20091217123223) do
 
   create_table "agatha_emails", :force => true do |t|
     t.string   "from_email",        :default => ""
@@ -29,6 +29,18 @@ ActiveRecord::Schema.define(:version => 20091026172919) do
 
   add_index "agatha_emails", ["person_id"], :name => "index_agatha_emails_on_person_id"
   add_index "agatha_emails", ["term_id"], :name => "index_agatha_emails_on_term_id"
+
+  create_table "agatha_files", :force => true do |t|
+    t.integer  "person_id",                :default => 1
+    t.integer  "course_id",                :default => 1
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "agatha_data_file_name"
+    t.string   "agatha_data_content_type"
+    t.integer  "agatha_data_file_size"
+    t.datetime "agatha_data_updated_at"
+  end
 
   create_table "attendee_csvs", :force => true do |t|
     t.integer "student"
@@ -95,6 +107,15 @@ ActiveRecord::Schema.define(:version => 20091026172919) do
   end
 
   add_index "display_filters", ["user_id"], :name => "index_display_filters_on_user_id"
+
+  create_table "email_attachments", :force => true do |t|
+    t.integer  "agatha_email_id"
+    t.integer  "agatha_file_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_attachments", ["agatha_email_id", "agatha_file_id"], :name => "index_email_attachments_on_agatha_email_id_and_agatha_file_id"
 
   create_table "email_templates", :force => true do |t|
     t.string   "template_name",        :default => ""

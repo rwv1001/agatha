@@ -1,7 +1,8 @@
 module EditHelper
-  def edit_helper()
+  def edit_helper(readonly_fields)
     @table_name = params[:table_name];
-    @user_id = session[:user_id]
+    @user_id = session[:user_id];
+#    session["#{@table_name}_readonly_fields"]= readonly_fields;
     id = params[:id];
     time_out = 20*60;
     sql_str = "OpenRecord.find_by_sql(\"SELECT * FROM  open_records WHERE (table_name = '" + @table_name + "' AND  record_id = " +id.to_s + "  AND in_use = true)\")"
@@ -26,49 +27,56 @@ module EditHelper
 
     allow_edit = false;
 
-      if !record_present || open_record.user_id == @user_id
-         allow_edit = true; # will end up here only if close record when disconnected from the database - the session will be new but record still flagged as open in open_record table.
-      else
-        allow_edit = false;
-      end        
+    if !record_present || open_record.user_id == @user_id
+      allow_edit = true; # will end up here only if close record when disconnected from the database - the session will be new but record still flagged as open in open_record table.
+    else
+      allow_edit = false;
+    end
     
 
     if allow_edit
     
-    object_str = "#{@table_name}.find(id)";
-    @attribute_list = AttributeList.new(@table_name);
-    @search_ctls = session[:search_ctls];
+      object_str = "#{@table_name}.find(id)";
+      attribute_eval_str = "AttributeList.new(#{@table_name})"
+  #    unless session[attribute_eval_str]
+        @attribute_list = AttributeList.new(@table_name);
+   #     session[attribute_eval_str] = @attribute_list;
+  #    else
+  #      @attribute_list = session[attribute_eval_str];
+  #    end
+      # @attribute_list = AttributeList.new(@table_name);
+      @search_ctls = session[:search_ctls];
     
 
-    @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
-    new_current_object  = eval(object_str );
-    if new_current_object
-      @current_object  = new_current_object
-    end
-    if new_current_object
-      @edit_object = EditObject.new(new_current_object, @attribute_list, @filter_controller , @table_name)
-      respond_to do |format|
-        format.html {render :controller => @table_name.tableize, :action => "edit"  }
+      @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
+      new_current_object  = eval(object_str );
+      if new_current_object
+        @current_object  = new_current_object
       end
-    else
-      fail_str = "Failed  to find #{@table_name}  with id #{id}."
-      flash[:notice] = fail_str;
-      respond_to do |format|
-        format.html   { redirect_to(welcome_url) }
+      if new_current_object
+        @edit_object = EditObject.new(new_current_object, @attribute_list, @filter_controller , @table_name, readonly_fields)
+        respond_to do |format|
+          format.html {render :controller => @table_name.tableize, :action => "edit"  }
+        end
+      else
+        fail_str = "Failed  to find #{@table_name}  with id #{id}."
+        flash[:notice] = fail_str;
+        respond_to do |format|
+          format.html   { redirect_to(welcome_url) }
+        end
       end
-    end
   
-  else
-    user = User.find(open_record.user_id)
-    @bar_edit_message = "User " + user.name+ " is currently working on the " + @table_name + " record, id = " + id + ". Last updated: " + open_record.updated_at.to_s;
-    respond_to do |format|
+    else
+      user = User.find(open_record.user_id)
+      @bar_edit_message = "User " + user.name+ " is currently working on the " + @table_name + " record, id = " + id + ". Last updated: " + open_record.updated_at.to_s;
+      respond_to do |format|
         format.html {render :controller => @table_name.tableize, :action => "bar_record"  }
+      end
     end
-  end
 
-end
-def win_load_helper
-   user_id = session[:user_id];
+  end
+  def win_load_helper
+    user_id = session[:user_id];
     id = params[:id];
     @table_name = params[:table_name];
     sql_str = "OpenRecord.find_by_sql(\"SELECT * FROM  open_records WHERE (table_name = '" + @table_name + "' AND  record_id = " +id.to_s + " AND user_id = " + user_id.to_s + "  AND in_use = true)\")"
@@ -82,17 +90,17 @@ def win_load_helper
       open_record.save;
     end
 
-     respond_to do |format|
-        format.js  do
-          render :update do |page|
-            session_div = 1;
-            page.replace_html("session_div", :partial => "shared/session_div", :object => session_div);
-          end
+    respond_to do |format|
+      format.js  do
+        render :update do |page|
+          session_div = 1;
+          page.replace_html("session_div", :partial => "shared/session_div", :object => session_div);
         end
       end
-end
-def win_unload_helper
-  @id = params[:id];
+    end
+  end
+  def win_unload_helper
+    @id = params[:id];
     @table_name = params[:table_name];
     @user_id = session[:user_id];
 
@@ -124,14 +132,15 @@ def win_unload_helper
       end
     end
 
-end
-def update_helper()
+  end
+  def update_helper()
     @user_id = session[:user_id];
     id = params[:id];
     @table_name = params[:table_name];
     field_value = params[:field_value];
     field_name = params[:field_name];
-    
+  #  readonly_fields = session["#{@table_name}_readonly_fields"]
+
 
     sql_str = "OpenRecord.find_by_sql(\"SELECT * FROM  open_records WHERE (user_id = " + @user_id.to_s + " AND table_name = '" + @table_name + "' AND  record_id = " +id.to_s + "  AND in_use = true)\")"
     open_records = eval(sql_str)
@@ -165,8 +174,8 @@ def update_helper()
         save_ok = false;
         exception_str = ""
         begin
-        object.save;
-         save_ok = true;
+          object.save;
+          save_ok = true;
         rescue Exception => exc
           exception_str = "An update error has occurred. Perhaps you already have #{@table_name} with these details.";
         end
@@ -175,18 +184,32 @@ def update_helper()
             render :update do |page|
               if save_ok
 
-              @attribute_list = AttributeList.new(@table_name.classify)
-              @search_ctls = session[:search_ctls]
-              attribute = @attribute_list.attribute_hash[field_name]
-              if attribute.foreign_key.length >0
-                @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
-              end
-              update_parent = true;
-              edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
-              page.replace_html("#{@table_name}_#{field_name}", :partial => "shared/edit_cell", :object => edit_cell);
-              attribute = @attribute_list.attribute_hash["updated_at"]
-              edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
-              page.replace_html("#{@table_name}_updated_at", :partial => "shared/edit_cell", :object => edit_cell);
+                attribute_eval_str = "AttributeList.new(#{@table_name.classify})"
+    #            unless session[attribute_eval_str]
+                  @attribute_list = AttributeList.new(@table_name.classify);
+    #              session[attribute_eval_str] = @attribute_list;
+     #           else
+     #             @attribute_list = session[attribute_eval_str];
+      #          end
+
+                # @attribute_list = AttributeList.new(@table_name.classify)
+                @search_ctls = session[:search_ctls]
+                attribute = @attribute_list.attribute_hash[field_name]
+                if attribute.foreign_key.length >0
+                  @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
+                end
+                update_parent = true;
+                readonly_flag = false;
+      #          if readonly_fields.index(field_name) == nil
+      #       readonly_flag = false
+      #       else
+      #       readonly_flag = true
+      #     end
+                edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent,readonly_flag );
+                page.replace_html("#{@table_name}_#{field_name}", :partial => "shared/edit_cell", :object => edit_cell);
+                attribute = @attribute_list.attribute_hash["updated_at"]
+                edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent,readonly_flag);
+                page.replace_html("#{@table_name}_updated_at", :partial => "shared/edit_cell", :object => edit_cell);
               else
                 page << "alert('#{exception_str}')";
               end
@@ -196,9 +219,9 @@ def update_helper()
 
       end
     end
-end
+  end
 
-def email_update()
+  def email_update()
     @user_id = session[:user_id];
     id = params[:id];
     @table_name = params[:table_name];
@@ -236,7 +259,7 @@ def email_update()
         open_record = open_records[0];
         open_record.save;
         if body_value !=nil && body_value.length !=0
-        object.body = body_value;
+          object.body = body_value;
         end
         if field_name.length != 0
           update_str ="object.#{field_name} = field_value; ";
@@ -256,8 +279,16 @@ def email_update()
             render :update do |page|
               if closing_flag == 0
                 if save_ok
+                  attribute_eval_str = "AttributeList.new(#{@table_name.classify})"
 
-                  @attribute_list = AttributeList.new(@table_name.classify)
+           #       unless session[attribute_eval_str]
+                    @attribute_list = AttributeList.new(@table_name.classify);
+             #       session[attribute_eval_str] = @attribute_list;
+              #    else
+               #     @attribute_list = session[attribute_eval_str];
+               #   end
+
+                  # @attribute_list = AttributeList.new(@table_name.classify)
                   @search_ctls = session[:search_ctls]
 
 
@@ -275,10 +306,10 @@ def email_update()
                       @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
                     else
                       if body_value !=nil && body_value.length !=0
-                    update_parent = true;
-                    edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
-                    page.replace_html("#{@table_name}_body", :partial => "shared/edit_cell", :object => edit_cell);
-                    page << "yahoo_widget()";
+                        update_parent = true;
+                        edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
+                        page.replace_html("#{@table_name}_body", :partial => "shared/edit_cell", :object => edit_cell);
+                        page << "yahoo_widget()";
                       else
                         #page << "add_blur_listener(); myEditor.saveHTML();editBlur(\"\",\"\")";
                       end
@@ -301,5 +332,5 @@ def email_update()
       end
     end
 
-end
+  end
 end

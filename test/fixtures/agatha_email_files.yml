@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  agatha_email_id: 1
+  agatha_file_id: 1
+
+two:
+  agatha_email_id: 1
+  agatha_file_id: 1

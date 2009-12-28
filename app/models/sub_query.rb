@@ -9,6 +9,7 @@ class SubQuery
   attr_accessor :selection_controller;
 
   def initialize(header_, variable_name_, select_string_, argument_class_)
+    RAILS_DEFAULT_LOGGER.error( "new SubQuery" );
     @header = header_;
     @variable_name = variable_name_;
     @select_string = select_string_;

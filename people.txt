@@ -1,3 +1,8 @@
+************************
+possilbe bugs:
+If user A deletes emails whilst user B has those emails displayed, user B could try and do things with these non-existent emails like try and send them or attach files. Sending will cause the web browser to crash. Attaching will mean database has foreign_keys that don't correspond to records. 
+************************
+
 fixed actionmailer by going to /opt/httpd/html/agatha/current/vendor/rails/actionmailer/lib/action_mailer/base.rb change line smtp.sendmail(mail.encoded, sender.first,...) destinations)
 root@fido# apachectl graceful
 root@fido# cd tmp; touch restart.txt
@@ -105,6 +110,169 @@ ooooooooooooold agatha3=# COPY person_csvs FROM '/home/agathaapp/AgathaJPG/perso
 
 agatha3=# COPY person_csvs FROM '/home/agathaapp/agathaJPG2/people5.csv' DELIMITERS '|'; COPY status_csvs FROM '/home/agathaapp/agathaJPG2/statuses.csv' DELIMITERS ','; COPY personstatus_csvs FROM '/home/agathaapp/agathaJPG2/peoplestatuses.csv' DELIMITERS ',';  COPY course_csvs FROM '/home/agathaapp/agathaJPG2/coursetitles.csv' DELIMITERS ','; COPY lecture_csvs FROM '/home/agathaapp/agathaJPG2/lecture_courses.csv' DELIMITERS ',';  COPY term_csvs FROM '/home/agathaapp/agathaJPG2/terms.csv' DELIMITERS ',';  COPY attendee_csvs FROM '/home/agathaapp/agathaJPG2/lectures.csv' DELIMITERS ','; COPY day_csvs FROM '/home/agathaapp/agathaJPG2/days.csv' DELIMITERS ','; COPY willing_teacher_csvs FROM '/home/agathaapp/agathaJPG2/willing_to_teach.csv' DELIMITERS ','; COPY tutorial_csvs FROM '/home/agathaapp/agathaJPG2/tutorials.csv' DELIMITERS ',';
 
+!!!!!!!!!!!!!!!!!!
+
+agatha3=# COPY attendees TO '/home/agathaapp/binary/attendees' WITH BINARY; COPY courses TO '/home/agathaapp/binary/courses' WITH BINARY; COPY days TO '/home/agathaapp/binary/days' WITH BINARY; COPY group_people TO '/home/agathaapp/binary/group_people' WITH BINARY; COPY groups TO '/home/agathaapp/binary/groups' WITH BINARY; COPY institutions TO '/home/agathaapp/binary/institutions' WITH BINARY; COPY lectures (id, course_id,person_id, term_id, exam, created_at, updated_at, day_id, lecture_time, location_id, number_of_classes, number_of_lectures, hours, notes) TO '/home/agathaapp/binary/lectures' WITH BINARY; COPY locations TO '/home/agathaapp/binary/locations' WITH BINARY; COPY people TO '/home/agathaapp/binary/people' WITH BINARY; COPY term_names TO '/home/agathaapp/binary/term_names' WITH BINARY; COPY terms TO '/home/agathaapp/binary/terms' WITH BINARY; COPY tutorial_schedules TO '/home/agathaapp/binary/tutorial_schedules' WITH BINARY; COPY tutorials TO '/home/agathaapp/binary/tutorials' WITH BINARY; COPY users TO '/home/agathaapp/binary/users' WITH BINARY; COPY willing_teachers TO '/home/agathaapp/binary/willing_teachers' WITH BINARY; BEGIN; CREATE TEMP TABLE temp_format_elements AS SELECT * FROM format_elements WHERE user_id != 0; COPY temp_format_elements TO '/home/agathaapp/binary/format_elements' WITH BINARY; ROLLBACK; BEGIN; CREATE TEMP TABLE temp_display_filters AS SELECT * FROM display_filters WHERE user_id != 0; COPY temp_display_filters TO '/home/agathaapp/binary/display_filters' WITH BINARY; ROLLBACK; COPY group_programmes TO '/home/agathaapp/binary/group_programmes' WITH BINARY; COPY group_courses TO '/home/agathaapp/binary/group_courses' WITH BINARY; COPY group_institutions TO '/home/agathaapp/binary/group_institutions' WITH BINARY; COPY group_lectures TO '/home/agathaapp/binary/group_lectures' WITH BINARY; COPY group_terms TO '/home/agathaapp/binary/group_terms' WITH BINARY; COPY group_days TO '/home/agathaapp/binary/group_days' WITH BINARY; COPY group_tutorial_schedules TO '/home/agathaapp/binary/group_tutorial_schedules' WITH BINARY; COPY group_locations TO '/home/agathaapp/binary/group_locations' WITH BINARY; COPY group_term_names TO '/home/agathaapp/binary/group_term_names' WITH BINARY; COPY  group_filters (id, user_id, foreign_key, group_id, created_at, updated_at, table_name) TO '/home/agathaapp/binary/group_filters' WITH BINARY; COPY group_users TO '/home/agathaapp/binary/group_users' WITH BINARY; COPY user_pages TO '/home/agathaapp/binary/user_pages' WITH BINARY; COPY external_filter_values TO '/home/agathaapp/binary/external_filter_values' WITH BINARY; COPY group_attendees TO '/home/agathaapp/binary/group_attendees' WITH BINARY; COPY group_tutorials TO '/home/agathaapp/binary/group_tutorials' WITH BINARY; COPY group_willing_lecturers TO '/home/agathaapp/binary/group_willing_lecturers' WITH BINARY; COPY group_willing_tutors TO '/home/agathaapp/binary/group_willing_tutors' WITH BINARY; COPY maximum_tutorials TO '/home/agathaapp/binary/maximum_tutorials' WITH BINARY; COPY willing_lecturers TO '/home/agathaapp/binary/willing_lecturers' WITH BINARY; COPY willing_tutors TO '/home/agathaapp/binary/willing_tutors' WITH BINARY; COPY agatha_emails TO '/home/agathaapp/binary/agatha_emails' WITH BINARY; COPY email_templates TO '/home/agathaapp/binary/email_templates' WITH BINARY; COPY group_email_templates TO '/home/agathaapp/binary/group_email_templates' WITH BINARY; COPY group_agatha_emails TO '/home/agathaapp/binary/group_agatha_emails' WITH BINARY; COPY email_attachments TO '/home/agathaapp/binary/email_attachments' WITH BINARY; COPY agatha_files TO '/home/agathaapp/binary/agatha_files' WITH BINARY; 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+agatha_dev=# DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_csvs; DROP TABLE courses; DROP TABLE   day_csvs; DROP TABLE days; DROP TABLE  group_people; DROP TABLE groups; DROP TABLE institutions; DROP TABLE lecture_csvs; DROP TABLE lectures; DROP TABLE locations; DROP TABLE people;  DROP TABLE person_csvs; DROP TABLE personstatus_csvs;  DROP TABLE schema_migrations;DROP TABLE sessions; DROP TABLE status_csvs;  DROP TABLE term_csvs; DROP TABLE term_names; DROP TABLE terms; DROP TABLE tutorial_csvs; DROP TABLE tutorial_schedules; DROP TABLE tutorials; DROP TABLE users; DROP TABLE willing_teacher_csvs; DROP TABLE willing_teachers; DROP TABLE format_elements; DROP TABLE display_filters; DROP TABLE group_programmes; DROP TABLE group_courses; DROP TABLE group_institutions; DROP TABLE group_lectures; DROP TABLE group_terms; DROP TABLE group_days; DROP TABLE group_tutorial_schedules; DROP TABLE group_locations; DROP TABLE group_term_names; DROP TABLE group_filters; DROP TABLE group_users; DROP TABLE open_records; DROP TABLE user_pages;  DROP TABLE external_filter_values; DROP TABLE group_attendees;DROP TABLE group_tutorials;DROP TABLE group_willing_lecturers;DROP TABLE group_willing_tutors;DROP TABLE maximum_tutorials;DROP TABLE willing_lecturers;DROP TABLE willing_tutors; DROP TABLE agatha_emails; DROP TABLE email_templates; DROP TABLE group_email_templates; DROP TABLE group_agatha_emails;DROP TABLE email_attachments; DROP TABLE agatha_files;
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+agatha_dev=# COPY attendees FROM '/home/agathaapp/binary/attendees' WITH BINARY; COPY courses FROM '/home/agathaapp/binary/courses' WITH BINARY; COPY days FROM '/home/agathaapp/binary/days' WITH BINARY; COPY group_people FROM '/home/agathaapp/binary/group_people' WITH BINARY; COPY groups FROM '/home/agathaapp/binary/groups' WITH BINARY; COPY institutions FROM '/home/agathaapp/binary/institutions' WITH BINARY; COPY lectures (id, course_id,person_id, term_id, exam, created_at, updated_at, day_id, lecture_time, location_id, number_of_classes, number_of_lectures, hours, notes) FROM '/home/agathaapp/binary/lectures' WITH BINARY; COPY locations FROM '/home/agathaapp/binary/locations' WITH BINARY; COPY people FROM '/home/agathaapp/binary/people' WITH BINARY; COPY term_names FROM '/home/agathaapp/binary/term_names' WITH BINARY; COPY terms FROM '/home/agathaapp/binary/terms' WITH BINARY; COPY tutorial_schedules FROM '/home/agathaapp/binary/tutorial_schedules' WITH BINARY; COPY tutorials FROM '/home/agathaapp/binary/tutorials' WITH BINARY; COPY users FROM '/home/agathaapp/binary/users' WITH BINARY; COPY willing_teachers FROM '/home/agathaapp/binary/willing_teachers' WITH BINARY; COPY format_elements FROM '/home/agathaapp/binary/format_elements' WITH BINARY; COPY display_filters FROM '/home/agathaapp/binary/display_filters' WITH BINARY; COPY group_programmes FROM '/home/agathaapp/binary/group_programmes' WITH BINARY; COPY group_courses FROM '/home/agathaapp/binary/group_courses' WITH BINARY; COPY group_institutions FROM '/home/agathaapp/binary/group_institutions' WITH BINARY; COPY group_lectures FROM '/home/agathaapp/binary/group_lectures' WITH BINARY; COPY group_terms FROM '/home/agathaapp/binary/group_terms' WITH BINARY; COPY group_days FROM '/home/agathaapp/binary/group_days' WITH BINARY; COPY group_tutorial_schedules FROM '/home/agathaapp/binary/group_tutorial_schedules' WITH BINARY; COPY group_locations FROM '/home/agathaapp/binary/group_locations' WITH BINARY; COPY group_term_names FROM '/home/agathaapp/binary/group_term_names' WITH BINARY; COPY  group_filters (id, user_id, foreign_key, group_id, created_at, updated_at, table_name) FROM '/home/agathaapp/binary/group_filters' WITH BINARY; COPY group_users FROM '/home/agathaapp/binary/group_users' WITH BINARY; COPY user_pages FROM '/home/agathaapp/binary/user_pages' WITH BINARY; COPY external_filter_values FROM '/home/agathaapp/binary/external_filter_values' WITH BINARY; COPY group_attendees FROM '/home/agathaapp/binary/group_attendees' WITH BINARY; COPY group_tutorials FROM '/home/agathaapp/binary/group_tutorials' WITH BINARY; COPY group_willing_lecturers FROM '/home/agathaapp/binary/group_willing_lecturers' WITH BINARY; COPY group_willing_tutors FROM '/home/agathaapp/binary/group_willing_tutors' WITH BINARY; COPY maximum_tutorials FROM '/home/agathaapp/binary/maximum_tutorials' WITH BINARY; COPY willing_lecturers FROM '/home/agathaapp/binary/willing_lecturers' WITH BINARY; COPY willing_tutors FROM '/home/agathaapp/binary/willing_tutors' WITH BINARY; COPY agatha_emails FROM '/home/agathaapp/binary/agatha_emails' WITH BINARY; COPY email_templates FROM '/home/agathaapp/binary/email_templates' WITH BINARY; COPY group_email_templates FROM '/home/agathaapp/binary/group_email_templates' WITH BINARY; COPY group_agatha_emails FROM '/home/agathaapp/binary/group_agatha_emails' WITH BINARY; COPY email_attachments FROM '/home/agathaapp/binary/email_attachments' WITH BINARY; COPY agatha_files FROM '/home/agathaapp/binary/agatha_files' WITH BINARY; 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+SELECT SETVAL('format_elements_id_seq', (SELECT MAX(id) FROM format_elements));
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'people', 'second_name',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'people', 'first_name','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'courses', 'name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'institutions', 'conventual_name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'groups', 'group_name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'lectures', 'course_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'lectures', 'term_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'term_names', 'name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'terms', 'term_name_id',' ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'terms', 'year','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'days', 'short_name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'locations', 'name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'attendees', 'lecture_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'attendees', 'person_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'tutorials', 'tutorial_schedule_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'tutorials', 'person_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'tutorial_schedules', 'course_id','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'email_templates', 'template_name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'agatha_emails', 'term_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'agatha_emails', 'person_id',', ',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'agatha_emails', 'subject',', ',3,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'agatha_files', 'agatha_data_file_name','',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'willing_lecturers', 'course_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'willing_lecturers', 'person_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'willing_tutors', 'course_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'willing_tutors', 'person_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_agatha_emails', 'group_id',', ',1,true);
+
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_agatha_emails', 'agatha_email_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_people', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_people', 'person_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_institutions', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_institutions', 'institution_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_courses', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_courses', 'course_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_lectures', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_lectures', 'lecture_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_attendees', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_attendees', 'attendee_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_tutorial_schedules', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_tutorial_schedules', 'tutorial_schedule_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_tutorials', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_tutorials', 'tutorial_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_users', 'group_id',', ',1,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'group_users', 'user_id','',2,true);
+INSERT INTO format_elements (user_id,table_name,field_name,insert_string, element_order, in_use) VALUES (0, 'users', 'name','',1,true);
+
+
+SELECT SETVAL('display_filters_id_seq', (SELECT MAX(id) FROM display_filters));
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 0,0,true); 
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 4,4,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'people', 12,5,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'attendees',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'attendees',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'attendees',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'attendees',3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'attendees',6,4,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'courses',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'courses',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'terms',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'terms',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'terms',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'days',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'days',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'groups',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'groups',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'groups',4,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'group_people',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'group_people',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'group_people',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'users',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'users',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'users',6,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_tutors',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_tutors',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_tutors',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_tutors',3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'maximum_tutorials',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'maximum_tutorials',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'maximum_tutorials',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'maximum_tutorials',3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'email_templates',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'email_templates',1,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'email_templates',3,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'email_templates',5,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',0,0,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',8,1,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',2,2,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',3,3,true);
+INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',4,4,true);
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+SELECT SETVAL('attendees_id_seq', (SELECT MAX(id) FROM attendees));
+SELECT SETVAL('courses_id_seq', (SELECT MAX(id) FROM courses));
+SELECT SETVAL('days_id_seq', (SELECT MAX(id) FROM days));
+SELECT SETVAL('group_people_id_seq', (SELECT MAX(id) FROM group_people));
+SELECT SETVAL('groups_id_seq', (SELECT MAX(id) FROM groups));
+SELECT SETVAL('institutions_id_seq', (SELECT MAX(id) FROM institutions));
+SELECT SETVAL('lectures_id_seq', (SELECT MAX(id) FROM lectures));
+SELECT SETVAL('locations_id_seq', (SELECT MAX(id) FROM locations));
+SELECT SETVAL('people_id_seq', (SELECT MAX(id) FROM people));
+SELECT SETVAL('term_names_id_seq', (SELECT MAX(id) FROM term_names));
+SELECT SETVAL('terms_id_seq', (SELECT MAX(id) FROM terms));
+SELECT SETVAL('tutorial_schedules_id_seq', (SELECT MAX(id) FROM tutorial_schedules));
+SELECT SETVAL('tutorials_id_seq', (SELECT MAX(id) FROM tutorials));
+SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
+SELECT SETVAL('willing_teachers_id_seq', (SELECT MAX(id) FROM willing_teachers));
+SELECT SETVAL('group_programmes_id_seq', (SELECT MAX(id) FROM group_programmes));
+SELECT SETVAL('group_courses_id_seq', (SELECT MAX(id) FROM group_courses));
+SELECT SETVAL('group_institutions_id_seq', (SELECT MAX(id) FROM group_institutions));
+SELECT SETVAL('group_lectures_id_seq', (SELECT MAX(id) FROM group_lectures));
+SELECT SETVAL('group_terms_id_seq', (SELECT MAX(id) FROM group_days));
+SELECT SETVAL('group_tutorial_schedules_id_seq', (SELECT MAX(id) FROM group_tutorial_schedules));
+SELECT SETVAL('group_locations_id_seq', (SELECT MAX(id) FROM group_locations));
+SELECT SETVAL('group_term_names_id_seq', (SELECT MAX(id) FROM group_term_names));
+SELECT SETVAL('group_filters_id_seq', (SELECT MAX(id) FROM group_filters));
+SELECT SETVAL('group_users_id_seq', (SELECT MAX(id) FROM group_users));
+SELECT SETVAL('user_pages_id_seq', (SELECT MAX(id) FROM user_pages));
+SELECT SETVAL('external_filter_values_id_seq', (SELECT MAX(id) FROM external_filter_values));
+SELECT SETVAL('group_attendees_id_seq', (SELECT MAX(id) FROM group_attendees));
+SELECT SETVAL('group_tutorials_id_seq', (SELECT MAX(id) FROM group_tutorials));
+SELECT SETVAL('group_willing_lecturers_id_seq', (SELECT MAX(id) FROM group_willing_lecturers));
+SELECT SETVAL('group_willing_tutors_id_seq', (SELECT MAX(id) FROM group_willing_tutors));
+SELECT SETVAL('maximum_tutorials_id_seq', (SELECT MAX(id) FROM maximum_tutorials));
+SELECT SETVAL('willing_lecturers_id_seq', (SELECT MAX(id) FROM willing_lecturers));
+SELECT SETVAL('willing_tutors_id_seq', (SELECT MAX(id) FROM willing_tutors));
+SELECT SETVAL('agatha_emails_id_seq', (SELECT MAX(id) FROM agatha_emails));
+SELECT SETVAL('email_templates_id_seq', (SELECT MAX(id) FROM email_templates));
+SELECT SETVAL('group_email_templates_id_seq', (SELECT MAX(id) FROM group_email_templates));
+SELECT SETVAL('group_agatha_emails_id_seq', (SELECT MAX(id) FROM group_agatha_emails));
+SELECT SETVAL('email_attachments_id_seq', (SELECT MAX(id) FROM email_attachments));
+SELECT SETVAL('agatha_files_id_seq', (SELECT MAX(id) FROM agatha_files));
+
+
+attendee_csvs; ; course_csvs; ;   day_csvs; ;  ; ; ; lecture_csvs; ; ; ;  person_csvs; personstatus_csvs; sessions; status_csvs;  term_csvs; ; ; tutorial_csvs; ; ; ; willing_teacher_csvs; ; format_elements; display_filters; ; ; ; ; ; ; ; ; ; ; ; open_records; ;  ; ;;;;;;; ; ; ; ;; ;
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+COPY attendee_csvs TO '/home/agathaapp/binary/attendee_csvs' WITH BINARY; COPY course_csvs TO '/home/agathaapp/binary/course_csvs' WITH BINARY; COPY day_csvs TO '/home/agathaapp/binary/day_csvs' WITH BINARY; COPY lecture_csvs TO '/home/agathaapp/binary/lecture_csvs' WITH BINARY; COPY person_csvs TO '/home/agathaapp/binary/person_csvs' WITH BINARY; COPY personstatus_csvs TO '/home/agathaapp/binary/personstatus_csvs' WITH BINARY; COPY status_csvs TO '/home/agathaapp/binary/status_csvs' WITH BINARY; COPY term_csvs TO '/home/agathaapp/binary/term_csvs' WITH BINARY; COPY tutorial_csvs TO '/home/agathaapp/binary/tutorial_csvs' WITH BINARY; COPY willing_teacher_csvs TO '/home/agathaapp/binary/willing_teacher_csvs' WITH BINARY; COPY open_records TO '/home/agathaapp/binary/open_records' WITH BINARY;
+
+!!!!!!!!!!!!!!!!!!!!
+COPY attendee_csvs FROM '/home/agathaapp/binary/attendee_csvs' WITH BINARY; COPY course_csvs FROM '/home/agathaapp/binary/course_csvs' WITH BINARY; COPY day_csvs FROM '/home/agathaapp/binary/day_csvs' WITH BINARY; COPY lecture_csvs FROM '/home/agathaapp/binary/lecture_csvs' WITH BINARY; COPY person_csvs FROM '/home/agathaapp/binary/person_csvs' WITH BINARY; COPY personstatus_csvs FROM '/home/agathaapp/binary/personstatus_csvs' WITH BINARY; COPY status_csvs FROM '/home/agathaapp/binary/status_csvs' WITH BINARY; COPY term_csvs FROM '/home/agathaapp/binary/term_csvs' WITH BINARY; COPY tutorial_csvs FROM '/home/agathaapp/binary/tutorial_csvs' WITH BINARY; COPY willing_teacher_csvs FROM '/home/agathaapp/binary/willing_teacher_csvs' WITH BINARY; COPY open_records FROM '/home/agathaapp/binary/open_records' WITH BINARY;
+
+
 
 ruby script/generate migration rename_tutorial_tutorial_id_to_tutorial_schedule_id
 rake db:migrate
@@ -114,12 +282,21 @@ ruby script/generate migration rename_term_number_to_term_name_id
 ruby script/generate model term_name name:string
 rake db:migrate
 
-agatha_dev=#  DROP TABLE attendee_csvs; DROP TABLE attendees; DROP TABLE course_csvs; DROP TABLE courses; DROP TABLE   day_csvs; DROP TABLE days; DROP TABLE  group_people; DROP TABLE groups; DROP TABLE institutions; DROP TABLE lecture_csvs; DROP TABLE lectures; DROP TABLE locations; DROP TABLE people;  DROP TABLE person_csvs; DROP TABLE personstatus_csvs;  DROP TABLE schema_migrations;DROP TABLE sessions; DROP TABLE status_csvs;  DROP TABLE term_csvs; DROP TABLE term_names; DROP TABLE terms; DROP TABLE tutorial_csvs; DROP TABLE tutorial_schedules; DROP TABLE tutorials; DROP TABLE users; DROP TABLE willing_teacher_csvs; DROP TABLE willing_teachers; DROP TABLE format_elements; DROP TABLE display_filters; DROP TABLE group_programmes; DROP TABLE group_courses; DROP TABLE group_institutions; DROP TABLE group_lectures; DROP TABLE group_terms; DROP TABLE group_days; DROP TABLE group_tutorial_schedules; DROP TABLE group_locations; DROP TABLE group_term_names; DROP TABLE group_filters; DROP TABLE group_users; DROP TABLE open_records; DROP TABLE user_pages;  DROP TABLE external_filter_values; DROP TABLE group_attendees;DROP TABLE group_tutorials;DROP TABLE group_willing_lecturers;DROP TABLE group_willing_tutors;DROP TABLE maximum_tutorials;DROP TABLE willing_lecturers;DROP TABLE willing_tutors; DROP TABLE agatha_emails; DROP TABLE email_templates; DROP TABLE group_email_templates; DROP TABLE group_agatha_emails;
+agatha_dev=#  DELETE FROM attendee_csvs; DELETE FROM attendees; DELETE FROM course_csvs; DELETE FROM courses; DELETE FROM   day_csvs; DELETE FROM days; DELETE FROM  group_people; DELETE FROM groups; DELETE FROM institutions; DELETE FROM lecture_csvs; DELETE FROM lectures; DELETE FROM locations; DELETE FROM people;  DELETE FROM person_csvs; DELETE FROM personstatus_csvs; DELETE FROM sessions; DELETE FROM status_csvs;  DELETE FROM term_csvs; DELETE FROM term_names; DELETE FROM terms; DELETE FROM tutorial_csvs; DELETE FROM tutorial_schedules; DELETE FROM tutorials; DELETE FROM users; DELETE FROM willing_teacher_csvs; DELETE FROM willing_teachers; DELETE FROM format_elements; DELETE FROM display_filters; DELETE FROM group_programmes; DELETE FROM group_courses; DELETE FROM group_institutions; DELETE FROM group_lectures; DELETE FROM group_terms; DELETE FROM group_days; DELETE FROM group_tutorial_schedules; DELETE FROM group_locations; DELETE FROM group_term_names; DELETE FROM group_filters; DELETE FROM group_users; DELETE FROM open_records; DELETE FROM user_pages;  DELETE FROM external_filter_values; DELETE FROM group_attendees;DELETE FROM group_tutorials;DELETE FROM group_willing_lecturers;DELETE FROM group_willing_tutors;DELETE FROM maximum_tutorials;DELETE FROM willing_lecturers;DELETE FROM willing_tutors; DELETE FROM agatha_emails; DELETE FROM email_templates; DELETE FROM group_email_templates; DELETE FROM group_agatha_emails;DELETE FROM email_attachments; DELETE FROM agatha_files;
+
+agatha_dev=# DELETE FROM person_csvs; DELETE FROM status_csvs ; DELETE FROM personstatus_csvs ; DELETE FROM course_csvs ; DELETE FROM lecture_csvs ; DELETE FROM term_csvs ; DELETE FROM attendee_csvs ; DELETE FROM day_csvs ; DELETE FROM willing_teacher_csvs ; DELETE FROM tutorial_csvs;
 
 
 agatha_dev=# COPY person_csvs FROM '/home/agathaapp/agathaJPG2/people.csv' DELIMITERS ',' CSV; COPY status_csvs FROM '/home/agathaapp/agathaJPG2/statuses.csv' DELIMITERS ',' CSV; COPY personstatus_csvs FROM '/home/agathaapp/agathaJPG2/peoplestatuses.csv' DELIMITERS ',' CSV; COPY course_csvs FROM '/home/agathaapp/agathaJPG2/coursetitles.csv' DELIMITERS ',' CSV; COPY lecture_csvs FROM '/home/agathaapp/agathaJPG2/lecture_courses.csv' DELIMITERS ',' CSV; COPY term_csvs FROM '/home/agathaapp/agathaJPG2/terms.csv' DELIMITERS ',' CSV; COPY attendee_csvs FROM '/home/agathaapp/agathaJPG2/lectures.csv' DELIMITERS ',' CSV; COPY day_csvs FROM '/home/agathaapp/agathaJPG2/days.csv' DELIMITERS ',' CSV; COPY willing_teacher_csvs FROM '/home/agathaapp/agathaJPG2/willing_to_teach.csv' DELIMITERS ',' CSV; COPY tutorial_csvs FROM '/home/agathaapp/agathaJPG2/tutorials.csv' DELIMITERS ',' CSV;
 
+agatha3# COPY
+
+
 agatha3# INSERT INTO users ("name",hashed_password,salt,person_id) VALUES ('agathaapp','d67b7d4eb690358b0fdd62e6eb5686c091b0bf21','-6138813780.865122206190294',729);
+INSERT INTO groups (group_name, table_name, owner_id, private, readers_id, writers_id ) VALUES ('Not Set','',1,true,0,0);
+INSERT INTO groups (group_name, table_name, owner_id, private, readers_id, writers_id ) VALUES ('Administrator','users',1,false,2,2);
+INSERT INTO group_users (group_id, user_id) VALUES (2,1);
+
 sudo apt-get install irb
 ruby script/console
 >> User.create(:name => 'agathaapp', :password => 'qwerty', :password_confirmation => 'qwerty', :person_id => 729)
@@ -440,6 +617,11 @@ People not in any group
 ruby script/generate model user_page user_id:integer page_name:string option_id:integer is_active:boolean
 ruby script/generate migration page_name_unique
 
+ruby script/generate model agatha_file person_id:integer course_id:integer description:text 
+script/generate paperclip agatha_file agatha_data
+ruby script/generate model agatha_email_file agatha_email_id:integer agatha_file_id:integer 
+ruby script/generate migration rename_attachment_tables
+ruby script/generate migration rename_email_attachments_ids
 
 ruby script/generate model external_filter_value user_id:integer table_name:string filter_id:integer member_id:integer group_id:integer in_use:boolean
 GroupLecture.find_by_sql("SELECT COUNT(*) FROM group_lectures WHERE group_id=36 AND lecture_id=210 ")
@@ -621,4 +803,121 @@ EmailTemplate.create(:template_name => "Next year's planned tuition, for tutors"
 
 
 EmailTemplate.create(:template_name => "Enquiry re availability", :from_email => "<%= me.email %>", :subject => "Availability for teaching for Blackfriars next year?", :ruby_header=> %Q{<% first_term = term;   second_term_id = term.id + 1 ;  second_term = Term.find(second_term_id); third_term_id = term.id + 2;  third_term = Term.find(third_term_id); first_term_name = TermName.find(first_term.term_name_id).name; first_term_year = first_term.year; second_term_name = TermName.find(second_term.term_name_id).name; second_term_year = second_term.year; third_term_name = TermName.find(third_term.term_name_id).name; third_term_year = third_term.year; confirmed_groups = Group.find_by_sql("SELECT * FROM groups WHERE table_name = 'lectures' AND group_name='Lecturer Confirmed'"); if confirmed_groups.length >0 then confirmed_id = confirmed_groups[0].id else confirmed_id = 0 end; first_term_lectures = Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); second_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+1} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); third_term_lectures =  Lecture.find_by_sql("SELECT * FROM lectures a0 WHERE a0.term_id = #{term.id+2} AND a0.person_id = #{person.id} AND (SELECT COUNT(*) FROM group_lectures a1 WHERE a1.group_id=#{confirmed_id} AND a1.lecture_id = a0.id)=0"); if first_term_lectures.length>0 || second_term_lectures.length>0 || third_term_lectures.length>0 then make_lecture_request = true;  else make_lecture_request = false; end; num_terms = 0; if first_term_lectures.length >0 then num_terms = num_terms+1 end; if second_term_lectures.length  >0 then num_terms = num_terms+1 end; if third_term_lectures.length  >0 then num_terms = num_terms+1 end; terms_str = "(#{term.id},#{second_term_id },#{third_term_id})"; courses = Course.find_by_sql("SELECT * FROM courses a0 WHERE (SELECT COUNT(*) FROM lectures a1 WHERE a1.course_id = a0.id AND a1.person_id = #{person.id} AND a1.term_id IN #{terms_str} AND (SELECT COUNT(*) FROM group_lectures a2 WHERE a2.group_id=#{confirmed_id} AND a2.lecture_id = a1.id)=0)>0"); num_topics = courses.length; num_lectures = first_term_lectures.length + second_term_lectures.length + third_term_lectures.length; %>},:body=>%Q{Dear <%= person.salutation %>,<br><br>I hope you are well and the academic year has gone smoothly.<br><br>Thank you for your teaching done for Blackfriars this year soon to end.<br><br>I am soon going to have to sort out who teaches what to whom, and when, in the coming academic year. It will assist that process if at this stage I find out what you and our other tutors can offer us, insofar as you can predict your availability. I hope my questions don’t pose too much of a distraction at this time.<br><br>So, could you let me know if there’s a Term in the coming academic year that is specially good, or specially bad, for doing some tutorials for Blackfriars?<br><br>Also, roughly how many tutorials a week you could reasonably do for us?<br><br>Could you remind me which topics you would specially like to teach if students need them, and which others you could teach if necessary?<br><br><% if make_lecture_request %>Could you also let me know if you would be available to give lectures on the following <%="topic".pl(num_topics)%> in the <%="term".pl(num_terms)%> specified, and if there are any constraints on the days and times at which you can give the <%="lecture".pl(num_lectures)%>?<br><br><% if first_term_lectures.length >0 %><% i = 0; ii=first_term_lectures.length-1; %><u><b><%=first_term_name%> Term <%= first_term_year %></b></u>: <%first_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if second_term_lectures.length >0 %><% i = 0; ii=second_term_lectures.length-1; %><u><b><%=second_term_name%> Term <%= second_term_year %></b></u>: <%second_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><% if third_term_lectures.length >0 %><% i = 0; ii=third_term_lectures.length-1; %><u><b><%=third_term_name%> Term <%= third_term_year %></b></u>: <%third_term_lectures.each do |lecture| course_name = Course.find(lecture.course_id).name; n=lecture.number_of_lectures;%><%= n %> <%="lecture".pl(n)%> on <%=course_name%><%if i< ii-1%><%=", "%><%elsif i== ii-1%><%=" and "%><%else%><%="."%><%end%><%i=i+1%><%end%><% end %><br><br><%end%>With many thanks for your help, and best wishes,<br><br>Richard.<br>(Richard Conrad, O.P., Vice Regent).<i-1%><br><p></p> <p></p></i-1%>},:term_dependency=>true, :course_dependency=>false, :global_warnings=>%Q{michaelmas_term_id = TermName.find(:first,:conditions=>{:name =>"Michaelmas"}).id;   if michaelmas_term_id != term.term_name_id   then  warning_str << "WARNING: you haven't selected a Michaelmas term." end}, :personal_warnings=>"")
+
+
+ SELECT a0.id, CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || ' ' END AS a0_course_id, CASE a0.person_id WHEN 1 THEN 'Not Set' ELSE a48.second_name || ', ' || a48.first_name END AS a0_person_id FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id INNER JOIN people a48 ON a0.person_id = a48.id WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150 
+
+*************
+SELECT a0.id, CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || ' ' END AS a0_course_id FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id  WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150
+*************
+SELECT CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || ' ' END AS a0_course_id FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id  WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150
+*************
+SELECT array_to_string(ARRAY(SELECT CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || '' END AS a0_course_id FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id  WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150), ',\n ');
+*************
+SELECT a0.id, CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || ' ' END AS a0_course_id 
+
+
+FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id  WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150
+*************
+SELECT  a2.first_name || ' ' || a2.second_name FROM people a2 INNER JOIN  attendees a3 ON a3.person_id = a2.id WHERE a3.lecture_id = 232 ORDER BY a2.first_name;
+*************
+SELECT array_to_string(ARRAY(SELECT  a2.first_name || ' ' || a2.second_name FROM people a2 INNER JOIN  attendees a3 ON a3.person_id = a2.id WHERE a3.lecture_id = 232 ORDER BY a2.first_name),E'\n');
+*************
+SELECT CASE a0.course_id WHEN 1 THEN 'Not Set' ELSE a19.name || ' ' END AS a0_course_id,
+array_to_string(ARRAY(SELECT  a2.first_name || ' ' || a2.second_name FROM people a2 INNER JOIN  attendees a3 ON a3.person_id = a2.id WHERE a3.lecture_id = a0.id ORDER BY a2.first_name),E'\n')
+FROM lectures a0 INNER JOIN courses a19 ON a0.course_id = a19.id  WHERE (a0.id != 1 ) ORDER BY a0.id asc, a0_course_id asc LIMIT 150;
+*************
+SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || b5.name || ' ' || b4.year || ' ' || ' ' END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.lecture_id = b2.id WHERE (b1.person_id = 729 ) ORDER BY b1_lecture_id asc LIMIT 150 ;
+*************
+SELECT array_to_string(ARRAY(SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || b5.name || ' ' || b4.year || ' ' || ' ' END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.lecture_id = b2.id WHERE (b1.person_id = 729 ) ORDER BY b1_lecture_id asc),E'\n');
+*************
+SELECT array_to_string(ARRAY(SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name || ' ' END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id) ON b1.lecture_id = b2.id WHERE (b1.person_id = 729 AND b2.term_id = 18) ORDER BY b1_lecture_id asc),E'\n');
+
+*************
+SELECT array_to_string(ARRAY(SELECT CASE b1.tutorial_schedule_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || b5.name || ' ' || b4.year  END AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.tutorial_schedule_id = b2.id WHERE (b1.person_id = 729 ) ORDER BY b1_tutorial_schedule_id asc),E', <br>'),
+*************
+SELECT  array_to_string(ARRAY(SELECT CASE b1.tutorial_schedule_id WHEN 1 THEN 'Not Set' ELSE b3.name || ' ' END AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id) ON b1.tutorial_schedule_id = b2.id WHERE (b1.person_id = 729 AND b2.term_id = 20) ORDER BY b1_tutorial_schedule_id asc),E', <br>')
+*************
+SELECT b2.agatha_data_file_name FROM email_attachments b1 INNER JOIN agatha_files b2 ON b2.id = b1.agatha_file_id WHERE b1.agatha_email_id = 2 ORDER BY b2.agatha_data_file_name ASC
+*************
+SELECT  array_to_string(ARRAY(SELECT b2.agatha_data_file_name FROM email_attachments b1 INNER JOIN agatha_files b2 ON b2.id = b1.agatha_file_id WHERE b1.agatha_email_id = 2 ORDER BY b2.agatha_data_file_name ASC), ', ');
+*************
+SELECT  array_to_string(ARRAY(SELECT '<a class="attachment_links" href = <%= "\\"#{AgathaFile.find(' || b2.id || ').agatha_data.url}\\""%> target="_blank">' || b2.agatha_data_file_name || '</a>' FROM email_attachments b1 INNER JOIN agatha_files b2 ON b2.id = b1.agatha_file_id WHERE b1.agatha_email_id = 2 ORDER BY b2.agatha_data_file_name ASC), '<br> ');
+*************
+*************
+*************
+
+
+
+tutorials taken by person
+tutorials taken by person in term
+lectures attended by person
+lectures attended by person in term
+
+attached files
+*************
+emails for email person attending arg = lecture schedule
+(SELECT COUNT(*) FROM attendee b1 WHERE b1.person_id = a0.person_id AND b1.lecture_id = arg_value)>0
+
+
+emails for email person attending arg = course in the email term, term +1, term+2
+emails for email person attending tutorial in arg = course in email term
+emails for email person attending tutorial in arg = course in email term, term +1, term+2
+emails for email person being tutored by arg = person in email term
+emails for email person being tutored by arg = person in email term, term +1, term+2
+
+*************
+files for courses tutored in arg = term
+files for courses lectured in arg = term
+files for courses lectured to arg = person
+files for courses tutored to arg = person
+tutorial files relevant to arg = email
+tutorial files relevant to arg = email year
+lecture files relevant to arg = email
+lecture files relevant to arg = email year
+*******************************************************************************************************************************************************************************************************************************************************************************
+1) put in lecture schedules - specify a term, possible time and day, specify a room
+3) have a lecture time: default is 1 hour.
+4) add to fixed_time_group if don't want algorithm to move time
+
+5) Time constraints
+a) days and times that person can't lecture on - for given term. No term means this is the default.
+b) days and times that person can lecture on
+c) days and times that would prefer not to lecture on
+d) days and times that they would prefer to lecture on
+e) days and times that anyone can lecture
+f) days and times that people must not lecture
+g) the minute offset for lecture start will be specified by the prefer lecture times and 1 hour lecture must start at this time. 1/2 lectures can start at this time or half an hour later.
+
+
+6) location constraints
+a) Place where lecture can take place, on day and time
+b) Place where lecture cannot take place, on day and time
+c) no entry means location will not be changed. 
+
+*******************************************************************************************************************************************************************************************************************************************************************************
+*******************************************************************************************************************************************************************************************************************************************************************************
+*******************************************************************************************************************************************************************************************************************************************************************************
+*******************************************************************************************************************************************************************************************************************************************************************************
+
+*************
+AGATHA3: COPY AS TEXT FILE WHERE POSSIBLE
+AGATHA3: MAKE SURE TEXT FILE CAN BE READ INTO SPREADSHEET
+AGATHA3: COPY AS BINARY
+AGATHA_DEV: MAKE SURE AGATHA3 CAN BE READ INTO AGATHA_DEV
+CHECK MISSING INDICES ARE THE SAME FOR AGATHA3 AND AGATHA_DEV - ESPECIALLY TUTORIALS AND ATTENDEES, GROUP_PEOPLE, LECTURES
+CHECK A FEW RECENT ENTRIES ON BOTH LOCALHOST AND AGATHA.BFRIAS.OX.AC.UK AGREE
+CHECK THAT ALL THE CSV TABLES IN AGATHA3 CAN BE DELETED AND COPIED BACK
+CHEKC THAT OPEN_RECORDS IN AGATHA3 CAN BE DELETE AND COPIED BACK AND CHECK THAT MISSING INDICES BEHAVE EXACTLY THE SAME WAY AS IN AGATHA_DEV.
+DELETE EACH TABLE AT A TIME IN AGATHA 3, THEN RESTORE AND DO SEARCH IN USER INTERFACE AND CHECK FOR ANY ANOMOLY.
+DROP ALL TABLES
+DO GIT COMMIT, COLD DEPLOY
+COPY ALL BINARIES APART FROM OPEN RECORDS AND FORMAT_FIELDS
+FOR FORMAT FIELDS, COPY ONLY NON-USERID 0 ENTRIES
+GO INTO CONSOLE AND COPY THE USER0 FORMAT FIELDS ENTRIES.
+
+*************
+
+
+
 

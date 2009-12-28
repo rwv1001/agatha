@@ -2,7 +2,7 @@
 include EditHelper
 
 class PeopleController < ApplicationController
-  protect_from_forgery :only => [:create, :update, :destroy]
+  protect_from_forgery :only => [:create, :updater, :destroy]
 
  
 
@@ -23,7 +23,7 @@ class PeopleController < ApplicationController
       my_id = session[:user_id];
       @user = User.find(:first, :conditions =>{:id=>  my_id, :person_id => @id})
     end
-    edit_helper();
+    edit_helper([]);
   end
 
 
@@ -43,7 +43,7 @@ class PeopleController < ApplicationController
 
   end
 
-  def update
+  def updater
     update_helper();
 
   end
