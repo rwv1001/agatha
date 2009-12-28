@@ -62,7 +62,7 @@ class FormatElt
   attr_reader :field_name
   attr_reader :insert_string
   def initialize(field_name_, insert_string_)
-    RAILS_DEFAULT_LOGGER.error( "new FormatElt" );
+ #   RAILS_DEFAULT_LOGGER.error( "new FormatElt" );
     @field_name = field_name_
     @insert_string = insert_string_
   end
@@ -74,7 +74,7 @@ class FormatElts
   attr_reader :user_id
   attr_reader :format_elements_array
   def initialize(table, user_id, format_elements_array)
-    RAILS_DEFAULT_LOGGER.error( "new FormatElts" );
+#    RAILS_DEFAULT_LOGGER.error( "new FormatElts" );
     @table = table
     @user_id = user_id
     @format_elements_array = format_elements_array
@@ -94,7 +94,7 @@ class TableObject
   attr_reader :table
   attr_reader :object
   def initialize(table_, object_)
-    RAILS_DEFAULT_LOGGER.error( "new TableObject" );
+#    RAILS_DEFAULT_LOGGER.error( "new TableObject" );
     @table = table_;
     @object = object_;
   end

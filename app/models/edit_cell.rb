@@ -6,7 +6,7 @@ class EditCell
     attr_reader :update_parent;
     attr_reader :readonly_flag;
      def initialize(attribute, current_object, table_name, filter_controller,update_parent, readonly_flag );
-       RAILS_DEFAULT_LOGGER.error( "new EditCell" );
+ #      RAILS_DEFAULT_LOGGER.error( "new EditCell" );
        @current_object = current_object
        @attribute = attribute
        @filter_controller = filter_controller

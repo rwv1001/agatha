@@ -415,7 +415,7 @@ module FilterHelper
         WHEN 'people' THEN (SELECT COUNT(*) FROM group_people x1 WHERE x1.group_id = a0.id)
         WHEN 'courses' THEN (SELECT COUNT(*) FROM group_courses x1 WHERE x1.group_id = a0.id)
         WHEN 'days' THEN (SELECT COUNT(*) FROM group_days x1 WHERE x1.group_id = a0.id)
-        WHEN 'insitutions' THEN (SELECT COUNT(*) FROM group_institutions x1 WHERE x1.group_id = a0.id)
+        WHEN 'institutions' THEN (SELECT COUNT(*) FROM group_institutions x1 WHERE x1.group_id = a0.id)
         WHEN 'lectures' THEN (SELECT COUNT(*) FROM group_lectures x1 WHERE x1.group_id = a0.id)
         WHEN 'attendees' THEN (SELECT COUNT(*) FROM group_attendees x1 WHERE x1.group_id = a0.id)
         WHEN 'locations' THEN (SELECT COUNT(*) FROM group_locations x1 WHERE x1.group_id = a0.id)

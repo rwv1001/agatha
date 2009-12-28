@@ -20,7 +20,7 @@ class ReflectionElement
   attr_reader :name
   attr_reader :foreign_key
   def initialize(name_, foreign_key_)
-    RAILS_DEFAULT_LOGGER.error( "new ReflectionElement" );
+ #   RAILS_DEFAULT_LOGGER.error( "new ReflectionElement" );
     @name = name_
     @foreign_key =foreign_key_
   end

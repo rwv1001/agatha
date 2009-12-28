@@ -206,6 +206,7 @@ INSERT INTO display_filters (user_id, table_name, filter_index, element_order, i
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_tutors',3,3,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',0,0,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',1,1,true);
+
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',2,2,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'willing_lecturers',3,3,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'maximum_tutorials',0,0,true);
@@ -221,11 +222,14 @@ INSERT INTO display_filters (user_id, table_name, filter_index, element_order, i
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',2,2,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',3,3,true);
 INSERT INTO display_filters (user_id, table_name, filter_index, element_order, in_use) VALUES (0, 'agatha_emails',4,4,true);
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 SELECT SETVAL('attendees_id_seq', (SELECT MAX(id) FROM attendees));
 SELECT SETVAL('courses_id_seq', (SELECT MAX(id) FROM courses));
 SELECT SETVAL('days_id_seq', (SELECT MAX(id) FROM days));
 SELECT SETVAL('group_people_id_seq', (SELECT MAX(id) FROM group_people));
+SELECT SETVAL('group_members_id_seq', (SELECT MAX(id) FROM group_people));
 SELECT SETVAL('groups_id_seq', (SELECT MAX(id) FROM groups));
 SELECT SETVAL('institutions_id_seq', (SELECT MAX(id) FROM institutions));
 SELECT SETVAL('lectures_id_seq', (SELECT MAX(id) FROM lectures));

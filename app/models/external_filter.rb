@@ -4,7 +4,7 @@ class ExternalFilterElement
   attr_reader :external_filter
   attr_reader :element_id
   def initialize(element_id_, external_filter_)
-    RAILS_DEFAULT_LOGGER.error( "new ExternalFilterElement" );
+ #   RAILS_DEFAULT_LOGGER.error( "new ExternalFilterElement" );
     @element_id = element_id_;
     @external_filter = external_filter_;
   end
@@ -39,7 +39,7 @@ class ExternalFilter
      @argument_selector_str = @argument_selector_str.gsub(/administrator_/,administrator_.to_s);
   end
   def initialize(class_name_, header_, where_str_, argument_class_, group_class_, argument_selector_str_, allow_multiple_arguments_, group_selector_)
-    RAILS_DEFAULT_LOGGER.error( "new ExternalFilter" );
+#    RAILS_DEFAULT_LOGGER.error( "new ExternalFilter" );
     @class_name = class_name_;
     @header = header_;
     @where_str = where_str_;

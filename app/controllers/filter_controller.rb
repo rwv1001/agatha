@@ -9,7 +9,7 @@ class GroupFilterElt
   
 
   def initialize(foreign_key, group_id, class_name)
-    RAILS_DEFAULT_LOGGER.error( "new GroupFilterElt" );
+  #  RAILS_DEFAULT_LOGGER.error( "new GroupFilterElt" );
     @foreign_key = foreign_key
     @group_id = group_id
     @class_name = class_name
@@ -30,7 +30,7 @@ class GroupFilterElts
   attr_reader :possible_char_length
  
   def initialize(table_name,  user_id, group_filter_elts)
-    RAILS_DEFAULT_LOGGER.error( "new GroupFilterElts" );
+#    RAILS_DEFAULT_LOGGER.error( "new GroupFilterElts" );
     @table_name = table_name
     @group_filter_elts = group_filter_elts
     @user_id = user_id
@@ -56,7 +56,7 @@ end
 class FilterController
 
   def initialize(search_ctls_, class_name_, user_id_)
-    RAILS_DEFAULT_LOGGER.error( "new FilterController" );
+#    RAILS_DEFAULT_LOGGER.error( "new FilterController" );
     @search_ctls = search_ctls_;
     @class_name = class_name_;
     @user_id = user_id_;
@@ -136,7 +136,7 @@ class FilterController
   end
 
   def self.GetGroupFilters(table_name, user_id)
-    RAILS_DEFAULT_LOGGER.error("DEBUG: GetGroupFilters");
+#    RAILS_DEFAULT_LOGGER.error("DEBUG: GetGroupFilters");
     group_filter_elts = [];
     eval_str = table_name.classify + ".reflect_on_all_associations(:belongs_to)";
     begin

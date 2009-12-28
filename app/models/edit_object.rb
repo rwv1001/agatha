@@ -5,7 +5,7 @@ class EditObject
     attr_reader :table_name
     attr_reader :readonly_fields
      def initialize(current_object, attribute_list, filter_controller, table_name, readonly_fields)
-       RAILS_DEFAULT_LOGGER.error( "new EditObject" );
+  #     RAILS_DEFAULT_LOGGER.error( "new EditObject" );
        @current_object = current_object
        @attribute_list = attribute_list
        @filter_controller = filter_controller

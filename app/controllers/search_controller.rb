@@ -5,7 +5,7 @@ class SearchResults
 
 
   def initialize(table_, table_type_, search_controller_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchResults" );
+#    RAILS_DEFAULT_LOGGER.error( "new SearchResults" );
     @table = table_
     @table_type = table_type_
     @search_controller = search_controller_
@@ -16,7 +16,7 @@ class SearchResultsRow
   attr_reader :row
   attr_reader :search_controller
   def initialize(row_, search_controller_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchResultsRow" );
+  #  RAILS_DEFAULT_LOGGER.error( "new SearchResultsRow" );
     @row = row_
     @search_controller = search_controller_
   end
@@ -29,7 +29,7 @@ class SearchResultsButtons
   attr_reader :table_name
 
   def initialize(row_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchResultsButtons" );
+#    RAILS_DEFAULT_LOGGER.error( "new SearchResultsButtons" );
     @row = row_
    
 
@@ -40,7 +40,7 @@ class SearchResultsRowButton
   attr_reader :search_results_row
   attr_reader :search_results_button
   def initialize(search_results_row_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchResultsRowButton" );
+#    RAILS_DEFAULT_LOGGER.error( "new SearchResultsRowButton" );
     @search_results_row = search_results_row_;
     @search_results_button =   SearchResultsButtons.new(@search_results_row.row);
   end
@@ -49,7 +49,7 @@ class  TableSelection
   attr_reader :table_index
   attr_reader :search_controller
   def initialize(search_controller_, table_index_)
-    RAILS_DEFAULT_LOGGER.error( "new TableSelection" );
+  #  RAILS_DEFAULT_LOGGER.error( "new TableSelection" );
     @search_controller = search_controller_
     @table_index = table_index_
   end
@@ -59,7 +59,7 @@ class SearchControllerHeader
   attr_reader :table_type
   attr_reader :search_controller
   def initialize(table_type_, search_controller_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchControllerHeader" );
+ #   RAILS_DEFAULT_LOGGER.error( "new SearchControllerHeader" );
     @table_type = table_type_
     @search_controller = search_controller_
   end
@@ -72,7 +72,7 @@ class SearchFilterHeader
   attr_reader :table_name
   attr_reader :num_filters
   def initialize(table_type_, row_type_, extended_filter_, table_name_, num_filters_)
-    RAILS_DEFAULT_LOGGER.error( "new SearchFilterHeader" );
+ #   RAILS_DEFAULT_LOGGER.error( "new SearchFilterHeader" );
     @table_type = table_type_
     @row_type = row_type_
     @extended_filter = extended_filter_
@@ -103,7 +103,7 @@ class FieldNode
 
   
   def initialize(parent_, name_, available_fields_index_, key_)
-    RAILS_DEFAULT_LOGGER.error( "new FieldNode" );
+ #   RAILS_DEFAULT_LOGGER.error( "new FieldNode" );
     @parent = parent_
     @all_children = []
     @current_children = []
@@ -140,7 +140,7 @@ class SearchField
   attr_accessor :foreign_search_str
   attr_accessor :primary
   def initialize(field_string, qualifer_string,  eval_string, include_index_val, data_type_symbol, tag_symbol, id_val, table_name_str, attribute_name, field_node, foreign_class, primary)
-    RAILS_DEFAULT_LOGGER.error( "new SearchField" );
+#    RAILS_DEFAULT_LOGGER.error( "new SearchField" );
     @header =field_string
     @qualifier =  qualifer_string
     @full_name = "#{qualifer_string}/#{field_string}"

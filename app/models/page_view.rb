@@ -7,7 +7,7 @@ class PageView
   attr_reader :unrestricted
   attr_accessor :display_divs
   def initialize(body_id_, page_name_, page_option_str_, unrestricted_, display_divs_)
-    RAILS_DEFAULT_LOGGER.error( "new PageView" );
+#    RAILS_DEFAULT_LOGGER.error( "new PageView" );
     if(!@@option_ids.has_key?(page_name_))
       @@option_ids[page_name_]= 0;
     end

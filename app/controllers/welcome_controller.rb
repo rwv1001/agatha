@@ -53,9 +53,9 @@ class WelcomeController < ApplicationController
       create_external_filters(session);
       
       InitializeSessionController()
-      RAILS_DEFAULT_LOGGER.error("inialization index");
+  #    RAILS_DEFAULT_LOGGER.error("inialization index");
     else
-      RAILS_DEFAULT_LOGGER.error("no need for initialization");
+   #   RAILS_DEFAULT_LOGGER.error("no need for initialization");
       
     end
 

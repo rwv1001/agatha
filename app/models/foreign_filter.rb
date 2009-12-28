@@ -4,7 +4,7 @@ class ForeignFilter
 
 
   def initialize(foreign_key_, attribute_name_)
-    RAILS_DEFAULT_LOGGER.error( "new ForeignFilter" );
+  #  RAILS_DEFAULT_LOGGER.error( "new ForeignFilter" );
     @foreign_key = foreign_key_;
     @attribute_name = attribute_name_;   
   end
