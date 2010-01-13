@@ -13,5 +13,6 @@ end
    USER_WHERE_STR = "";
 
       has_many :group_email_templates, :class_name => "GroupEmailTemplate", :dependent => :destroy
+      has_many :agatha_emails, :class_name => "AgathaEmail", :dependent => :destroy
 
 end

@@ -13,4 +13,5 @@ end
     USER_WHERE_STR = "";
     belongs_to :student,  :class_name => "Person", :foreign_key => "person_id"
     belongs_to :lecture,  :class_name => "Lecture", :foreign_key => "lecture_id"
+    has_many :group_attendees, :class_name => "GroupAttendee", :dependent => :destroy
 end

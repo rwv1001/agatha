@@ -179,7 +179,7 @@ function on_assign(id)
     specific_div.descendants().each(function(elt){
         elt.remove()
         });
-     sent_tutor = new Element('input',{ type: 'text', name: 'tutor_id',  value: id  });
+     sent_tutor = new Element('input',{ type: 'text', name: 'id',  value: id  });
      specific_div.insert({ 'bottom': sent_tutor  });
      class_name = $("action_class").value;
      search_results_div_str = "search_results_" + class_name;
@@ -722,6 +722,7 @@ if (!answer)
    
    form_obj.onsubmit();
 }
+
 var row_count = 0;
 
 function recolour(table_name)
@@ -747,6 +748,9 @@ function recolour(table_name)
 }
 function on_del(table_name, ids)
 {
+//    alert_str = "table = " + table_name + ", ids = ";
+//   ids.each(function(id){alert_str = alert_str + id + ", "});
+//    alert(alert_str);
     ids.each(function(id){
         name = table_name + '_' + id;
         win_ref = open_windows.get(name);
@@ -757,7 +761,10 @@ function on_del(table_name, ids)
         open_windows.unset(name);
         row_obj_str = ""+ id +"_"+ table_name;
         row_obj = $(row_obj_str);
-        row_obj.remove();
+        if(row_obj != null)
+        {
+            row_obj.remove();
+        }
     });
     row_objs_str = ".row_" + table_name
     row_count = 0;

@@ -15,6 +15,7 @@ end
   has_attached_file :agatha_data, :url => "/assets/agatha_files/:id/:basename.:extension", :path => ":rails_root/public/assets/agatha_files/:id/:basename.:extension"
   USER_WHERE_STR = "";
   has_many :email_attachments, :class_name => "EmailAttachment", :dependent => :destroy
+  
   belongs_to :person, :class_name => "Person", :foreign_key => "person_id"
   belongs_to :course, :class_name => "Course", :foreign_key => "course_id"
  

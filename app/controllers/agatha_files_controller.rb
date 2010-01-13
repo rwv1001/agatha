@@ -7,7 +7,7 @@ class AgathaFilesController < ApplicationController
 
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
 
-    edit_helper(["agatha_data_file_name", "agatha_data_content_type", "agatha_data_file_size", "agatha_data_updated_at" ]);
+    edit_helper(@table_name,["agatha_data_file_name", "agatha_data_content_type", "agatha_data_file_size", "agatha_data_updated_at" ]);
   end
 
   def file_upload
@@ -21,8 +21,8 @@ class AgathaFilesController < ApplicationController
   agatha_file_obj.agatha_data = agatha_params_file[:agatha_data];
  
     agatha_file_obj.save;
-    
-    edit_helper(["agatha_data_file_name", "agatha_data_content_type", "agatha_data_file_size", "agatha_data_updated_at" ]);
+    @table_name = params[:table_name];
+    edit_helper(@table_name,["agatha_data_file_name", "agatha_data_content_type", "agatha_data_file_size", "agatha_data_updated_at" ]);
 
   end
 

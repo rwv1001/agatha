@@ -779,6 +779,8 @@ module FilterHelper
       ))
   ];
     extended_filters["TutorialSchedule"]=[
+      ExtendedFilter.new(:subquery, SubQuery.new("Students tutored", "students_tutored" ,
+      "array_to_string(ARRAY(SELECT  b1.first_name || ' ' || b1.second_name FROM people b1 INNER JOIN  tutorials b2 ON b2.person_id = b1.id WHERE b2.tutorial_schedule_id = a0.id ORDER BY b1.first_name),',<br> ')", "")),
       ExtendedFilter.new(:external_filter, ExternalFilter.new("TutorialSchedule", #class_name
       "Tutorial schedules in group", #header
       "(SELECT COUNT(*) FROM group_tutorial_schedules b1 WHERE b1.group_id = arg_value AND b1.tutorial_schedule_id = a0.id)>0", #where_str_
@@ -935,11 +937,11 @@ module FilterHelper
     ExtendedFilter.new(:subquery, SubQuery.new("Lectures attended in term", "lectures_attended_in_term" ,
       "array_to_string(ARRAY(SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id) ON b1.lecture_id = b2.id WHERE (b1.person_id = a0.id AND b2.term_id = current_argument_value) ORDER BY b1_lecture_id asc),', <br>')", "Term")),
     ExtendedFilter.new(:subquery, SubQuery.new("Lectures attended", "lectures_attended" ,
-      "array_to_string(ARRAY(SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || b5.name || ' ' || b4.year  END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.lecture_id = b2.id WHERE (b1.person_id = a0.id ) ORDER BY b1_lecture_id asc),'; <br>')", "")),
+      "array_to_string(ARRAY(SELECT CASE b1.lecture_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || SUBSTRING(b5.name,1,1) || SUBSTRING('' || b4.year,3,2)  END AS b1_lecture_id FROM attendees b1 INNER JOIN ( lectures b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.lecture_id = b2.id WHERE (b1.person_id = a0.id ) ORDER BY b1_lecture_id asc),'; <br>')", "")),
     ExtendedFilter.new(:subquery, SubQuery.new("Tutorials taken in term", "tutorials_taken_in_term" ,
-      "array_to_string(ARRAY(SELECT CASE b1.tutorial_schedule_id WHEN 1 THEN 'Not Set' ELSE b3.name END AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id) ON b1.tutorial_schedule_id = b2.id WHERE (b1.person_id = a0.id AND b2.term_id = current_argument_value) ORDER BY b1_tutorial_schedule_id asc),', <br>')", "Term")),
+      "array_to_string(ARRAY(SELECT b3.name || ', ' || CASE b4.id WHEN 1 THEN 'Not Set' ELSE SUBSTRING(b4.first_name,1,1) || ' ' || b4.second_name END || ' ' || b2.number_of_tutorials AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN people b4 ON b4.id = b2.person_id) ON b1.tutorial_schedule_id = b2.id WHERE (b1.person_id = a0.id AND b2.term_id = current_argument_value) ORDER BY b1_tutorial_schedule_id asc),', <br>')", "Term")),
     ExtendedFilter.new(:subquery, SubQuery.new("Tutorials taken", "tutorials_taken" ,
-      "array_to_string(ARRAY(SELECT CASE b1.tutorial_schedule_id WHEN 1 THEN 'Not Set' ELSE b3.name || ', ' || b5.name || ' ' || b4.year  END AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.tutorial_schedule_id = b2.id WHERE (b1.person_id = a0.id ) ORDER BY b1_tutorial_schedule_id asc),'; <br>')", "")),
+      "array_to_string(ARRAY(SELECT  b3.name || ', ' || SUBSTRING(b5.name,1,1) || SUBSTRING('' || b4.year,3,2) || ', ' || CASE b6.id WHEN 1 THEN 'Not Set' ELSE SUBSTRING(b6.first_name,1,1) || ' ' || b6.second_name END || ' '  || b2.number_of_tutorials  AS b1_tutorial_schedule_id FROM tutorials b1 INNER JOIN ( tutorial_schedules b2 INNER JOIN courses b3 ON b2.course_id = b3.id INNER JOIN ( terms b4 INNER JOIN term_names b5 ON b4.term_name_id = b5.id ) ON b2.term_id = b4.id ) ON b1.tutorial_schedule_id = b2.id INNER JOIN people b6 ON b2.person_id = b6.id WHERE (b1.person_id = a0.id ) ORDER BY b1_tutorial_schedule_id asc),'; <br>')", "")),
     ExtendedFilter.new(:subquery, SubQuery.new("Number of lecture courses attended", "number_of_lectures_courses_attended" ,
       "(SELECT COUNT(*) FROM lectures b1 INNER JOIN attendees b2 ON b2.lecture_id = b1.id WHERE b1.term_id = current_argument_value AND b2.person_id = a0.id)", "Term")),
   ExtendedFilter.new(:subquery, SubQuery.new("Number of lectures attended", "number_of_lectures_attended" ,
@@ -954,6 +956,16 @@ module FilterHelper
       "(SELECT COALESCE(SUM(b1.number_of_tutorials),0) FROM tutorial_schedules b1 INNER JOIN tutorials b2 ON b2.tutorial_schedule_id = b1.id WHERE b1.term_id = current_argument_value AND b2.person_id = a0.id)", "Term")),
   ExtendedFilter.new(:subquery, SubQuery.new("Number of tutorial hours attended", "number_of_tutorial_hours_attended" ,
       "(SELECT COALESCE(SUM(b1.number_of_tutorial_hours),0) FROM tutorial_schedules b1 INNER JOIN tutorials b2 ON b2.tutorial_schedule_id = b1.id WHERE b1.term_id = current_argument_value AND b2.person_id = a0.id)", "Term")),
+
+  ExtendedFilter.new(:subquery, SubQuery.new("Lectures given in term", "lectures_given_in_term" ,
+      "array_to_string(ARRAY(SELECT b2.name AS b1_course_id FROM lectures b1 INNER JOIN courses b2 ON b1.course_id = b2.id  WHERE (b1.person_id = a0.id AND  b1.term_id = current_argument_value) ORDER BY b1_course_id asc),', <br>')", "Term")),
+  ExtendedFilter.new(:subquery, SubQuery.new("Lectures given", "lectures_given" ,
+      "array_to_string(ARRAY(SELECT b2.name || ', ' || SUBSTRING(b4.name,1,1) || SUBSTRING(''||b3.year,3,2) AS b1_course_id FROM lectures b1 INNER JOIN courses b2 ON b1.course_id = b2.id  INNER JOIN ( terms b3 INNER JOIN term_names b4 ON b3.term_name_id = b4.id ) ON b1.term_id = b3.id WHERE (b1.person_id = a0.id) ORDER BY b1_course_id asc),', <br>')", "")),
+  ExtendedFilter.new(:subquery, SubQuery.new("Tutorials given in term", "tutorials_given_in_term" ,
+      "array_to_string(ARRAY(SELECT b4.name || ', ' || CASE b3.id WHEN 1 THEN 'Not Set' ELSE SUBSTRING(b3.first_name,1,1) || ' ' || b3.second_name END || ' '|| b2.number_of_tutorials AS b1_tutorial FROM tutorials b1 INNER JOIN (tutorial_schedules b2 INNER JOIN courses b4 ON b4.id = b2.course_id)  ON b2.id = b1.tutorial_schedule_id INNER JOIN people b3 ON b1.person_id = b3.id WHERE b2.person_id = a0.id AND b2.term_id = current_argument_value ORDER BY b1_tutorial asc),',<br>')", "Term")),
+  ExtendedFilter.new(:subquery, SubQuery.new("Tutorials given", "tutorials_given" ,
+      "array_to_string(ARRAY(SELECT b4.name || ', ' || SUBSTRING(b6.name,1,1) || SUBSTRING(''||b5.year,3,2) || ', ' || CASE b3.id WHEN 1 THEN 'Not Set' ELSE SUBSTRING(b3.first_name,1,1) || ' ' || b3.second_name END ||  ' '|| b2.number_of_tutorials AS b1_tutorial FROM tutorials b1 INNER JOIN (tutorial_schedules b2 INNER JOIN courses b4 ON b4.id = b2.course_id INNER JOIN (terms b5 INNER JOIN term_names b6 ON b5.term_name_id = b6.id) ON b5.id = b2.term_id)  ON b2.id = b1.tutorial_schedule_id INNER JOIN people b3 ON b1.person_id = b3.id WHERE b2.person_id = a0.id ORDER BY b1_tutorial asc),',<br>')", "")),
+
   ExtendedFilter.new(:subquery, SubQuery.new("Number of lecture courses taught", "number_of_lecture_coureses_taught" ,
       "(SELECT COUNT(*) FROM lectures b1 WHERE b1.term_id = current_argument_value AND b1.person_id = a0.id)", "Term")),
   ExtendedFilter.new(:subquery, SubQuery.new("Number of lectures taught", "number_of_lectures_taught" ,

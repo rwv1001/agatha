@@ -14,5 +14,7 @@ end
   has_many :people, :class_name => "Person", :dependent => :destroy
   has_many :lectures, :class_name => "Lecture", :dependent => :destroy
   has_many :tutorial_schedules, :class_name => "TutorialSchedule", :dependent => :destroy
+  has_many :agatha_emails, :class_name => "AgathaEmail", :dependent => :destroy
+  has_many :group_terms, :class_name => "GroupTerm", :dependent => :destroy
   belongs_to :term_name, :class_name => "TermName", :foreign_key => "term_name_id"
 end

@@ -33,6 +33,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :courses
   map.resources :users
   map.resources :institutions
+  map.resources :locations
   map.resources :tutorials
   map.resources :groups
   map.resources :tutorial_schedules

@@ -19,7 +19,7 @@ has_many :group_people, :class_name => "GroupPerson", :dependent => :destroy
 has_many :group_lectures, :class_name => "GroupLecture", :dependent => :destroy
 has_many :group_users, :class_name =>"GroupUser", :dependent => :destroy
 has_many :group_agatha_emails, :class_name =>"GroupAgathaEmail", :dependent => :destroy
-has_many :group_attendees, :class_name =>"GroupAttendees", :dependent => :destroy
+has_many :group_attendees, :class_name =>"GroupAttendee", :dependent => :destroy
 has_many :group_courses, :class_name =>"GroupCourse", :dependent => :destroy
 has_many :group_days, :class_name =>"GroupDay", :dependent => :destroy
 has_many :group_email_templates, :class_name =>"GroupEmailTemplate", :dependent => :destroy

@@ -35,17 +35,7 @@ document.title =   <%="\"#{@table_name}: #{@short_name}\""%>
       </div>
     <% end %>
 
-<% @person = Person.find(729) %>
-<% form_for @person do |f| %>
-  <p>
-    does this actually do anything <br />
-    <%= f.text_field :institution_id %>
-  </p>
-  <p>
-    <%= f.file_field :photo %>
-  </p>
-  <p> <%= f.submit "submit" %></p>
-  <% end %>
+
 
 
 

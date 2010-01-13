@@ -19,5 +19,6 @@ end
     belongs_to :location, :class_name => "Location", :foreign_key => "location_id"
     has_many :attendees, :class_name => "Attendee", :dependent => :destroy
     has_many :students, :class_name => "Person", :through => :attendees
+    has_many :group_lectures, :class_name => "GroupLecture", :dependent => :destroy
     
 end

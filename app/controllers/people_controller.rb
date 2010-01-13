@@ -1,4 +1,4 @@
-
+#require 'ruby-prof'
 include EditHelper
 
 class PeopleController < ApplicationController
@@ -8,7 +8,8 @@ class PeopleController < ApplicationController
 
 
   def edit
-    @table_name = params[:table_name];
+ #   RubyProf.start
+    @table_name = "Person";
     @id = params[:id];
    
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
@@ -23,7 +24,17 @@ class PeopleController < ApplicationController
       my_id = session[:user_id];
       @user = User.find(:first, :conditions =>{:id=>  my_id, :person_id => @id})
     end
-    edit_helper([]);
+    edit_helper(@table_name, []);
+
+
+#          result = RubyProf.stop
+# printer = RubyProf::GraphHtmlPrinter.new(result)
+# file = File.open('profile-graph-edit.html', File::WRONLY |  File::CREAT)
+
+  #  my_str = "";
+# printer.print(file, :min_percent=>0)
+# RAILS_DEFAULT_LOGGER.error("Does this work?");
+#file.close
   end
 
 

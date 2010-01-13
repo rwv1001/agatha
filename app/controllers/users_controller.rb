@@ -138,7 +138,7 @@ class UsersController < ApplicationController
 
     @short_name = session[:search_ctls][@table_name].GetShortField(@id );
 
-    edit_helper([]);
+    edit_helper(@table_name,[]);
   end
 
   # POST /users

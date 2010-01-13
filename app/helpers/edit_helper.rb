@@ -1,6 +1,8 @@
+
 module EditHelper
-  def edit_helper(readonly_fields)
-    @table_name = params[:table_name];
+  def edit_helper(table_name, readonly_fields)
+    
+    @table_name = table_name;
     @user_id = session[:user_id];
 #    session["#{@table_name}_readonly_fields"]= readonly_fields;
     id = params[:id];
@@ -55,6 +57,7 @@ module EditHelper
       end
       if new_current_object
         @edit_object = EditObject.new(new_current_object, @attribute_list, @filter_controller , @table_name, readonly_fields)
+        x =1 ;
         respond_to do |format|
           format.html {render :controller => @table_name.tableize, :action => "edit"  }
         end
@@ -73,6 +76,8 @@ module EditHelper
         format.html {render :controller => @table_name.tableize, :action => "bar_record"  }
       end
     end
+
+
 
   end
   def win_load_helper

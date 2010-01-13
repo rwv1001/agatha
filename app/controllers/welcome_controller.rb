@@ -1,4 +1,14 @@
 # coding: utf-8
+#require 'ruby-prof'
+
+class Dependency
+  attr_reader :dependent_table;
+  attr_reader :dependent_ids;
+  def initialize(dependent_table, dependent_ids)
+    @dependent_table = dependent_table
+    @dependent_ids = dependent_ids
+  end
+end
 
 include FilterHelper
 class WelcomeController < ApplicationController
@@ -308,7 +318,7 @@ class WelcomeController < ApplicationController
 
 
   def table_search
-#      RubyProf.start
+#     RubyProf.start
 
     unless session[:search_ctls]
       InitializeSessionController
@@ -350,7 +360,14 @@ class WelcomeController < ApplicationController
     end
     RAILS_DEFAULT_LOGGER.error("table_search_end");
     RAILS_DEFAULT_LOGGER.flush;
+#    result = RubyProf.stop
+#  printer = RubyProf::GraphHtmlPrinter.new(result)
+# file = File.open('profile-graph.html', File::WRONLY |  File::CREAT)
 
+  #  my_str = "";
+## printer.print(file, :min_percent=>0)
+# RAILS_DEFAULT_LOGGER.error("Does this work?");
+# file.close
 
 
 
@@ -399,6 +416,7 @@ class WelcomeController < ApplicationController
   end
 
   def new
+#     RubyProf.start
     class_name = params[:class_name];
     table_name = class_name.tableize;
 
@@ -410,11 +428,22 @@ class WelcomeController < ApplicationController
     respond_to do |format|
       format.js  do
         render :update do |page|
-          page << "open_edit_window( '#{table_name}','#{class_name}','#{id}')";
+       
+       page << "open_edit_window( '#{table_name}','#{class_name}','#{id}')";
+     
         end
       end
     end
     x =1;
+#        result = RubyProf.stop
+#  printer = RubyProf::GraphHtmlPrinter.new(result)
+# file = File.open('profile-graph-new.html', File::WRONLY |  File::CREAT)
+
+  #  my_str = "";
+# printer.print(file, :min_percent=>0)
+# RAILS_DEFAULT_LOGGER.error("Does this work?");
+# file.close
+ 
   end
 
   def suggest_tutorial
@@ -644,10 +673,67 @@ class WelcomeController < ApplicationController
       attach_files(ids)
     when "attach_to_emails"
       attach_to_emails(ids)
+    when "add_tutorial_student"
+      add_tutorial_student(ids)
     else
       x = 1;     
     end
      RAILS_DEFAULT_LOGGER.flush
+  end
+  def add_tutorial_student(ids)
+    error_str = "";
+    success_str = "";
+    if(ids == nil || ids.length==0)
+      error_str = "You have not selected any tutorial schedules. "
+    else
+      id_str = "";
+      ids.each do |id|
+        if(id_str.length >0 )
+          id_str << ", ";
+        end
+        id_str << id.to_s;
+      end
+      person_id = params[:id];
+      already_present =Tutorial.find_by_sql("SELECT a0.tutorial_schedule_id FROM tutorials a0 WHERE a0.person_id = #{person_id} AND a0.tutorial_schedule_id IN (#{id_str})");
+      if  already_present.length >0
+        @pluralize_num = already_present.length;
+        success_str = "The tutorial" + pl("schedule") + " with " + pl("id") + " = ";
+        tutorial_schedule_id_str = "";
+        already_present.each do |tutorial|
+          if tutorial_schedule_id_str.length >0
+            tutorial_schedule_id_str << ", ";
+          end
+          tutorial_schedule_id_str << tutorial.tutorial_schedule_id.to_s;
+          ids.delete(tutorial.tutorial_schedule_id.to_s);
+        end
+        success_str << tutorial_schedule_id_str + " "
+
+        success_str << " already had the student with id #{person_id} attending. "
+      end
+       ids.each do |tutorial_schedule_id|
+        tutorial = Tutorial.new;
+        tutorial.tutorial_schedule_id = tutorial_schedule_id;
+        tutorial.person_id = person_id;
+        tutorial.save;
+      end
+      @pluralize_num = ids.length;
+      success_str << "You have added person with id #{person_id} to #{@pluralize_num} " + pl("tutorial schedules");
+
+    end
+      respond_to do |format|
+        format.js  do
+          render :update do |page|
+            if error_str.length >0
+              page << "alert('#{error_str}')";
+            else
+              page << "alert('#{success_str}')";
+              
+            end
+            page << "unwait();"
+          end
+
+      end
+    end
   end
   def attach_to_emails(ids)
     error_str = "";
@@ -1062,7 +1148,7 @@ class WelcomeController < ApplicationController
       error_str = "You have not selected any tutorial schedules"
     else
       error_str = ""
-      tutor_id = params[:tutor_id];
+      tutor_id = params[:id];
       id_str = "";
       ids.each do |id|
         if(id_str.length >0 )
@@ -1908,13 +1994,13 @@ RAILS_DEFAULT_LOGGER.flush
 
   end
   def check_dependencies(ids, table_name)
-     dependencies_present = "";
+    dependencies_present = [];
     if(ids.length == 0)
       return dependencies_present 
     end
     has_many_str = table_name + ".reflect_on_all_associations(:has_many)";
     has_manys = eval(has_many_str);
-   
+
     dependent_str ="";
     id_str = "";
     for id in ids
@@ -1923,89 +2009,227 @@ RAILS_DEFAULT_LOGGER.flush
       end
       id_str << id.to_s;
     end
+    dependent_tables = {};
     for has_many in has_manys
       dependent_table_name = has_many.class_name;
       reflection_str = dependent_table_name + ".reflect_on_all_associations(:belongs_to)"
       reflections = eval(reflection_str);
+
       for reflection in reflections
         if reflection.class_name == table_name
-          foreign_key = reflection.options[:foreign_key];
-          objects_str = "#{reflection.class_name}.find_by_sql(\"SELECT id, #{foreign_key} FROM #{ dependent_table_name.tableize} WHERE #{foreign_key} IN (#{id_str})\")"
-
-          objects = eval(objects_str);
-          for object in objects
-            if dependent_str.length>0
-              dependent_str << ", "
+          foreign_key =reflection.options[:foreign_key] ;
+          if dependent_tables.has_key?(dependent_table_name)
+            if dependent_tables[dependent_table_name].index(foreign_key) == nil
+              dependent_tables[dependent_table_name] << foreign_key
             end
-            dependent_str << dependent_table_name + " with id = " + object.id.to_s;
+          else
+            dependent_tables[dependent_table_name] = [];
+            dependent_tables[dependent_table_name] << foreign_key;
           end
         end
       end
-
     end
-    if dependent_str.length > 0
-      if ids.length ==1
-        dependencies_present = table_name + " with id = " + ids[0].to_s + " depends on "
-      else
-        dependencies_present = table_name.pluralize + " with ids = "
+    ids.each do |id|
+      id_dependencies  = []; #ret value is a list of these Dependency objects
+      dependent_hash = {}
+      dependent_tables.each do |dependent_table_name, foreign_keys|
+        dependent_ids = []; # this is the list in a Dependency object
+        foreign_keys.each do |foreign_key|
+          objects_str = "#{reflection.class_name}.find_by_sql(\"SELECT id, #{foreign_key} FROM #{ dependent_table_name.tableize} WHERE #{foreign_key} = #{id}\")"
+          objects = eval(objects_str);
+          if objects.length >0
+            objects.each do |object|
+              if dependent_ids.index(object.id) == nil
+                dependent_ids <<  object.id;
+              end
+            end
 
-        dependencies_present << id_str + " depend on "
+          end
+
+        end
+        if dependent_ids.length >0
+          dependent_hash[dependent_table_name] = dependent_ids
+          #  id_dependencies << Dependency.new(, );
+        end        
       end
-      dependencies_present  << dependent_str
+      dependencies_present << dependent_hash;
     end
-
     return dependencies_present;
   end
 
   def delete_array(ids, table_name)
+    dependencies_present = check_dependencies(ids, table_name)
 
-    if table_name !="user"
-      dependencies_present = check_dependencies(ids, table_name)
-    else
-      dependencies_present =[];
-    end
-    if dependencies_present.length > 0
-      respond_to do |format|
-        format.js  do
-          render :update do |page|
-            page << "alert(\"Delete failed because of current dependencies. #{dependencies_present}\")"
-            page << "unwait();"
-          end
+
+    delete_hash = {}
+    delete_hash_str ={}
+    error_str = ""
+    success_str = "";
+    deleted_ids = "";
+    num_deletes = 0;
+    num_ids = ids.length;
+    for id_count in (0..(num_ids -1))
+      do_delete = true;
+      
+      current_dependencies = dependencies_present[id_count];
+      if table_name == "User" && ids[id_count] == session[:user].id
+        do_delete = false;
+        error_str = "You cannot delete your user account whilst you are logged in. "
+      elsif current_dependencies.length >0
+        if  current_dependencies.has_key?("WillingTutor") || current_dependencies.has_key?("WillingLecturer") ||current_dependencies.has_key?("Group") || current_dependencies.has_key?("MaxTutorial") || current_dependencies.has_key?("User") || current_dependencies.has_key?("TutorialSchedule") || current_dependencies.has_key?("Lecture") ||  current_dependencies.has_key?("Term") ||current_dependencies.has_key?("Person")||current_dependencies.has_key?("AgathaEmail") ||current_dependencies.has_key?("AgathaFile")
+          do_delete = false;
+        elsif  table_name == "AgathaFile" && current_dependencies.has_key?("EmailAttachment")
+          do_delete = false;
+        elsif table_name == "Lecture" && current_dependencies.has_key?("Attendee")
+          do_delete = false;
+        elsif table_name == "TutorialSchedule" && current_dependencies.has_key?("Tutorial") && current_dependencies["Tutorial"].length >1
+          do_delete = false;
+        elsif table_name == "Person" && current_dependencies.has_key?("TutorialSchedule")
+          do_delete = false;
+        else
+          do_delete = true;
+          
         end
       end
-    elsif ids.length == 0
-        respond_to do |format|
-        format.js  do
-          render :update do |page|
-             page << "alert(\"No deletion occurred as you didn't select anything #{dependencies_present}\")"
-             page << "unwait();"
+      if do_delete
+        delete_tutorial_schedule = false;
+        num_deletes = num_deletes +1;
+        if table_name == "Tutorial"
+          tutorial = Tutorial.find(ids[id_count]);
+          tutorial_schedule_ids = [tutorial.tutorial_schedule_id];
+          tutorials = Tutorial.find_by_sql("SELECT COUNT(*) AS tutee_num FROM tutorials WHERE tutorial_schedule_id = #{tutorial.tutorial_schedule_id}");
+          if(tutorials[0].tutee_num.to_i == 1)
+            delete_tutorial_schedule = true;
           end
-        end
-        end
-    else
-      current_objs_str = "#{table_name}.find(ids)"
-      objects = eval(current_objs_str);
-      for object in objects
-        object.destroy
-      end
-      respond_to do |format|
-        format.js  do
-          render :update do |page|
 
-            id_str = "";
-            for id in ids
-              if id_str.length>0
-                id_str << ", "
-              end
-              id_str << id.to_s;
+        elsif table_name == "Person"
+          tutorials = Tutorial.find_by_sql("SELECT * FROM tutorials WHERE person_id IN (#{ids[id_count]})");
+          tutorial_schedule_id_str = "";
+          tutorials.each do |tutorial2|
+            if tutorial_schedule_id_str.length >0
+              tutorial_schedule_id_str << ", ";
             end
-            page << "on_del(\"#{table_name}\", [#{id_str}]);"
-            page << "unwait();"
-
+            tutorial_schedule_id_str << tutorial2.tutorial_schedule_id.to_s
           end
+          tutorial_schedules = [];
+          if tutorials.length >0
+            tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules a1 WHERE id IN (#{tutorial_schedule_id_str}) AND (SELECT COUNT(*) FROM tutorials a2 WHERE a2.tutorial_schedule_id = a1.id)=1");
+          end
+          if tutorial_schedules.length >0
+            delete_tutorial_schedule = true;
+            tutorial_schedule_ids = [];
+            tutorial_schedules.each do |tutorial_schedule|
+              tutorial_schedule_ids << tutorial_schedule.id;
+            end
+          end
+          
+        end
+
+        
+        current_dependencies.each do |dependent_table, dependent_ids|
+          if(delete_hash.has_key?(dependent_table) == false)          
+            delete_hash[dependent_table] ={}
+          end
+          dependent_ids.each do |dependent_id|
+            delete_hash[dependent_table][dependent_id]=true;
+          end
+        end
+        current_obj_str = "#{table_name}.find(#{ids[id_count]})"
+        object = eval(current_obj_str);
+        
+        object.destroy;
+        
+        if deleted_ids.length >0
+          deleted_ids << ", ";
+        end
+        deleted_ids << ids[id_count].to_s;
+        if delete_tutorial_schedule
+          if(delete_hash.has_key?("TutorialSchedule") == false)
+            delete_hash["TutorialSchedule"] ={}
+          end
+          tutorial_schedule_id_str = ""
+          tutorial_schedule_ids.each do |tutorial_schedule_id|
+           delete_hash["TutorialSchedule"][tutorial_schedule_id]=true;
+           if tutorial_schedule_id_str.length >0
+             tutorial_schedule_id_str << ", "
+           end
+           tutorial_schedule_id_str << tutorial_schedule_id.to_s
+          end
+           tutorial_dependencies = check_dependencies(tutorial_schedule_ids, "TutorialSchedule")[0];
+           tutorial_dependencies.each do |dependent_table, dependent_ids|
+          if(delete_hash.has_key?(dependent_table) == false)
+            delete_hash[dependent_table] ={}
+          end
+          dependent_ids.each do |dependent_id|
+            delete_hash[dependent_table][dependent_id]=true;
+          end
+          tutorial_schedules = TutorialSchedule.find_by_sql("SELECT * FROM tutorial_schedules WHERE id IN (#{tutorial_schedule_id_str})");
+
+          tutorial_schedules.each do |tutorial_schedule|
+            tutorial_schedule.destroy;
+          end
+        end
+
+        end
+      else
+        current_dependencies.each do |dependent_table, dependent_ids|
+          @pluralize_num = dependent_ids.length ;
+          error_str << "#{table_name} id = #{ids[id_count]} depends on #{dependent_table} with " + pl("id") + " = "
+          id_str = ""
+          dependent_ids.each do |dependent_id|
+            if id_str.length >0
+              id_str << ", ";
+            end
+            id_str << dependent_id.to_s;
+          end
+          id_str << ". ";
+          error_str << id_str ;
+        end       
+      end
+    end
+    @pluralize_num =num_deletes  ;
+    if num_deletes >0
+
+      success_str << "#{table_name} with " + pl("id") + " = #{deleted_ids} " + pl("was")+" DELETED. "
+
+      delete_hash.each do |delete_table, id_hash|
+        delete_hash_str[delete_table] = "";
+        id_hash.each do |id_key, true_value|
+          if delete_hash_str[delete_table].length >0
+            delete_hash_str[delete_table] << ", ";
+          end
+          delete_hash_str[delete_table] << id_key.to_s;
+
+        end
+      end
+
+     
+
+
+
+
+    end
+
+
+
+    respond_to do |format|
+      format.js  do
+        render :update do |page|
+
+          page << "alert(\"#{success_str}#{error_str}\")"
+          if deleted_ids.length>0
+
+            page << "on_del(\"#{table_name}\", [#{deleted_ids}]);"
+            delete_hash_str.each do |delete_table, delete_ids_str|
+              page << "on_del(\"#{delete_table.to_s}\", [#{delete_ids_str}]);"
+            end
+          end
+          page << "unwait();"
+
         end
       end
     end
+    
   end
 
   def delete

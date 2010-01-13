@@ -12,4 +12,5 @@ def search_controller
 end
   USER_WHERE_STR = "";
   has_many :terms, :class_name => "Term", :dependent => :destroy
+  has_many :group_term_names, :class_name => "GroupTermName", :dependent => :destroy
 end
