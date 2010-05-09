@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091217123223) do
+ActiveRecord::Schema.define(:version => 20100509202656) do
 
   create_table "agatha_emails", :force => true do |t|
     t.string   "from_email",        :default => ""
@@ -539,8 +539,8 @@ ActiveRecord::Schema.define(:version => 20091217123223) do
     t.integer  "person_id",            :default => 1
     t.integer  "tutorial_schedule_id", :default => 1
     t.text     "comment"
-    t.integer  "mark"
-    t.integer  "mark_type"
+    t.string   "mark"
+    t.string   "mark_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "notes"
