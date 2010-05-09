@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100509223901) do
+ActiveRecord::Schema.define(:version => 20100509224956) do
 
   create_table "agatha_emails", :force => true do |t|
     t.string   "from_email",        :default => ""
@@ -539,11 +539,11 @@ ActiveRecord::Schema.define(:version => 20100509223901) do
     t.integer  "person_id",            :default => 1
     t.integer  "tutorial_schedule_id", :default => 1
     t.text     "comment"
-    t.string   "mark"
     t.string   "mark_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "notes"
+    t.string   "mark"
   end
 
   add_index "tutorials", ["person_id", "tutorial_schedule_id"], :name => "unique_tutorials", :unique => true
