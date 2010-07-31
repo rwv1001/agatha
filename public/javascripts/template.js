@@ -1337,28 +1337,36 @@ function action_select0()
     
     select_str = "action_select_"+old_page_name;
     select_elt = $(select_str);
+    if(select_elt != null)
+        {
     option_id = parseInt(select_elt.value);
     do_js = true;
     display_select_action(old_page_name, option_id, do_js);
+    }
 
 }
 function action_select_no_js()
 {
     select_str = "action_select_"+old_page_name;
     select_elt = $(select_str);
+    if(select_elt!= null)
+        {
     option_id = parseInt(select_elt.value);
     do_js = false;
     display_select_action(old_page_name, option_id, do_js);
-
+}
 }
 
 function action_select2(table_name)
 {
     select_str = "action_select_"+table_name;
     select_elt = $(select_str);
+        if(select_elt!= null)
+        {
     option_id = parseInt(select_elt.value);
     do_js = true;
     display_select_action(table_name, option_id, do_js);
+    }
 }
 function display_page1(menu_name)
 {
@@ -1438,6 +1446,8 @@ function action_select(table_name)
     wait();
     select_str = "action_select_"+table_name;
     select_elt = $(select_str);
+        if(select_elt!= null)
+        {
     option_name = select_elt.value;
     page_name_id = "display_page_name"
     option_id = "display_page_option"
@@ -1448,6 +1458,11 @@ function action_select(table_name)
     page_name_elt.setAttribute("value", table_name);
     option_elt.setAttribute("value",option_name);
     form_elt.onsubmit();
+    }
+    else
+        {
+     unwait();
+            }
 }
 
 function set_double_scroll()

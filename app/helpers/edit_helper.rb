@@ -190,14 +190,7 @@ module EditHelper
               if save_ok
 
                 attribute_eval_str = "AttributeList.new(#{@table_name.classify})"
-    #            unless session[attribute_eval_str]
-                  @attribute_list = AttributeList.new(@table_name.classify);
-    #              session[attribute_eval_str] = @attribute_list;
-     #           else
-     #             @attribute_list = session[attribute_eval_str];
-      #          end
-
-                # @attribute_list = AttributeList.new(@table_name.classify)
+                @attribute_list = AttributeList.new(@table_name.classify);
                 @search_ctls = session[:search_ctls]
                 attribute = @attribute_list.attribute_hash[field_name]
                 if attribute.foreign_key.length >0
@@ -213,6 +206,7 @@ module EditHelper
                 edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent,readonly_flag );
                 page.replace_html("#{@table_name}_#{field_name}", :partial => "shared/edit_cell", :object => edit_cell);
                 attribute = @attribute_list.attribute_hash["updated_at"]
+                update_parent = false;
                 edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent,readonly_flag);
                 page.replace_html("#{@table_name}_updated_at", :partial => "shared/edit_cell", :object => edit_cell);
               else
@@ -224,6 +218,55 @@ module EditHelper
 
       end
     end
+  end
+
+  def update_main_helper(class_name)
+    RAILS_DEFAULT_LOGGER.debug("update_main start #{class_name}");
+    id = params[:id];
+    edited_class_name = params[:class_name];
+
+    attribute_name = params[:attribute_name];
+    opener_attribute_name = params[:opener_attribute_name];
+    opener_id = params[:opener_id];
+
+    @user_id = session[:user_id];
+
+    object_str = "#{class_name}.find(opener_id)"
+    object = eval(object_str)
+    edit_cell = nil
+    if(object != nil)
+        
+        @attribute_list = AttributeList.new(class_name);
+        @search_ctls = session[:search_ctls];
+        attribute = @attribute_list.attribute_hash[opener_attribute_name];
+        @filter_controller = FilterController.new(@search_ctls, class_name, @user_id)
+        update_parent = false;
+        readonly_flag = false;
+        edit_cell = EditCell.new(attribute, object, class_name.tableize, @filter_controller, update_parent,readonly_flag );
+        html_element_name =   "#{class_name}_#{opener_attribute_name}";
+    end
+
+     #            
+   #             @attribute_list = AttributeList.new(table_name.classify);
+    #            @search_ctls = session[:search_ctls]
+   #             attribute = @attribute_list.attribute_hash[field_name]
+   #              @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
+   #             update_parent = true;
+#                readonly_flag = false;
+
+# edit_cell = EditCell.new(attribute, object, table_name, @filter_controller, update_parent,readonly_flag );
+    x = 1;
+    respond_to do |format|
+      format.js  do
+        render :update do |page|
+          if edit_cell != nil
+             page.replace_html(html_element_name, :partial => "shared/edit_cell", :object => edit_cell);
+          end
+          page << "update_parent('#{edited_class_name}', '#{attribute_name}', #{id})"
+        end
+      end
+    end
+    RAILS_DEFAULT_LOGGER.debug("update_main end");
   end
 
   def email_update()
@@ -303,7 +346,8 @@ module EditHelper
                       @filter_controller = FilterController.new(@search_ctls, @table_name, @user_id)
                     end
                     update_parent = true;
-                    edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
+                    read_only_flag = false;
+                    edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent, read_only_flag  );
                     page.replace_html("#{@table_name}_#{field_name}", :partial => "shared/edit_cell", :object => edit_cell);
                   else
                     attribute = @attribute_list.attribute_hash["body"]
@@ -312,7 +356,7 @@ module EditHelper
                     else
                       if body_value !=nil && body_value.length !=0
                         update_parent = true;
-                        edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
+                        edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent, read_only_flag  );
                         page.replace_html("#{@table_name}_body", :partial => "shared/edit_cell", :object => edit_cell);
                         page << "yahoo_widget()";
                       else
@@ -321,7 +365,7 @@ module EditHelper
                     end
                   end
                   attribute = @attribute_list.attribute_hash["updated_at"]
-                  edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent );
+                  edit_cell = EditCell.new(attribute, object, @table_name, @filter_controller, update_parent, read_only_flag  );
                   page.replace_html("#{@table_name}_updated_at", :partial => "shared/edit_cell", :object => edit_cell);
                   if(field_name.length == 0)
 

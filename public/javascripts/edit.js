@@ -80,14 +80,26 @@ my_window = window.open("http://localhost:3000/people/13/edit?table_name=Person"
 function update_parent(table_name, attribute_name, id)
 {
     parent_win=window.opener;
+    if(parent_win == null)
+        {
+            first_parent = window.open('','main_window');
+            if(first_parent != window)
+            {
+                    parent_win = first_parent
+            }
+        }
     if(parent_win!=null)
         {
             id_obj = parent_win.document.getElementById('update_main_id');
-            table_obj = parent_win.document.getElementById('update_main_table_name');
+            table_obj = parent_win.document.getElementById('update_main_class_name');
             attribute_obj = parent_win.document.getElementById('update_main_attribute_name');
+            update_opener_attribute_name_obj = parent_win.document.getElementById('update_opener_attribute_name');
+            update_opener_id_obj = parent_win.document.getElementById('update_opener_id');
             id_obj.value = id;
             table_obj.value = table_name;
             attribute_obj.value = attribute_name;
+            update_opener_attribute_name_obj.value = $('sensible_update_opener_attribute_name').value;
+            update_opener_id_obj.value = $('sensible_update_opener_id').value;
             submit_obj = parent_win.document.getElementById('update_main');
             submit_obj.onsubmit();
         }
@@ -103,22 +115,53 @@ function on_edit( table_name,class_name,id)
     aref_obj.remove();
     span_aref_obj.insert(disabled_a)
 
-    open_edit_window(table_name,class_name,id);
+    attribute_opener =''
+    opener_id = 1;
+    open_windows.set('main', window);
+    open_edit_window(attribute_opener,  opener_id, table_name, class_name, id);
 
 
     y= 2;
    
   
 }
-function open_edit_window(table_name,class_name,id)
+function open_edit_window(attribute_opener, opener_id, table_name,class_name,id)
 {
+
       name = class_name + '_' + id;
    url = '/'+table_name +'/' + id +'/edit?table_name='+ class_name;
 
     var config_window = 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width='+ (screen.width/2 - 16)+ ',height=' + screen.height +',left='+(screen.width/2 +17)+',top=0'
+
+    stupid_update_opener_attribute_name_obj = $('stupid_update_opener_attribute_name');
+    stupid_update_opener_attribute_name_obj.value =attribute_opener;
+    stupid_update_opener_id_obj = $('stupid_update_opener_id');
+    stupid_update_opener_id_obj.value = opener_id;
     
     win_ref = window.open(url,name, config_window);
+    update_opener_attribute_name_obj = win_ref.document.getElementById('update_opener_attribute_name');
+    update_opener_attribute_name_obj.value = attribute_opener;
+
+    update_opener_id_obj = win_ref.document.getElementById('update_opener_id');
+    update_opener_id_obj.value = opener_id;
     open_windows.set(name, win_ref );
+
+}
+function silly_update()
+{
+ 
+    parent_win=window.opener;
+    if(parent_win!=null)
+    {
+          
+         stupid_update_opener_attribute_name_obj = parent_win.document.getElementById('stupid_update_opener_attribute_name');
+         stupid_update_opener_id_obj = parent_win.document.getElementById('stupid_update_opener_id');
+         $('sensible_update_opener_attribute_name').value = stupid_update_opener_attribute_name_obj.value;
+        
+         $('sensible_update_opener_id').value = stupid_update_opener_id_obj.value;
+         
+       //   
+    }
 
 }
 
@@ -254,6 +297,40 @@ function on_sends(test_flag)
     $("action_type").value = "send_emails"
     form_obj = $("action_form");
     form_obj.onsubmit();
+}
+function on_create_send(id)
+{
+    wait();
+    specific_div = $("specific_action_variables");
+    specific_div.descendants().each(function(elt){
+        elt.remove()
+        });
+    $("action_type").value =  "create_send_email_from_template";
+             class_name = $("action_class").value;
+            action_div = $(class_name +'_action_div');
+            email_template_div = action_div.down('email_template_div');
+
+            term_elt = $("email_template_term");
+            term_id = term_elt.value;
+            course_elt = $("email_template_course");
+            course_id = course_elt.value;
+            sent_template = new Element('input',{ type: 'text', name: 'email_template_id',  value: id  })
+            sent_term = new Element('input',{ type: 'text',  name: 'term_id', value: term_id });
+            sent_course = new Element('input',{ type: 'text',  name: 'course_id', value: course_id });
+            specific_div.insert({  'bottom': sent_template});
+            specific_div.insert({  'bottom': sent_term});
+            specific_div.insert({  'bottom': sent_course});
+            class_name2 = $("action_class2").value;
+            search_results_div_str = "search_results_" + class_name2;
+            search_results_div = $(search_results_div_str)
+            search_results_div.select('.check').each(function(elt)
+            {
+                new_elt = elt.cloneNode(true); new_elt.removeAttribute('id');
+                specific_div.insert({'bottom': new_elt  })
+            });
+
+        form_obj = $("action_form");
+        form_obj.onsubmit();
 }
 
 function on_create(id)
@@ -809,6 +886,15 @@ x = 1;
 function documentBlur()
 {
   //  on_unload();
+}
+
+function editClick(attribute_opener,  opener_id, table_name, class_name, current_id, e)
+{
+    if(e.shiftKey && current_id != 1)
+    {
+       open_edit_window(attribute_opener, opener_id, table_name,class_name,current_id);
+      //  alert("attribute_name = " + attribute_name + ", data_type = " +data_type +", current_id = "+current_id+ ", shift_key = " + e.shiftKey);
+    }
 }
 
 function editBlur(attribute_name, data_type)

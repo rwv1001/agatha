@@ -32,5 +32,9 @@ class AgathaEmailsController < ApplicationController
   def updater
 email_update();
   end
+
+  def update_main
+    update_main_helper("AgathaEmail");
+  end
  
 end

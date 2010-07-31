@@ -6,7 +6,10 @@
   <h1> <%=  search_controller.tables_name.humanize %> </h1>
     </div>
   </div>
-<div class ="separator_class">&nbsp</div>
+  <div class ="separator_class">&nbsp</div>
+  <%  if session[:administrator] %>
+
+
 <div class ="create_new_entry">
   <div class ="content_class" style="width: 100%">
     <div class ="pad_class">
@@ -19,6 +22,7 @@
 
 <div class ="separator_class">&nbsp</div>
   </div>
+  <% end %>
 </div>
 <div class ="content_class" style="width: 100%">
 
@@ -26,6 +30,7 @@
    <div class = "search_title" >
     <h2>Search <%=  search_controller.tables_name.humanize.titleize %> Database</h2>
    </div>
+    <%  if session[:administrator] %>
    <% if table_name == "Lecture" %>
     <div class= "add_to_lecture_title" >
        <h2>Select lecture schedules to attend/update </h2>
@@ -85,6 +90,8 @@
      <h2>Select groups to be removed from </h2>
    </div>
    <% end %>
+
+ <%  end %>
     <%= render(:partial => "shared/search_controller", :object => search_controller) %>
 
   <div>
@@ -92,6 +99,7 @@
         <div id = <%="\"search_results_#{table_name}\""  %> >
 
         </div>
+         
         <% if table_name == "Person" %>
             <div class ="tutorial_assign_title" >
       <input type="button" class ="check" value="Unassign selected" onclick="on_assign('1');return false" >
@@ -145,11 +153,18 @@
         <% end %>
         
         <div style="padding-left: 7px" id=<%="#{table_name}_action_div"%>  >
+
+      <%  if session[:administrator] %>
       
-       
         <select id= <%=  "\"action_select_#{table_name}\"" %> onchange= <%="\"action_select2('#{table_name}');return false;\""%> >
   
         </select>
+        <% else %>
+                <select style="display:none" id= <%=  "\"action_select_#{table_name}\"" %> onchange= <%="\"action_select2('#{table_name}');return false;\""%> >
+
+        </select>
+<% end %>
+       
         <div style="height: 6px">&nbsp</div>
         
         <div class="delete_div" >
@@ -263,11 +278,12 @@
 
         </div>
         
-        
+      
        
       
 
-
+        
         </div>
+        
     </div>
 </div>

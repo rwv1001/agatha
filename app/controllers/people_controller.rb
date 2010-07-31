@@ -59,7 +59,9 @@ class PeopleController < ApplicationController
 
   end
 
-    
+  def update_main
+    update_main_helper("Person");
+  end
  
 
 

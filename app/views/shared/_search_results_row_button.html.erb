@@ -57,8 +57,10 @@
   <% if table_name == "EmailTemplate" %>
      <td class="create-email-cell">
       <% onclick_str2 = "on_create('#{row.id.to_s}');return false" %>
-      <span > <a href=# onclick= <%="\"#{onclick_str2}\""%>   >Create Email </a> </span>
+       <% onclick_str3 = "on_create_send('#{row.id.to_s}');return false" %>
+      <span > <a href=# onclick= <%="\"#{onclick_str2}\""%>   >Create Emails </a>  <a href=# onclick= <%="\"#{onclick_str3}\""%>   >| Create & Send  </a></span>
       </td>
+     
       <% end %>
    
 

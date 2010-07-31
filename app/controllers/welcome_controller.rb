@@ -149,7 +149,7 @@ class WelcomeController < ApplicationController
     session[:search_ctls] =  @search_ctls
 
     session[:attr_lists] = @attr_lists
-    RAILS_DEFAULT_LOGGER.error("inialization of search controllers complete");
+    RAILS_DEFAULT_LOGGER.debug("inialization of search controllers complete");
 
   end
   def child_unload
@@ -183,7 +183,7 @@ class WelcomeController < ApplicationController
         end
       end
     end
-    RAILS_DEFAULT_LOGGER.error("child_unload_end");
+    RAILS_DEFAULT_LOGGER.debug("child_unload_end");
     RAILS_DEFAULT_LOGGER.flush
 
   end
@@ -223,12 +223,13 @@ class WelcomeController < ApplicationController
         end
       end
     end
-    RAILS_DEFAULT_LOGGER.error("update_main end");
+    RAILS_DEFAULT_LOGGER.debug("update_main end");
   end
 
 
   def update_search_controller
 
+#   start = Time.now; RAILS_DEFAULT_LOGGER.error("update_search_controller_start");
     @search_ctls = session[:search_ctls];
     @attr_lists = session[:attr_lists]
     table_name =  params[:table_change_text];
@@ -270,7 +271,7 @@ class WelcomeController < ApplicationController
       order_field_name = params["order_text"];
       search_ctl.UpdateOrder(order_field_name)      
     end
-    RAILS_DEFAULT_LOGGER.error("update_search_controller_end");
+ #   elapsed = Time.now  - start; RAILS_DEFAULT_LOGGER.error("update_search_controller_end, time: #{elapsed}");
 
   end
   def update_external_filters
@@ -319,7 +320,7 @@ class WelcomeController < ApplicationController
 
   def table_search
 #     RubyProf.start
-
+#start = Time.now; RAILS_DEFAULT_LOGGER.debug("table_search_start");
     unless session[:search_ctls]
       InitializeSessionController
     end
@@ -331,11 +332,11 @@ class WelcomeController < ApplicationController
     search_ctl.user_id = session[:user_id];
     if(params.has_key?("do_search"))
       eval_str = search_ctl.get_eval_string2();
-      RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: before eval(#{eval_str})" );
+      RAILS_DEFAULT_LOGGER.debug( "TABLE SEARCH: before eval(#{eval_str})" );
       @table = eval(eval_str);
       eval("#{table_name}.set_controller(search_ctl)");
 
-      RAILS_DEFAULT_LOGGER.error( "TABLE SEARCH: after eval(eval_str)" );
+      RAILS_DEFAULT_LOGGER.debug( "TABLE SEARCH: after eval(eval_str)" );
       search_results = SearchResults.new(@table, :search_results, search_ctl);
       search_results.table_type = :search_results;
     end
@@ -358,8 +359,7 @@ class WelcomeController < ApplicationController
         end
       end
     end
-    RAILS_DEFAULT_LOGGER.error("table_search_end");
-    RAILS_DEFAULT_LOGGER.flush;
+
 #    result = RubyProf.stop
 #  printer = RubyProf::GraphHtmlPrinter.new(result)
 # file = File.open('profile-graph.html', File::WRONLY |  File::CREAT)
@@ -370,7 +370,9 @@ class WelcomeController < ApplicationController
 # file.close
 
 
+#elapsed = Time.now  - start; RAILS_DEFAULT_LOGGER.debug("table_search_end, time: #{elapsed}");
 
+    RAILS_DEFAULT_LOGGER.flush;
   end
 
   def add_external_filter
@@ -429,7 +431,7 @@ class WelcomeController < ApplicationController
       format.js  do
         render :update do |page|
        
-       page << "open_edit_window( '#{table_name}','#{class_name}','#{id}')";
+       page << "open_edit_window( '',1,'#{table_name}','#{class_name}','#{id}')";
      
         end
       end
@@ -650,7 +652,11 @@ class WelcomeController < ApplicationController
     when "create_tutorials_from_course"
       create_tutorial_schedules(ids)
     when "create_email_from_template"
-      create_email_from_template(ids)
+      send_flag = false;
+      create_email_from_template(ids, send_flag)
+    when "create_send_email_from_template"
+      send_flag = true;
+      create_email_from_template(ids, send_flag)
     when "send_email"
       send_email()
     when "send_emails"
@@ -895,8 +901,8 @@ class WelcomeController < ApplicationController
     ids << params[:email_id];
     send_emails(ids)
   end
-  def send_emails(ids)
-    error_str =""
+  def send_emails_routine(ids)
+      error_str =""
     success_str =""
     non_emails = 0;
     has_emails = 0;
@@ -927,9 +933,9 @@ class WelcomeController < ApplicationController
           else
             to_email =  email_address
           end
-          RAILS_DEFAULT_LOGGER.error("email to address is #{to_email}");
-          RAILS_DEFAULT_LOGGER.error("email from address is #{agatha_email.from_email}");
-          RAILS_DEFAULT_LOGGER.error("email subject is #{agatha_email.subject}");
+          RAILS_DEFAULT_LOGGER.debug("email to address is #{to_email}");
+          RAILS_DEFAULT_LOGGER.debug("email from address is #{agatha_email.from_email}");
+          RAILS_DEFAULT_LOGGER.debug("email subject is #{agatha_email.subject}");
           AgathaMailer.deliver_email(agatha_email, to_email)
           agatha_email.sent = true;
         else
@@ -957,22 +963,29 @@ class WelcomeController < ApplicationController
           @pluralize_num = has_emails
           success_str << pl(has_emails.to_s) + " " + pl("email") +" "+ pl("was") + " sent. "
 
-        
+
       else
-         error_str = "You are logged in as user #{user.name} which is associated with the person #{me.first_name} #{me.second_name}, but this person does not have a valid email which can be used for testing"
+         error_str = "You are logged in as user #{user.name} which is associated with the person #{me.first_name} #{me.second_name}, but this person does not have a valid email which can be used for testing. "
       end
     end
+    ret_val = {}
+    ret_val["success_str"] = success_str
+    ret_val["error_str"] = error_str
+    return ret_val
+  end
+  def send_emails(ids)
 
 
+      status_val = send_emails_routine(ids)
 
     
       respond_to do |format|
       format.js  do
         render :update do |page|
           if error_str.length >0
-            page << "alert('#{error_str}')";
+            page << "alert('#{status_val["error_str"]}')";
           else
-            page << "alert('#{success_str}')";
+            page << "alert('#{status_val["success_str"]}')";
           end
           page << "unwait();"
         end
@@ -1007,11 +1020,15 @@ class WelcomeController < ApplicationController
     return ret_val;
 
   end
-  def create_email_from_template(ids)
+
+
+
+  def create_email_from_template(ids, send_flag)
     string_update
     if(ids == nil || ids.length==0)
       error_str = "You have not selected any tutorial schedules"
     else
+      email_ids = []
       error_str = ""
       email_template_id = params[:email_template_id].to_i;
       term_id = params[:term_id].to_i;
@@ -1062,11 +1079,16 @@ class WelcomeController < ApplicationController
           agatha_email.term_id = term_id;
           agatha_email.course_id = course_id;
           agatha_email.save;
+          email_ids << agatha_email.id
 
 
         end
         @pluralize_num = ids.length;
         success_str = pl(@pluralize_num.to_s) + " " +  pl("email") + " " + pl("was") + " created. ";
+        if send_flag
+          status_val = send_emails_routine(email_ids);
+          success_str = success_str + status_val["success_str"] + status_val["error_str"];
+        end
       end      
     end
     respond_to do |format|
@@ -2336,7 +2358,7 @@ RAILS_DEFAULT_LOGGER.flush
         format.html   { redirect_to person }
       end
     end
-    RAILS_DEFAULT_LOGGER.error("welcome/edit end")
+    RAILS_DEFAULT_LOGGER.debug("welcome/edit end")
   end
 
   def update_group_filters
@@ -2433,7 +2455,7 @@ RAILS_DEFAULT_LOGGER.flush
 
 
   def import_csv
-    RAILS_DEFAULT_LOGGER.error( "import_csv begin" );
+    RAILS_DEFAULT_LOGGER.debug( "import_csv begin" );
     if session[:user_id]!=1
 
       return;
@@ -2483,7 +2505,7 @@ RAILS_DEFAULT_LOGGER.flush
         new_term_ids << new_term.id;
       end
     end
-    RAILS_DEFAULT_LOGGER.error( "import_csv done terms" );
+    RAILS_DEFAULT_LOGGER.debug( "import_csv done terms" );
     RAILS_DEFAULT_LOGGER.flush
     status_csvs = StatusCsv.find(:all);
 
@@ -2501,7 +2523,7 @@ RAILS_DEFAULT_LOGGER.flush
       old_group_ids << csv_status.id;
       new_group_ids << group.id;
     end
-        RAILS_DEFAULT_LOGGER.error( "import_csv done groups" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done groups" );
     RAILS_DEFAULT_LOGGER.flush
 
     people_csvs = PersonCsv.find(:all);
@@ -2675,13 +2697,13 @@ RAILS_DEFAULT_LOGGER.flush
               group_person.person_id = person.id;
               group_person.save;
             rescue Exception =>exc
-              RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (person)" );
+              RAILS_DEFAULT_LOGGER.debug( "DEBUG: an exception has occurred (person)" );
             end
           end
         end
       end
     end
-        RAILS_DEFAULT_LOGGER.error( "import_csv done people" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done people" );
     RAILS_DEFAULT_LOGGER.flush
 
     csv_courses = CourseCsv.find(:all);
@@ -2693,7 +2715,7 @@ RAILS_DEFAULT_LOGGER.flush
       new_course_ids << new_course.id;
     end
 
-        RAILS_DEFAULT_LOGGER.error( "import_csv done courses" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done courses" );
     RAILS_DEFAULT_LOGGER.flush
 
 
@@ -2749,7 +2771,7 @@ RAILS_DEFAULT_LOGGER.flush
       new_day_ids << day.id;
     end
 
-    RAILS_DEFAULT_LOGGER.error( "import_csv done days" );
+    RAILS_DEFAULT_LOGGER.debug( "import_csv done days" );
     RAILS_DEFAULT_LOGGER.flush
 
 
@@ -2782,7 +2804,7 @@ RAILS_DEFAULT_LOGGER.flush
         new_lecture_ids << new_lecture.id;
       end
     end
-    RAILS_DEFAULT_LOGGER.error( "import_csv done lectures" );
+    RAILS_DEFAULT_LOGGER.debug( "import_csv done lectures" );
     RAILS_DEFAULT_LOGGER.flush
 
     csv_attendees = AttendeeCsv.find(:all);
@@ -2799,11 +2821,11 @@ RAILS_DEFAULT_LOGGER.flush
           new_attendee.examined = csv_attendee.examined;
           new_attendee.save;
         rescue Exception => exc
-          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (new_attendee)" );
+          RAILS_DEFAULT_LOGGER.debug( "DEBUG: an exception has occurred (new_attendee)" );
         end
       end
     end
-        RAILS_DEFAULT_LOGGER.error( "import_csv done attendees" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done attendees" );
     RAILS_DEFAULT_LOGGER.flush
 
 
@@ -2822,7 +2844,7 @@ RAILS_DEFAULT_LOGGER.flush
       end
     end
 
-        RAILS_DEFAULT_LOGGER.error( "import_csv done willing teachers" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done willing teachers" );
     RAILS_DEFAULT_LOGGER.flush
 
 
@@ -2859,7 +2881,7 @@ RAILS_DEFAULT_LOGGER.flush
         begin
           tutorial.save;
         rescue Exception => exc
-          RAILS_DEFAULT_LOGGER.error( "DEBUG: an exception has occurred (tutorial_schedule)" );
+          RAILS_DEFAULT_LOGGER.debug( "DEBUG: an exception has occurred (tutorial_schedule)" );
         end
       end
     end
@@ -2893,7 +2915,7 @@ RAILS_DEFAULT_LOGGER.flush
 
     end
 
-    RAILS_DEFAULT_LOGGER.error( "import_csv done tutorials" );
+    RAILS_DEFAULT_LOGGER.debug( "import_csv done tutorials" );
     RAILS_DEFAULT_LOGGER.flush
 
     term_name1 = TermName.new;
@@ -2962,7 +2984,7 @@ RAILS_DEFAULT_LOGGER.flush
 
      FormatElement.create(:user_id => 0, :table_name => 'users', :field_name => 'name', :insert_string => '', :element_order => 1, :in_use => true);
 
-        RAILS_DEFAULT_LOGGER.error( "import_csv done format elements" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done format elements" );
     RAILS_DEFAULT_LOGGER.flush
 
     DisplayFilter.create(:user_id => 0, :table_name => 'people', :filter_index => 0, :element_order => 0, :in_use => true);
@@ -3129,7 +3151,7 @@ end
       :global_warnings=>"",
       :personal_warnings=>"");
 
-        RAILS_DEFAULT_LOGGER.error( "import_csv done display filters" );
+        RAILS_DEFAULT_LOGGER.debug( "import_csv done display filters" );
     RAILS_DEFAULT_LOGGER.flush
 
   end

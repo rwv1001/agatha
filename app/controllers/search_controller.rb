@@ -1439,6 +1439,7 @@ class SearchController
 
 
   def updateFilters(current_filter_indices_,  update_display_)
+     RAILS_DEFAULT_LOGGER.debug( "updateFilters start" );
     @active = true;
     num_available_fields = @extended_filters.length;
     @possible_filter_indices = [];
@@ -1494,6 +1495,7 @@ class SearchController
         end
       end
     end
+    RAILS_DEFAULT_LOGGER.debug( "updateFilters end" );
   end
 
 

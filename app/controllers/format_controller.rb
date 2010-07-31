@@ -4,7 +4,7 @@ class FormatController
   def initialize(user_id_)
 
 
-    RAILS_DEFAULT_LOGGER.error( "new FormatController" );
+    RAILS_DEFAULT_LOGGER.debug( "new FormatController" );
     setTableObjects();
     @format_elements_hash = {}
     @user_id = user_id_;

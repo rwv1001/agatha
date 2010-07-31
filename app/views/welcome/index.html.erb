@@ -268,11 +268,20 @@ td img {display: block;}
        <input name="option" id ="display_page_option" type="text" style="display:none"  />
     </form>
 
+    <div style= "display: none">
+       <input name="opener_attribute_name" id ="stupid_update_opener_attribute_name" type="text" value="not_set" />
+       <input name="opener_id" id ="stupid_update_opener_id" type="text" value ="1" />
+       <input name="opener_attribute_name" id ="update_opener_attribute_name" type="text" value="not_set" />
+       <input name="opener_id" id ="update_opener_id" type="text" value ="1" />
+    </div>
+
+
+
     <form action=<%=  "\"/welcome/update_main\"" %> id="update_main" method="post" onsubmit="new Ajax.Request('<%="/welcome/update_main"%>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;" >
       <div style="margin:0;padding:0"><input name="authenticity_token" type="hidden" value= <%= "\"#{form_authenticity_token}\"" %> /></div>
        <div style="display:none">
        <input name="id" id="update_main_id" type="text" />
-       <input name="table_name" id ="update_main_table_name" type="text"  />
+       <input name="table_name" id ="update_main_class_name" type="text"  />
        <input name="attribute_name" id="update_main_attribute_name" type="text" />
        </div>
     </form>
@@ -653,6 +662,8 @@ td img {display: block;}
        Event.observe( window, 'load', function() {
         load_pages();
        $("disable_id").hide;});
+
+     window.name = "main_window"
 
 
 

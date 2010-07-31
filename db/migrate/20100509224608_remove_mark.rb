@@ -1,4 +1,4 @@
-class RemoveMark < ActiveRecord::Migration
+class RemovesaMark < ActiveRecord::Migration
   def self.up
     remove_column :tutorials, :mark
   end
