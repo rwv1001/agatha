@@ -1,7 +1,7 @@
 
 function copyright()
 {
-    document.write('<p style="text-align: center; font-size: 32%;"> Agatha database version, 3.0.02 © 2009, Robert Verrill O.P.</p>');
+    document.write('<p style="text-align: center; font-size: 32%;"> Agatha database version, 3.10.09.25 © 2010, Robert Verrill O.P.</p>');
 
 }
 function hideHeader()

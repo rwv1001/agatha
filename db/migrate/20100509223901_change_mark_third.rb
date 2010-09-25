@@ -1,4 +1,3 @@
-
 class ChangeMarkThird < ActiveRecord::Migration
   def self.up
 

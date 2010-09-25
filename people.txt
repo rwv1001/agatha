@@ -2,6 +2,10 @@
 possilbe bugs:
 If user A deletes emails whilst user B has those emails displayed, user B could try and do things with these non-existent emails like try and send them or attach files. Sending will cause the web browser to crash. Attaching will mean database has foreign_keys that don't correspond to records. 
 ************************
+git status
+git add app/controllers/notes_controller.rb etc
+git commit -a
+git push gitserver
 
 fixed actionmailer by going to /opt/httpd/html/agatha/current/vendor/rails/actionmailer/lib/action_mailer/base.rb change line smtp.sendmail(mail.encoded, sender.first,...) destinations)
 root@fido# apachectl graceful

@@ -977,6 +977,8 @@ class WelcomeController < ApplicationController
 
 
       status_val = send_emails_routine(ids)
+      error_str = status_val["error_str"];
+
 
     
       respond_to do |format|
