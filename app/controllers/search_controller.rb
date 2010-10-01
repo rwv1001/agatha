@@ -1748,8 +1748,18 @@ class SearchController
 
 
       if parent_tree.parent == nil && attribute.foreign_key.length == 0
-
-        eval_string = "row.#{attribute_name}"
+        if(attribute_name == "collection_status")
+          eval_string = "case row.#{attribute_name}
+                           when 1
+                              \"NEEDS TO BE TAKEN\"
+                           when 2
+                              \"HAS BEEN TAKEN\"
+                           else
+                              \"UNNECESSARY\"
+                           end"
+        else
+          eval_string = "row.#{attribute_name}"
+        end
       else
         eval_string = "row.a#{parent_tree.id}_#{attribute_name}"
       end

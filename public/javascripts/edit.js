@@ -394,6 +394,15 @@ function on_create(id)
             num_tutorials_elt = $("number_of_tutorials");
             number_of_tutorials = num_tutorials_elt.value;
 
+            collection_required_elt = $("collection_required");
+            if(collection_required_elt.checked)
+            {
+                collection_required = "1"
+            }
+            else
+            {
+                collection_required = "0";
+            }
             previous_suggestion_elt = $("previous_tutorial_schedule_suggestions")
             previous_suggestions = previous_suggestion_elt.value;
 
@@ -401,12 +410,14 @@ function on_create(id)
             sent_tutor = new Element('input',{type: 'text',name: 'tutor_id',  value: tutor_id })
             sent_term = new Element('input',{ type: 'text',  name: 'term_id', value: term_id })
             sent_num_tutorials = new Element('input',{ type: 'text',   name: 'number_of_tutorials',  value: number_of_tutorials   })
+            sent_collection_required =  new Element('input',{ type: 'text',   name: 'collection_required',  value: collection_required   })
             sent_previous_suggestions =  new Element('input',{ type: 'text',  name: 'previous_suggestions', value: previous_suggestions  })
 
             specific_div.insert({ 'bottom': sent_course  });
             specific_div.insert({  'bottom': sent_tutor   });
             specific_div.insert({  'bottom': sent_term});
             specific_div.insert({  'bottom': sent_num_tutorials });
+            specific_div.insert({  'bottom': sent_collection_required });
             specific_div.insert({   'bottom': sent_previous_suggestions });
 
             class_name2 = $("action_class2").value;
@@ -684,6 +695,51 @@ function CreateGroup(class_name)
     form_obj.onsubmit();
 }
 
+function GetRadioValue(radio_list)
+{
+    default_ret_val = radio_list[0].value;
+    length = radio_list.length;
+    for(i=0;i<length; i++)
+    {
+        if(radio_list[i].checked == true)
+        {
+            return radio_list[i].value;
+        }
+    }
+    return default_ret_val;
+}
+function UpdateCollectionStatus()
+{
+    wait();
+    class_name = "Tutorial"
+    specific_div = $("specific_action_variables");
+    specific_div.descendants().each(function(elt){elt.remove()});
+
+    search_results_div_str = "search_results_" + class_name;
+    search_results_div = $(search_results_div_str)
+    search_results_div.select('.check').each(function(elt){new_elt = elt.cloneNode(true); specific_div.insert({'bottom': new_elt})});
+
+
+    action_div = $(class_name +'_action_div');
+    radio_list = action_div.select('.collection_status');
+    collection_status = GetRadioValue(radio_list);
+    cloned_collection_status_elt = new Element('input',{type: 'text', name: 'collection_status', value: collection_status});
+    specific_div.insert({'bottom': cloned_collection_status_elt});
+
+
+    action_obj = $("action_type")
+    action_obj.value = "update_collection_status"
+    action_table = $("action_class");
+    action_table.value = class_name;
+
+    form_obj = $("action_form");
+    form_obj.onsubmit();
+
+
+
+
+}
+
 function add_group(class_name, group_name, new_group_id)
 {
    external_filter_group_selection_class =  ".external_filter_group_selection_"+class_name;
@@ -772,6 +828,7 @@ if (!answer)
 
    
 }
+
 
 function on_delete(table_name,id)
 {
@@ -906,12 +963,31 @@ function editBlur(attribute_name, data_type)
     field_name_obj.value = attribute_name;
     field_data_type_obj.value = data_type;
     current_attribute_obj_str ="edit_"+ attribute_name;
-    if(data_type.length !=0)
+    if(attribute_name=="collection_status")
+    {
+        radio_elts = $$("input.collection_status");
+        found = false;
+        found_val = 0;
+        num_elts=radio_elts.length;
+        for(i=0;i<num_elts && !found; i++)
         {
+            if(radio_elts[i].checked)
+            {
+               found=true;
+               found_val = radio_elts[i].value;
+            }
+        }
+        field_value_obj.value = found_val;
+
+    }
+    else if(data_type.length !=0)
+    {
     if(data_type== "boolean")
         {
             current_attribute_obj_str=  current_attribute_obj_str + "_1"
         }
+
+
     current_attribute_obj = $(current_attribute_obj_str);
     if(data_type != "boolean")
         {
@@ -921,7 +997,7 @@ function editBlur(attribute_name, data_type)
         {
             field_value_obj.value = current_attribute_obj.checked;
         }
-        }
+    }
 
     form_obj = $("update_form");
     form_obj.onsubmit();

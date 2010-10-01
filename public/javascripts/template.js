@@ -270,6 +270,7 @@ var all_invisible_classes = [
     ".attach_title",
     ".attach_to-cell",
     ".attach_to_title",
+    ".collection_div",
     ".create-cell",
     ".create-email-cell",
     ".create_emails_title",
@@ -685,6 +686,9 @@ function load_pages()
     tutorial_page_views.push(new PageView("tutorials", "Tutorial","Delete tutorials",true,
       [new DisplayDiv("welcome_Tutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell", ".delete-cell"], ""),
        new DisplayDiv("Tutorial_action_div", "first_menu_div", [], [], [".delete_div"], "")]));
+    tutorial_page_views.push(new PageView("tutorials", "Tutorial","Update Collection Status",true,
+      [new DisplayDiv("welcome_Tutorial", "first_div", ["content_div"],["two_column_div"], [".select_options", ".select-cell"], ""),
+       new DisplayDiv("Tutorial_action_div", "first_menu_div", [], [], [".collection_div"], "")]));
     tutorial_page_views.push(new PageView("tutorials", "Tutorial", "Add to groups",true,
       [new DisplayDiv("welcome_Tutorial", "first_div_1", ["two_column_div"],["content_div"], [".add-cell",".dummy-cell"],"group_unrestriction()"),
        new DisplayDiv("Tutorial_action_div", "first_menu_div", [], [], [], ""),

@@ -623,6 +623,9 @@ class WelcomeController < ApplicationController
     case action
     when "delete"
       delete_array(ids, class_name);
+    when "update_collection_status"
+      new_status = params[:collection_status].to_i;
+      update_collection_status(ids, new_status);
     when "group"
       
       group_name = params[:new_group_name];
@@ -1306,12 +1309,13 @@ class WelcomeController < ApplicationController
         tutorial_schedule.course_id = course_id
         tutorial_schedule.person_id = tutor_id
         tutorial_schedule.term_id = params[:term_id];
-        tutorial_schedule.number_of_tutorials = params[:number_of_tutorials];
+        tutorial_schedule.number_of_tutorials = params[:number_of_tutorials];        
         tutorial_schedule.number_of_tutorial_hours = params[:number_of_tutorials];
         tutorial_schedule.save;
         tutorial = Tutorial.new;
         tutorial.person_id = student_id;
         tutorial.tutorial_schedule_id = tutorial_schedule.id;
+        tutorial.collection_status = params[:collection_required];
         tutorial.save;
 
         present = WillingTutor.find_by_sql("SELECT * FROM willing_tutors WHERE person_id = #{tutor_id} AND course_id = #{course_id}");
@@ -2017,6 +2021,60 @@ RAILS_DEFAULT_LOGGER.flush
       end
 
   end
+
+  def update_collection_status(ids, new_status)
+    if (ids.length > 0)
+      id_str = ""
+      ids.each do |id|
+        if id_str.length >0
+          id_str << ", "
+        end
+        id_str << id.to_s;
+      end
+      tutorials = Tutorial.find_by_sql("SELECT * FROM tutorials WHERE id IN (#{id_str})");
+
+     
+      tutorials.each do |tutorial|
+        tutorial.collection_status = new_status;
+        tutorial.save;
+      end
+
+      case new_status
+        when 2
+          status_str = "COLLECTION HAS BEEN TAKEN"
+        when 1
+          status_str = "COLLECTION TO BE TAKEN"
+      else
+          status_str = "COLLECTION UNNECESSARY"
+      end
+      @pluralize_num = ids.length;
+      success_str = "#{@pluralize_num} "+ pl("tutorial") +" updated with status #{status_str}";
+    else
+      success_str = "no tutorials were selected"
+    end
+      respond_to do |format|
+        format.js  do
+          render :update do |page|
+            table_name = "Tutorial"
+            @search_ctls = session[:search_ctls];
+            search_ctl = @search_ctls[table_name];
+            eval("#{table_name}.set_controller(search_ctl)");
+            updated_objects = search_ctl.GetUpdateObjects(table_name, "id", ids);
+            updated_objects.each do |row|
+               page << "if ($('#{row.id}_#{ table_name}')) {"
+              page["#{row.id}_#{table_name}"].replace( :partial => "shared/search_results_row_button", :object =>row );
+              page << "setcheck('#{table_name}_check_#{row.id.to_s}',true)"
+              page << "}"
+            end
+
+            page << "action_select_no_js();";
+            page << "alert(\"#{success_str}\")"
+            page << "unwait();"
+          end
+        end
+      end
+    end
+
   def check_dependencies(ids, table_name)
     dependencies_present = [];
     if(ids.length == 0)

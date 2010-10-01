@@ -191,6 +191,20 @@
      
         </div>
 
+       <% if table_name == "Tutorial" %>
+          <% onclick_str = "UpdateCollectionStatus();return false" %>
+          <div class="collection_div">
+            <div>
+                <input type="button" id=<%="\"update_collection_status\""%> value=<%="\"Update\"" %> class="list_button"  onclick= <%="\"#{onclick_str }\""%>  >
+            </div>
+            <div>
+              <input class="collection_status" name ="collection_status" type="radio" value=0  CHECKED ><label>Unecessary</label><br>
+              <input class="collection_status" name ="collection_status" type="radio" value=1   /><label>Needs to be taken</label><br>
+              <input class="collection_status" name ="collection_status" type="radio" value=2   /><label>Has been taken</label>
+            </div>
+          </div>
+       <% end %>
+
 
         
       <% if table_name == "Course" %>

@@ -26,7 +26,7 @@ class SubQuery
       @current_argument_value = 0;
     end
     @eval_str = "row.#{@variable_name}";
-    @tag = header_.gsub(/\s+/,'_');
+    @tag = header_.gsub(/[^A-Z0-9]/,'_');
   end
 
 end

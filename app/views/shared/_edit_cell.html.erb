@@ -42,6 +42,23 @@
     <% if attribute.name == "id" %>
       <input  type="text" value=<%= eval(eval_str)  %>   id=<%="\"edit_#{attribute.name}\""%> class="edit_text" readonly size =<%="\"#{column_width}\""%> >
      
+    <% elsif attribute.name == "collection_status" %>
+      <% check0="" %>
+      <% check1="" %>
+      <% check2="" %>
+      <% eval_val = eval(eval_str)  %>
+      <% if eval_val == 1 %>
+          <% check1="checked" %>
+      <% elsif eval_val == 2 %>
+          <% check2="checked" %>
+      <%else%>
+          <% check0="checked" %>
+      <%end%>
+
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> <%= "#{check0}" %>  value=0 id=<%="\"edit_#{attribute.name}_0\""%> class="collection_status" <%= readonly_str%> ><label>Unnecessary</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> <%= "#{check1}" %>  value=1 id=<%="\"edit_#{attribute.name}_1\""%> class="collection_status" <%= readonly_str%> ><label>Needs to be taken</label><br>
+      <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="radio" name =<%="\"edit_#{attribute.name}\""%> <%= "#{check2}" %>  value=2 id=<%="\"edit_#{attribute.name}_2\""%> class="collection_status" <%= readonly_str%> ><label>Has been taken</label><br>
+     
     <% else %>
       <% if attribute.foreign_key.length == 0 %>
         <input onblur= <%="\"#{onblur_str}\""%> onfocus= <%="\"#{onfocus_str}\""%>  type="text" name =<%="\"edit_#{attribute.name}\""%> value="<%= eval(eval_str).to_s  %>" id=<%="\"edit_#{attribute.name}\""%> class="edit_text" size =<%="\"#{column_width}\""%>  <%= readonly_str%> >
