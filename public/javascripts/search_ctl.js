@@ -87,11 +87,19 @@ function resizeX()
     var a_height = $('dummy_a').clientHeight;
     var new_padding = (client_height - parseInt(a_height))/2;
     var new_height = client_height - new_padding;
-    var style_str = "background: #AAAAAA;  border-left: 1px solid; border-color: #000000;  float: right; height: "
-    + new_height + "px; padding-top: " + new_padding +"px"
+    var style_str = "background: #AAAAAA;  border-left: 1px solid; border-color: #000000;  float: right; height: "    + new_height + "px; padding-top: " + new_padding +"px"
     $$('.remove_column').each(function(elt){
-        elt.setAttribute('style',style_str)
+      //  elt.setAttribute('style',style_str)
+         elt.style.height = new_height;
+          elt.style.paddingTop = new_padding;
         });
+
+
+    $$('.div_column_edit').each(function(elt){
+        elt.style.height = new_height;
+        elt.style.paddingTop = new_padding;
+        });
+
 }
 function doEscapeHTML(class_id_name)
 {

@@ -128,23 +128,24 @@ function on_edit( table_name,class_name,id)
 function open_edit_window(attribute_opener, opener_id, table_name,class_name,id)
 {
 
-      name = class_name + '_' + id;
+      new_name = class_name + '_' + id;
    url = '/'+table_name +'/' + id +'/edit?table_name='+ class_name;
+   new_height = screen.height-20;
 
-    var config_window = 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width='+ (screen.width/2 - 16)+ ',height=' + screen.height +',left='+(screen.width/2 +17)+',top=0'
+    var config_window = 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width='+ (screen.width/2 - 16)+ ', height=' + new_height  +',left='+(screen.width/2 +17)+',top=20'
 
     stupid_update_opener_attribute_name_obj = $('stupid_update_opener_attribute_name');
     stupid_update_opener_attribute_name_obj.value =attribute_opener;
     stupid_update_opener_id_obj = $('stupid_update_opener_id');
     stupid_update_opener_id_obj.value = opener_id;
     
-    win_ref = window.open(url,name, config_window);
+    win_ref = window.open(url,new_name, config_window);
     update_opener_attribute_name_obj = win_ref.document.getElementById('update_opener_attribute_name');
     update_opener_attribute_name_obj.value = attribute_opener;
 
     update_opener_id_obj = win_ref.document.getElementById('update_opener_id');
     update_opener_id_obj.value = opener_id;
-    open_windows.set(name, win_ref );
+    open_windows.set(new_name , win_ref );
 
 }
 function silly_update()
