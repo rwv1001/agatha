@@ -1,8 +1,8 @@
 
 default_run_options[:pty] = true
 set :application, "agatha"
-set :repository,  "agathaapp@fido.bfriars.ox.ac.uk:/opt/repos/agatha.git"
-set :domain, "fido.bfriars.ox.ac.uk"
+set :repository,  "agathaapp@fido2.bfriars.ox.ac.uk:/opt/repos/agatha.git"
+set :domain, "fido2.bfriars.ox.ac.uk"
 
 
 set :deploy_to, "/opt/httpd/html/#{application}"
