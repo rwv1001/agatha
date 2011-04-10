@@ -968,6 +968,9 @@ class SearchController
     end
     return ret_val;
   end
+ def GetAllShortFields2(order_by_id, order_direction, have_not_set)
+   GetAllShortFields(order_by_id, order_direction, have_not_set)
+ end
 
   def GetAllShortFields(order_by_id, order_direction, have_not_set)
     return GetAllShortFieldsWhere(order_by_id, order_direction, have_not_set,"", "");
