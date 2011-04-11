@@ -42,6 +42,13 @@ namespace :passenger do
   end
 end
 
+namespace :deploy do
+  desc "Restarting mod_rails with restart.txt"
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "touch #{release_path}/tmp/restart.txt"
+  end
+end
+
 after 'deploy:update_code', :update_config
 after :deploy, "passenger:restart"
 
